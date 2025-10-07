@@ -9,6 +9,7 @@ module.exports = function (grunt) {
     // Run our existing npm scripts via shell
     exec: {
       ts_build: "npm run ts:bundle",
+      js_build: "npm run js:bundle",
       sass_build: "npm run sass:build",
       postcss_build: "npm run postcss:build"
     },
@@ -34,7 +35,11 @@ module.exports = function (grunt) {
       js: {
         files: {
           "dist/assets/app.bundle.js": [
-            "src/app.js"
+            "node_modules/jquery/dist/jquery.min.js",
+            "node_modules/jquery-ui-dist/jquery-ui.min.js",
+            "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+            "src/app.js",          // TS bundle
+            "src/app.extra.js"     // JS bundle
           ]
         }
       },
@@ -114,6 +119,7 @@ module.exports = function (grunt) {
 },
     watch: {
       ts:   { files: ["src/ts/**/*.ts"],       tasks: ["exec:ts_build"] },
+      js:   { files: ["src/js/**/*.js"],       tasks: ["exec:js_build"] },
       scss: { files: ["src/styles/**/*.scss"], tasks: ["exec:sass_build", "exec:postcss_build"] },
       html: { files: ["src/**/*.html"] }
     }
@@ -132,6 +138,7 @@ module.exports = function (grunt) {
     "exec:sass_build",
     /* or "postcss" */ "exec:postcss_build",
     "exec:ts_build",
+    "exec:js_build",
     // copy base files & assets
     "copy:html",
     "copy:images",
