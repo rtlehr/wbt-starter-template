@@ -165,10 +165,6 @@ You are building from a **TypeScript + Sass + Grunt** environment that includes:
 - Bootstrap + jQuery + jQuery UI
 - Esbuild for TypeScript bundling
 - Responsive media mixins for desktop, tablet, and phone
-- Dev & prod environments with:
-  - `npm run dev` → Live server (http://127.0.0.1:8081/src/index.html)
-  - `npm run prod` → Build to `/dist`
-  - `npm run preview` → Build + serve production at http://127.0.0.1:8082/
 
 ---
 
