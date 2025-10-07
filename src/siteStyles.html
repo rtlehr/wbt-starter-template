@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Styles</title>
+
+    <!-- dev CSS (keep these for dev) -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- dev:css:start -->
+    <link href="app.css" rel="stylesheet" />
+    <!-- dev:css:end -->
+
+    <!-- inject:css --> 
+    
+    <!-- dev JS (keep these for dev) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- dev:js:start -->
+    <script src="app.js"></script>
+    <!-- dev:js:end -->
+
+    <!-- inject:js -->  
+
+    <style>
+
+        .color-box {
+            width: 150px;
+            height: 100px;
+            margin: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+<h2>SASS Generated Color Scheme</h2>
+<p>Colors can be changed in <span class="hightlightTextColor">css-scheme.scss</span></p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-primary" style="width: 300px; height: 200px;">$primary</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1 col-md-12">
+            <h3>The following colors are based on the primary color.</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color1">$color1</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color2">$color2</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color3">$color3</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color4">$color4</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-complement1">$complement1</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-complement2">$complement2</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-complement3">$complement3</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-analogous1">$analogous1</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-analogous2">$analogous2</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-mono-light">$mono-light</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-mono-dark">$mono-dark</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-triadic1">$triadic1</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-triadic2">$triadic2</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-tetradic1">$tetradic1</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-tetradic2">$tetradic2</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-tetradic3">$tetradic3</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1 col-md-12">
+            <h3>Warning Colors</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-cautioncolor">$cautioncolor</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-warningcolor">$warningcolor</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-safecolor">$safecolor</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1 col-md-12">
+            <h3>Font Colors</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-2">
+            <div class="color-box color-bodyTextColor">$bodyTextColor</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-h1TextColor">$h1TextColor</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-h2TextColor">$h2TextColor</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-h3TextColor">$h3TextColor</div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="color-box color-hightlightTextColor">$hightlightTextColor</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

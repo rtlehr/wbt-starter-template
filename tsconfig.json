@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "none",
+    "strict": true,
+    "rootDir": "src/ts",
+    "outFile": "src/app.js",
+    "types": ["jquery", "jqueryui"],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "files": ["src/ts/main.ts"]
+}

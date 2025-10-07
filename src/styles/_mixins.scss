@@ -1,0 +1,33 @@
+// ------------------------------------------
+//  Mixins
+// ------------------------------------------
+
+// Easy media query mixins
+@mixin respond-desktop {
+  @media (min-width: #{$break-desktop}) {
+    @content;
+  }
+}
+
+@mixin respond-tablet {
+  @media (max-width: #{$break-desktop - 1}) and (min-width: #{$break-tablet}) {
+    @content;
+  }
+}
+
+@mixin respond-phone {
+  @media (max-width: #{$break-tablet - 1}) {
+    @content;
+  }
+}
+
+// Example utility mixins
+@mixin center-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin box-shadow($level: 2px) {
+  box-shadow: 0 $level $level rgba(0, 0, 0, 0.15);
+}
