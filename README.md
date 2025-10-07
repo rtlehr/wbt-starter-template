@@ -149,6 +149,62 @@ Freelance Developer / Designer
 
 ---
 
+@'
+# 🚀 JavaScript App Starter – Future Development Prompt Template
+
+This template helps you request new functionality in ChatGPT so it fully understands your project’s architecture, dependencies, and build system.
+
+---
+
+## 🧠 Project Context
+
+You are building from a **TypeScript + Sass + Grunt** environment that includes:
+
+- TypeScript (OOP structure with models, services, and UI controllers)
+- Sass modular styles (`_variables.scss`, `_mixins.scss`, `_components.scss`, `_breakpoints.scss`)
+- Bootstrap + jQuery + jQuery UI
+- Esbuild for TypeScript bundling
+- Responsive media mixins for desktop, tablet, and phone
+- Dev & prod environments with:
+  - `npm run dev` → Live server (http://127.0.0.1:8081/src/index.html)
+  - `npm run prod` → Build to `/dist`
+  - `npm run preview` → Build + serve production at http://127.0.0.1:8082/
+
+---
+
+## 🧩 Prompt Template
+
+Copy and paste this into ChatGPT whenever you want to add or modify functionality.
+
+**Project Context:**  
+I’m building from my *JavaScript App Starter* environment — a Grunt-based web app using:
+- TypeScript (OOP style)
+- SASS with modular structure
+- Bootstrap + jQuery + jQuery UI
+- Esbuild bundling
+- Responsive media mixins for desktop/tablet/phone
+
+**Goal:**  
+Describe the new functionality or component you want to add (e.g., a “Task Manager,” “Gallery Grid,” “Modal Form,” etc.)
+
+**Requirements / Preferences:**  
+- Where should the logic live? (`src/ts/ui`, `src/ts/services`, etc.)
+- What kind of UI interaction? (buttons, modals, animations, forms)
+- Any new SCSS partials or updates?
+- Any data sources? (JSON file, API, localStorage)
+- Should it run in **dev** only or also in **prod**?
+
+**Deliverables I’d like:**  
+1. TypeScript code with comments  
+2. SCSS additions or modifications  
+3. HTML changes (if needed)  
+4. Any Grunt or NPM updates  
+5. Testing instructions
+
+**Example:**  
+“Create a new `TaskManager` class under `src/ts/services/` and a `TaskUI` controller under `src/ts/ui/` to manage tasks (add/edit/delete). Style the list using responsive Sass cards.”
+
+
 ## 🪪 License
 
 This project is licensed under the **MIT License** — feel free to use, modify, and distribute.
