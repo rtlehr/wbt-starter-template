@@ -34,24 +34,31 @@ module.exports = function (grunt) {
     concat: {
       js: {
         files: {
-          "dist/core/js/app.bundle.js": [
-            "src/core/js/app-ts.js",
-            "src/core/js/app-js.js"
+          "dist/core/js/core.bundle.js": [
+            "src/core/js/**/*"
+          ],
+          "dist/custom/js/custom.bundle.js": [
+            "src/custom/js/**/*"
           ]
         }
       },
       css: {
         files: {
-          "dist/core/css/app.bundle.css": [
-            "src/core/css/app.css"
+          "dist/core/css/core.bundle.css": [
+            "src/core/css/**/*"
+          ],
+          "dist/custom/css/custom.bundle.css": [
+            "src/custom/css/**/*"
           ]
+          
+
         }
       }
     },
 
      uglify: {
       prod: {
-        files: { "dist/core/js/app.bundle.min.js": ["dist/core/js/app.bundle.js"] }
+        files: { "dist/core/js/core.bundle.min.js": ["dist/core/js/core.bundle.js"] }
       }
     },
 
@@ -62,7 +69,7 @@ module.exports = function (grunt) {
           rebase: true,
           rebaseTo: "dist/core/css"
         },
-        files: { "dist/core/css/app.bundle.min.css": ["dist/core/css/app.bundle.css"] }
+        files: { "dist/core/css/core.bundle.min.css": ["dist/core/css/core.bundle.css"] }
       }
     },
 
@@ -73,11 +80,11 @@ module.exports = function (grunt) {
         replacements: [
           {
             from: '<!-- inject:css -->',
-            to:   '<link rel="stylesheet" href="core/css/app.bundle.min.css">'
+            to:   '<link rel="stylesheet" href="core/css/core.bundle.min.css"><link rel="stylesheet" href="custom/css/custom.bundle.min.css">'
           },
           {
             from: '<!-- inject:js -->',
-            to:   '<script src="core/js/app.bundle.min.js"></script>'
+            to:   '<script src="core/js/core.bundle.min.js"></script><script src="custom/js/custom.bundle.min.js"></script>'
           },
           {
             from: /<!-- dev:css:start -->[\s\S]*?<!-- dev:css:end -->/g,
