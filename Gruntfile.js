@@ -22,11 +22,11 @@ module.exports = function (grunt) {
       images: {
         files: [
           // jQuery UI icons
-          { expand: true, cwd: "node_modules/jquery-ui-dist", src: ["images/**"], dest: "dist/assets" },
+          { expand: true, cwd: "node_modules/jquery-ui-dist", src: ["images/**"], dest: "dist/assets/images" },
           // your own images if any
-          { expand: true, cwd: "src", src: ["images/**"], dest: "dist/assets" },
+          { expand: true, cwd: "src", src: ["assets/images/**"], dest: "dist/assets/images" },
           // (optional) static files
-          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/static" } 
+          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/assets/static" } 
         ]
       }
     },
@@ -34,16 +34,16 @@ module.exports = function (grunt) {
     concat: {
       js: {
         files: {
-          "dist/assets/app.bundle.js": [
-            "src/assets/js/app-ts.js",          // TS bundle
-            "src/assets/js/app-js.js"     // JS bundle
+          "dist/assets/js/app.bundle.js": [
+            "src/assets/js/app-ts.js",
+            "src/assets/js/app-js.js"
           ]
         }
       },
       css: {
         files: {
-          "dist/assets/app.bundle.css": [
-            "src/app.css"
+          "dist/assets/css/app.bundle.css": [
+            "src/assets/css/app.css"
           ]
         }
       }
@@ -51,7 +51,7 @@ module.exports = function (grunt) {
 
      uglify: {
       prod: {
-        files: { "dist/assets/app.bundle.min.js": ["dist/assets/app.bundle.js"] }
+        files: { "dist/assets/js/app.bundle.min.js": ["dist/assets/js/app.bundle.js"] }
       }
     },
 
@@ -60,9 +60,9 @@ module.exports = function (grunt) {
         options: {
           // ensure relative urls like "images/..." keep working from dist/assets/
           rebase: true,
-          rebaseTo: "dist/assets"
+          rebaseTo: "dist/assets/css"
         },
-        files: { "dist/assets/app.bundle.min.css": ["dist/assets/app.bundle.css"] }
+        files: { "dist/assets/css/app.bundle.min.css": ["dist/assets/css/app.bundle.css"] }
       }
     },
 
@@ -73,11 +73,11 @@ module.exports = function (grunt) {
         replacements: [
           {
             from: '<!-- inject:css -->',
-            to:   '<link rel="stylesheet" href="assets/app.bundle.min.css">'
+            to:   '<link rel="stylesheet" href="assets/css/app.bundle.min.css">'
           },
           {
             from: '<!-- inject:js -->',
-            to:   '<script src="assets/app.bundle.min.js"></script>'
+            to:   '<script src="assets/js/app.bundle.min.js"></script>'
           },
           {
             from: /<!-- dev:css:start -->[\s\S]*?<!-- dev:css:end -->/g,

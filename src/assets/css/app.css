@@ -1,0 +1,251 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, "Segoe UI", Arial, sans-serif;
+  background: #f8f9fa;
+  color: #212529;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: blue;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+a:hover {
+  color: #0000cc;
+}
+
+.color-primary {
+  background-color: blue;
+}
+
+.color1 {
+  background-color: rgb(216.75, 216.75, 255);
+}
+
+.color2 {
+  background-color: #9999ff;
+}
+
+.color3 {
+  background-color: rgb(64, 64, 191.5);
+}
+
+.color4 {
+  background-color: rgb(0, 0, 127.5);
+}
+
+.color-mono-light {
+  background-color: #6666ff;
+}
+
+.color-mono-dark {
+  background-color: rgb(0, 0, 76.5);
+}
+
+.color-complement1 {
+  background-color: yellow;
+}
+
+.color-complement2 {
+  background-color: rgb(255, 127.5, 0);
+}
+
+.color-complement3 {
+  background-color: rgb(127.5, 255, 0);
+}
+
+.color-analogous1 {
+  background-color: rgb(0, 127.5, 255);
+}
+
+.color-analogous2 {
+  background-color: rgb(127.5, 0, 255);
+}
+
+.color-triadic1 {
+  background-color: red;
+}
+
+.color-triadic2 {
+  background-color: lime;
+}
+
+.color-tetradic1 {
+  background-color: fuchsia;
+}
+
+.color-tetradic2 {
+  background-color: aqua;
+}
+
+.color-tetradic3 {
+  background-color: lime;
+}
+
+.color-cautioncolor {
+  background-color: #cc0033;
+}
+
+.color-warningcolor {
+  background-color: rgb(242.25, 242.25, 12.75);
+}
+
+.color-safecolor {
+  background-color: rgb(0, 102.4, 51);
+}
+
+.color-bodyTextColor {
+  background-color: #666666;
+}
+
+.color-h1TextColor {
+  background-color: #333;
+}
+
+.color-h2TextColor {
+  background-color: #333;
+}
+
+.color-h3TextColor {
+  background-color: #333;
+}
+
+.color-hightlightTextColor {
+  background-color: rgb(127.5, 255, 0);
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+@media (max-width: 1199px) and (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+@media (max-width: 767px) {
+  .container {
+    max-width: 95%;
+  }
+}
+
+.header, .footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background: blue;
+  color: white;
+}
+
+.button-primary {
+  background: blue;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.button-primary:hover {
+  background: #0000cc;
+}
+@media (max-width: 767px) {
+  .button-primary {
+    width: 100%;
+  }
+}
+
+.button-responsive {
+  background: blue;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.button-responsive:hover {
+  background: #0000cc;
+}
+@media (min-width: 1200px) {
+  .button-responsive {
+    background: #007bff;
+  }
+}
+@media (max-width: 1199px) and (min-width: 768px) {
+  .button-responsive {
+    background: #28a745;
+  }
+}
+@media (max-width: 767px) {
+  .button-responsive {
+    background: #fd7e14;
+  }
+}
+
+.card {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+}
+@media (max-width: 1199px) and (min-width: 768px) {
+  .card {
+    padding: 0.75rem;
+  }
+}
+@media (max-width: 767px) {
+  .card {
+    padding: 0.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  body {
+    font-size: 16px;
+  }
+}
+@media (max-width: 1199px) and (min-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+}
+@media (max-width: 767px) {
+  body {
+    font-size: 14px;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+body {
+  font-family: system-ui, "Segoe UI", Arial, sans-serif;
+  background: #f8f9fa;
+}
+
+h1 {
+  color: #0d6efd;
+  margin: 1rem 0;
+}
+
+#btnTest {
+  border-width: 2px;
+  border-color: rgb(1.762295082, 87.2336065574, 213.237704918);
+}
+#btnTest:hover {
+  transform: translateY(-1px);
+}
