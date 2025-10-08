@@ -26,7 +26,7 @@ module.exports = function (grunt) {
           // your own images if any
           { expand: true, cwd: "src", src: ["images/**"], dest: "dist/assets" },
           // (optional) static files
-          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/static" }
+          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/static" } 
         ]
       }
     },
@@ -35,11 +35,8 @@ module.exports = function (grunt) {
       js: {
         files: {
           "dist/assets/app.bundle.js": [
-            "node_modules/jquery/dist/jquery.min.js",
-            "node_modules/jquery-ui-dist/jquery-ui.min.js",
-            "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-            "src/app.js",          // TS bundle
-            "src/app.extra.js"     // JS bundle
+            "src/assets/js/app-ts.js",          // TS bundle
+            "src/assets/js/app-js.js"     // JS bundle
           ]
         }
       },
@@ -97,34 +94,36 @@ module.exports = function (grunt) {
 
     // Serve the project root so ../node_modules in src/index.html keeps working
     connect: {
-  server: {
-    options: {
-      port: 8081,
-      base: ".",
-      hostname: "127.0.0.1",
-      open: "http://127.0.0.1:8081/src/index.html"
-      // no keepalive here (dev uses watch after connect)
-    }
-  },
-  // ✅ NEW: prod preview server
-  prod: {
-    options: {
-      port: 8082,
-      base: "dist",
-      hostname: "127.0.0.1",
-      open: "http://127.0.0.1:8082/",
-      keepalive: true
-    }
-  }
-},
+      server: {
+        options: {
+          port: 8081,
+          base: ".",
+          hostname: "127.0.0.1",
+          open: "http://127.0.0.1:8081/src/index.html",
+          livereload: 35729
+        }
+      },
+      // ✅ NEW: prod preview server
+      prod: {
+        options: {
+          port: 8082,
+          base: "dist",
+          hostname: "127.0.0.1",
+          open: "http://127.0.0.1:8082/",
+          keepalive: true
+        }
+      }
+    },
+
     watch: {
-      ts:   { files: ["src/ts/**/*.ts"],       tasks: ["exec:ts_build"] },
-      js:   { files: ["src/js/**/*.js"],       tasks: ["exec:js_build"] },
+      options: {
+        livereload: true // ✅ triggers refresh
+      },
+      ts:   { files: ["src/development/ts/**/*.ts"],       tasks: ["exec:ts_build"] },
+      js:   { files: ["src/development/js/**/*.js"],       tasks: ["exec:js_build"] },
       scss: { files: ["src/styles/**/*.scss"], tasks: ["exec:sass_build", "exec:postcss_build"] },
       html: { files: ["src/**/*.html"] }
     }
-
-
   });
 
   grunt.registerTask("build", ["exec:sass_build", "exec:postcss_build", "exec:ts_build"]);

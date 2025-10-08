@@ -16,8 +16,8 @@
     "postcss:build": "postcss src/app.css --use autoprefixer --no-map -o src/app.css",
     "prod": "cross-env NODE_ENV=production grunt prod",
     "preview": "cross-env NODE_ENV=production grunt preview",
-    "ts:bundle": "esbuild src/ts/main.ts --bundle --platform=browser --target=es2019 --outfile=src/app.js --format=iife --global-name=App",
-    "js:bundle": "esbuild src/js/app.js --bundle --platform=browser --target=es2019 --outfile=src/app.extra.js --format=iife"
+    "ts:bundle": "esbuild src/development/ts/main.ts --bundle --platform=browser --target=es2019 --outfile=src/assets/js/app-ts.js --format=iife --global-name=App",
+    "js:bundle": "esbuild src/development/js/app.js --bundle --platform=browser --target=es2019 --outfile=src/assets/js/app-js.js --format=iife"
   },
   "keywords": [],
   "author": "",
