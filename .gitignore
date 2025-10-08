@@ -7,8 +7,9 @@ pnpm-lock.yaml
 # Builds
 dist/
 .temp/
-src/app.css
-src/app.js
+src/assets/css/
+src/assets/js/
+src/assets/images/
 
 # Env / secrets
 .env
