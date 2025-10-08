@@ -5,9 +5,9 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // src/development/js/app.js
+  // src/development/core/js/app.js
   var require_app = __commonJS({
-    "src/development/js/app.js"() {
+    "src/development/core/js/app.js"() {
       var User = class {
         constructor(id, name, email, role = "guest") {
           this.id = id;

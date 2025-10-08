@@ -8,10 +8,10 @@ var App = (() => {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // src/development/ts/services/userService.ts
+  // src/development/core/ts/services/userService.ts
   var UserService;
   var init_userService = __esm({
-    "src/development/ts/services/userService.ts"() {
+    "src/development/core/ts/services/userService.ts"() {
       "use strict";
       UserService = class {
         constructor() {
@@ -39,10 +39,10 @@ var App = (() => {
     }
   });
 
-  // src/development/ts/models/user.ts
+  // src/development/core/ts/models/user.ts
   var User;
   var init_user = __esm({
-    "src/development/ts/models/user.ts"() {
+    "src/development/core/ts/models/user.ts"() {
       "use strict";
       User = class {
         constructor(id, name, email, role = "guest") {
@@ -62,10 +62,10 @@ var App = (() => {
     }
   });
 
-  // src/development/ts/ui/appUI.ts
+  // src/development/core/ts/ui/appUI.ts
   var AppUI;
   var init_appUI = __esm({
-    "src/development/ts/ui/appUI.ts"() {
+    "src/development/core/ts/ui/appUI.ts"() {
       "use strict";
       init_user();
       AppUI = class {
@@ -96,9 +96,9 @@ var App = (() => {
     }
   });
 
-  // src/development/ts/main.ts
+  // src/development/core/ts/main.ts
   var require_main = __commonJS({
-    "src/development/ts/main.ts"() {
+    "src/development/core/ts/main.ts"() {
       init_userService();
       init_appUI();
       document.addEventListener("DOMContentLoaded", () => {
