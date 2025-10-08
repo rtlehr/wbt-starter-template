@@ -22,11 +22,11 @@ module.exports = function (grunt) {
       images: {
         files: [
           // jQuery UI icons
-          { expand: true, cwd: "node_modules/jquery-ui-dist", src: ["images/**"], dest: "dist/assets/images" },
+          { expand: true, cwd: "node_modules/jquery-ui-dist", src: ["images/**"], dest: "dist/core/images" },
           // your own images if any
-          { expand: true, cwd: "src", src: ["assets/images/**"], dest: "dist/assets/images" },
+          { expand: true, cwd: "src", src: ["core/images/**"], dest: "dist/core/images" },
           // (optional) static files
-          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/assets/static" } 
+          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/core/static" } 
         ]
       }
     },
@@ -34,16 +34,16 @@ module.exports = function (grunt) {
     concat: {
       js: {
         files: {
-          "dist/assets/js/app.bundle.js": [
-            "src/assets/js/app-ts.js",
-            "src/assets/js/app-js.js"
+          "dist/core/js/app.bundle.js": [
+            "src/core/js/app-ts.js",
+            "src/core/js/app-js.js"
           ]
         }
       },
       css: {
         files: {
-          "dist/assets/css/app.bundle.css": [
-            "src/assets/css/app.css"
+          "dist/core/css/app.bundle.css": [
+            "src/core/css/app.css"
           ]
         }
       }
@@ -51,33 +51,33 @@ module.exports = function (grunt) {
 
      uglify: {
       prod: {
-        files: { "dist/assets/js/app.bundle.min.js": ["dist/assets/js/app.bundle.js"] }
+        files: { "dist/core/js/app.bundle.min.js": ["dist/core/js/app.bundle.js"] }
       }
     },
 
      cssmin: {
       prod: {
         options: {
-          // ensure relative urls like "images/..." keep working from dist/assets/
+          // ensure relative urls like "images/..." keep working from dist/core/
           rebase: true,
-          rebaseTo: "dist/assets/css"
+          rebaseTo: "dist/core/css"
         },
-        files: { "dist/assets/css/app.bundle.min.css": ["dist/assets/css/app.bundle.css"] }
+        files: { "dist/core/css/app.bundle.min.css": ["dist/core/css/app.bundle.css"] }
       }
     },
 
     replace: {
       html: {
-        overwrite: true,              // must be at this level
+        overwrite: true,     
         src: ['dist/index.html'],     // file to modify
         replacements: [
           {
             from: '<!-- inject:css -->',
-            to:   '<link rel="stylesheet" href="assets/css/app.bundle.min.css">'
+            to:   '<link rel="stylesheet" href="core/css/app.bundle.min.css">'
           },
           {
             from: '<!-- inject:js -->',
-            to:   '<script src="assets/js/app.bundle.min.js"></script>'
+            to:   '<script src="core/js/app.bundle.min.js"></script>'
           },
           {
             from: /<!-- dev:css:start -->[\s\S]*?<!-- dev:css:end -->/g,
@@ -119,8 +119,8 @@ module.exports = function (grunt) {
       options: {
         livereload: true // ✅ triggers refresh
       },
-      ts:   { files: ["src/development/ts/**/*.ts"],       tasks: ["exec:ts_build"] },
-      js:   { files: ["src/development/js/**/*.js"],       tasks: ["exec:js_build"] },
+      ts:   { files: ["src/development/core/ts/**/*.ts"],       tasks: ["exec:ts_build"] },
+      js:   { files: ["src/development/core/js/**/*.js"],       tasks: ["exec:js_build"] },
       scss: { files: ["src/styles/**/*.scss"], tasks: ["exec:sass_build", "exec:postcss_build"] },
       html: { files: ["src/**/*.html"] }
     }
@@ -133,12 +133,12 @@ module.exports = function (grunt) {
 
   grunt.registerTask("prod", [
     "clean:dist",
-    // compile app assets first
+    // compile app core first
     "exec:sass_build",
     /* or "postcss" */ "exec:postcss_build",
     "exec:ts_build",
     "exec:js_build",
-    // copy base files & assets
+    // copy base files & core
     "copy:html",
     "copy:images",
     // make bundles
