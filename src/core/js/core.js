@@ -197,8 +197,9 @@ var App = (() => {
       $(() => {
         console.log("\u2705 TypeScript is running and jQuery types are working.");
         $("h1").append(' <span class="badge bg-success" style="font-size:0.6em;">TS OK</span>');
-        $("#btnTest").on("click", () => {
-          $("#dialog").dialog({ modal: true, width: 400 });
+        $("#dialog").dialog({ autoOpen: false, modal: true, width: 400 });
+        $("#btnTest").on("click", function() {
+          $("#dialog").dialog("open");
         });
       });
     }

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI Dialog Test</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+</head>
+<body>
+
+<div id="dialog" title="Basic dialog" style="display:none;">
+  <p>This is a test dialog.</p>
+</div>
+
+<button id="open">Open dialog</button>
+
+<p></p>
+
+ <button id="btnTest" class="btn btn-primary">Open jQuery UI dialog</button>
+            <div id="dialog" title="jQuery UI Dialog" style="display:none">
+              <p>This is a jQuery UI dialog test!</p>
+            </div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script>
+  $(function () {
+    $("#dialog").dialog({ autoOpen: false });
+    $("#open").on("click", function () { $("#dialog").dialog("open"); });
+  });
+
+    $(function () {
+    $("#dialog").dialog({ autoOpen: false, modal: true, width: 400  });
+    $("#btnTest").on("click", function () { $("#dialog").dialog("open"); });
+    });
+
+  //$('#btnTest').on('click', () => {
+    //$('#dialog').dialog({ modal: true, width: 400 });
+  //});
+
+    
+
+
+</script>
+</body>
+</html>
