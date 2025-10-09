@@ -4,7 +4,9 @@ module.exports = function (grunt) {
   const isProd = process.env.NODE_ENV === "production";
 
   grunt.initConfig({
-    clean: { dist: ["dist"] },
+    clean: {  dist: ["dist"],
+              dev: ["src/core", "src/custom"],
+     }, 
 
     // Run our existing npm scripts via shell
     exec: {
@@ -32,44 +34,58 @@ module.exports = function (grunt) {
     },
 
     concat: {
-      js: {
+      dev: {
         files: {
-          "dist/core/js/core.bundle.js": [
-            "src/core/js/**/*"
+          "src/core/js/core.js": [
+            "src/development/core/js/**/*.js",
+            "!src/development/core/js/experimental/**"
           ],
-          "dist/custom/js/custom.bundle.js": [
-            "src/custom/js/**/*"
+          "src/custom/js/custom.js": [
+            "src/development/custom/js/**/*.js"
           ]
         }
       },
-      css: {
+      prod: {
         files: {
-          "dist/core/css/core.bundle.css": [
-            "src/core/css/**/*"
+          "dist/core/js/core.js": [
+            "src/core/js/**/*.js", // Example: use compiled output
+            "!build/core/js/debug/**"
           ],
-          "dist/custom/css/custom.bundle.css": [
-            "src/custom/css/**/*"
+          "dist/custom/js/custom.js": [
+            "src/custom/js/**/*.js"
           ]
-          
-
+        }
+      },
+      prod_css: {
+        files: {
+          "dist/core/css/core.css": [
+            "src/core/css/**/*.css"
+          ],
+          "dist/custom/css/custom.css": [
+            "src/custom/css/**/*.css"
+          ]
         }
       }
     },
 
      uglify: {
       prod: {
-        files: { "dist/core/js/core.bundle.min.js": ["dist/core/js/core.bundle.js"] } 
+        files: {  "dist/core/js/core.min.js": ["dist/core/js/core.js"],
+                  "dist/custom/js/custom.min.js": ["dist/custom/js/custom.js"]
+         } 
       }
     },
 
-     cssmin: {
+    cssmin: {
       prod: {
         options: {
-          // ensure relative urls like "images/..." keep working from dist/core/
           rebase: true,
           rebaseTo: "dist/core/css"
         },
-        files: { "dist/core/css/core.bundle.min.css": ["dist/core/css/core.bundle.css"] }
+        files: {
+          "dist/core/css/core.min.css": ["dist/core/css/core.css"],
+          "dist/custom/css/custom.min.css": ["dist/custom/css/custom.css"]
+        }
       }
     },
 
@@ -80,11 +96,11 @@ module.exports = function (grunt) {
         replacements: [
           {
             from: '<!-- inject:css -->',
-            to:   '<link rel="stylesheet" href="core/css/core.bundle.min.css"><link rel="stylesheet" href="custom/css/custom.bundle.min.css">'
+            to:   '<link rel="stylesheet" href="core/css/core.min.css">\n\n<link rel="stylesheet" href="custom/css/custom.min.css">'
           },
           {
             from: '<!-- inject:js -->',
-            to:   '<script src="core/js/core.bundle.min.js"></script><script src="custom/js/custom.bundle.min.js"></script>'
+            to:   '<script src="core/js/core.min.js"></script>\n\n<script src="custom/js/custom.min.js"></script>'
           },
           {
             from: /<!-- dev:css:start -->[\s\S]*?<!-- dev:css:end -->/g,
@@ -140,22 +156,29 @@ module.exports = function (grunt) {
 
   grunt.registerTask("prod", [
     "clean:dist",
-    // compile app core first
     "exec:sass_build",
-    /* or "postcss" */ "exec:postcss_build",
+    "exec:postcss_build",
     "exec:ts_build",
     "exec:js_build",
-    // copy base files & core
     "copy:html",
     "copy:images",
-    // make bundles
-    "concat:js",
-    "concat:css",
-    // minify
+    "concat:prod",
+    "concat:prod_css",
     "uglify:prod",
     "cssmin:prod",
-    // rewrite dist/index.html to use the minified bundles
     "replace:html"
   ]);
   
+  grunt.registerTask("dev", [
+    "clean:dev",
+    "build",
+    "exec:sass_build",
+    "exec:postcss_build",
+    "exec:ts_build",
+    "exec:js_build",
+    "concat:dev",
+    "connect:server",
+    "watch"
+  ]);
+
 };

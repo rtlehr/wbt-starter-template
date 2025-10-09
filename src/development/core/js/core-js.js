@@ -5,9 +5,9 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // src/development/js/app.js
-  var require_app = __commonJS({
-    "src/development/js/app.js"() {
+  // src/development/core/js/core.js
+  var require_core = __commonJS({
+    "src/development/core/js/core.js"() {
       var User = class {
         constructor(id, name, email, role = "guest") {
           this.id = id;
@@ -52,8 +52,8 @@
         }
         init() {
           console.log("\u{1F680} App initialized.");
-          const alice = new User(1, "Alice Johnson", "alice@example.com", "admin");
-          const bob = new User(2, "Bob Smith", "bob@example.com");
+          const alice = new User(1, "Alice Johnson II", "alice@example.com", "admin");
+          const bob = new User(2, "Ralph Cannonball III", "bob@example.com");
           this.service.addUser(alice);
           this.service.addUser(bob);
           $("#promote-btn").on("click", () => {
@@ -83,5 +83,5 @@
       });
     }
   });
-  require_app();
+  require_core();
 })();
