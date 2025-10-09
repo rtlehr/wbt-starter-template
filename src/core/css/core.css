@@ -7,97 +7,97 @@ html, body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: blue;
+  color: green;
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
 
 a {
-  color: blue;
+  color: green;
   text-decoration: none;
 }
 a:hover {
-  color: #0000cc;
+  color: #004d00;
 }
 
 .color-primary {
-  background-color: blue;
+  background-color: green;
 }
 
 .color1 {
-  background-color: rgb(216.75, 216.75, 255);
+  background-color: rgb(216.75, 235.95, 216.75);
 }
 
 .color2 {
-  background-color: #9999ff;
+  background-color: rgb(153, 204.2, 153);
 }
 
 .color3 {
-  background-color: rgb(64, 64, 191.5);
+  background-color: #408040;
 }
 
 .color4 {
-  background-color: rgb(0, 0, 127.5);
+  background-color: #004000;
 }
 
 .color-mono-light {
-  background-color: #6666ff;
+  background-color: #00e600;
 }
 
 .color-mono-dark {
-  background-color: rgb(0, 0, 76.5);
+  background-color: black;
 }
 
 .color-complement1 {
-  background-color: yellow;
+  background-color: purple;
 }
 
 .color-complement2 {
-  background-color: rgb(255, 127.5, 0);
+  background-color: #400080;
 }
 
 .color-complement3 {
-  background-color: rgb(127.5, 255, 0);
+  background-color: #800040;
 }
 
 .color-analogous1 {
-  background-color: rgb(0, 127.5, 255);
+  background-color: #408000;
 }
 
 .color-analogous2 {
-  background-color: rgb(127.5, 0, 255);
+  background-color: #008040;
 }
 
 .color-triadic1 {
-  background-color: red;
+  background-color: navy;
 }
 
 .color-triadic2 {
-  background-color: lime;
+  background-color: maroon;
 }
 
 .color-tetradic1 {
-  background-color: fuchsia;
+  background-color: teal;
 }
 
 .color-tetradic2 {
-  background-color: aqua;
+  background-color: olive;
 }
 
 .color-tetradic3 {
-  background-color: lime;
+  background-color: maroon;
 }
 
 .color-cautioncolor {
-  background-color: #cc0033;
+  background-color: rgb(204, 25.6, 0);
 }
 
 .color-warningcolor {
-  background-color: rgb(242.25, 242.25, 12.75);
+  background-color: rgb(242.25, 248.65, 0);
 }
 
 .color-safecolor {
-  background-color: rgb(0, 102.4, 51);
+  background-color: green;
 }
 
 .color-bodyTextColor {
@@ -117,7 +117,7 @@ a:hover {
 }
 
 .color-hightlightTextColor {
-  background-color: rgb(127.5, 255, 0);
+  background-color: #800040;
 }
 
 .container {
@@ -146,12 +146,12 @@ a:hover {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  background: blue;
+  background: green;
   color: white;
 }
 
 .button-primary {
-  background: blue;
+  background: green;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -160,7 +160,7 @@ a:hover {
   transition: background 0.2s ease;
 }
 .button-primary:hover {
-  background: #0000cc;
+  background: #004d00;
 }
 @media (max-width: 767px) {
   .button-primary {
@@ -169,7 +169,7 @@ a:hover {
 }
 
 .button-responsive {
-  background: blue;
+  background: green;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -178,7 +178,7 @@ a:hover {
   transition: background 0.2s ease;
 }
 .button-responsive:hover {
-  background: #0000cc;
+  background: #004d00;
 }
 @media (min-width: 1200px) {
   .button-responsive {
