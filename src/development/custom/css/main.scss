@@ -1,0 +1,51 @@
+// Basic page scaffolding
+.site {
+  // let the footer sit below content
+  min-height: 100vh;
+  position: relative;
+  padding-top: 60px; // fallback; header-offset adjusts precisely
+}
+
+.header-offset {
+  // height matches the fixed navbar (Bootstrap default ~50px)
+  height: 50px;
+
+  @media (min-width: 768px) {
+    height: 50px; // keep consistent for sm+
+  }
+}
+
+.site-header {
+  .navbar {
+    border: 0;
+    box-shadow: 0 1px 0 rgba(0,0,0,.05);
+  }
+  .navbar-brand .brand-mark {
+    margin-right: .25em;
+  }
+}
+
+.site-main {
+  padding-bottom: 80px; // leave room for footer
+}
+
+.site-footer {
+  background: #f7f7f7;
+  border-top: 1px solid #eee;
+  padding: 20px 0;
+
+  .footer-link {
+    text-decoration: underline;
+  }
+
+  .vcenter {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+}
+
+// Utilities
+.mb-4 { margin-bottom: 24px; }
