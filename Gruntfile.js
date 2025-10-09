@@ -144,7 +144,7 @@ module.exports = function (grunt) {
       },
       ts:   { files: ["src/development/core/ts/**/*.ts"],       tasks: ["exec:ts_build"] },
       js:   { files: ["src/development/core/js/**/*.js"],       tasks: ["exec:js_build"] },
-      scss: { files: ["src/styles/**/*.scss"], tasks: ["exec:sass_build", "exec:postcss_build"] },
+      scss: { files: ["src/development/core/css/**/*.scss"],    tasks: ["exec:sass_build", "exec:postcss_build"] },
       html: { files: ["src/**/*.html"] }
     }
   });
