@@ -5,12 +5,12 @@
 @use "sass:color";
 
 // Imports
-@import 'variables';
-@import 'mixins';
-@import 'base';
-@import 'layout';
-@import 'components';
-@import 'breakpoints';
+@import 'utils/variables';
+@import 'utils/mixins';
+@import 'utils/base';
+@import 'utils/layout';
+@import 'utils/components';
+@import 'utils/breakpoints';
 
 
 $brand: #0d6efd;
