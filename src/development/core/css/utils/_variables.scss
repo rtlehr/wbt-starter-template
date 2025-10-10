@@ -53,9 +53,9 @@ $headertextcolor: black; // Change header text color
 $font-family-sans-serif: 'Roboto', sans-serif; // Change default font 
 
 // Device sizes
-$break-desktop: 1200px;
-$break-tablet: 768px;
-$break-phone: 480px;
+$break-desktop: 992px;   // Bootstrap's lg
+$break-tablet: 768px;    // Bootstrap's md
+$break-phone: 576px;     // Bootstrap's sm
 
 // Spacing & defaults
 $padding-base: 1rem;
