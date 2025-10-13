@@ -7,6 +7,13 @@ TypeScript + Sass + Grunt + esbuild
 - `npm run prod` � production build to /dist
 - `npm run preview`  build + serve /dist on http://127.0.0.1:8082/
 
+# Reset files to the last checkin
+
+```
+git reset --hard HEAD
+git clean -fd   # optional: removes untracked files/folders
+```
+
 # JS App Starter
 
 A modern, lightweight **JavaScript + TypeScript starter framework** for building front-end web applications.  
