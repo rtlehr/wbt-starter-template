@@ -56,7 +56,7 @@ module.exports = function (grunt) {
         }
       },
 
-      // CSS to dist (compiled CSS lives under src/core/css and src/custom/css)
+      // CSS to dist (compiled CSS lives under src/core/css and src/custom/css)  
       prod_css: {
         files: {
           "dist/core/css/core.css": ["src/core/css/**/*.css"],

@@ -9,9 +9,9 @@
     "sass:watch": "sass --watch src/development/core/css/main.scss src/core/css/core.css",
     "lint": "eslint src/development/core/js --ext .js",
     "format": "prettier -w .",
-    "dev": "cross-env NODE_ENV=development/core grunt dev",
+    "dev": "cross-env NODE_ENV=development grunt dev",
     "build": "cross-env NODE_ENV=production grunt build",
-    "postcss:build": "postcss src/core/css/core.css --use autoprefixer --no-map -o src/core/css/core.css",
+    "postcss:build": "postcss src/core/css/core.css --use autoprefixer --no-map -o src/core/css/core.css && postcss src/custom/css/custom.css --use autoprefixer --no-map -o src/custom/css/custom.css",
     "prod": "cross-env NODE_ENV=production grunt prod",
     "preview": "cross-env NODE_ENV=production grunt preview"
   },
