@@ -1,0 +1,1 @@
+alert("message from customTest.js III");

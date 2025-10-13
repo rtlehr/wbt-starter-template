@@ -7,17 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass:build": "sass src/development/core/css/main.scss src/core/css/core.css && sass src/development/custom/css/main.scss src/custom/css/custom.css",
     "sass:watch": "sass --watch src/development/core/css/main.scss src/core/css/core.css",
-    "ts:build": "tsc -p .",
-    "ts:watch": "tsc -p . -w",
-    "lint": "eslint src/ts --ext .ts",
+    "lint": "eslint src/development/core/js --ext .js",
     "format": "prettier -w .",
     "dev": "cross-env NODE_ENV=development/core grunt dev",
     "build": "cross-env NODE_ENV=production grunt build",
     "postcss:build": "postcss src/core/css/core.css --use autoprefixer --no-map -o src/core/css/core.css",
     "prod": "cross-env NODE_ENV=production grunt prod",
-    "preview": "cross-env NODE_ENV=production grunt preview",
-    "ts:bundle": "esbuild src/development/core/ts/main.ts --bundle --platform=browser --target=es2019 --outfile=src/development/core/js/core-ts.js --format=iife --global-name=App",
-    "js:bundle": "esbuild src/development/core/js/core.js --bundle --platform=browser --target=es2019 --outfile=src/development/core/js/core-js.js --format=iife"
+    "preview": "cross-env NODE_ENV=production grunt preview"
   },
   "keywords": [],
   "author": "",
@@ -31,10 +27,6 @@
     "jquery-ui-dist": "^1.13.3"
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.33",
-    "@types/jqueryui": "^1.12.24",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
     "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.3",
     "esbuild": "^0.25.10",
@@ -54,7 +46,6 @@
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
     "prettier": "^3.3.3",
-    "sass": "^1.93.2",
-    "typescript": "^5.9.3"
+    "sass": "^1.93.2"
   }
 }

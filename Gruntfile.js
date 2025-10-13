@@ -1,87 +1,82 @@
+// Gruntfile.js
 module.exports = function (grunt) {
   require("load-grunt-tasks")(grunt);
 
   const isProd = process.env.NODE_ENV === "production";
 
   grunt.initConfig({
-    clean: {  dist: ["dist"],
-              dev: ["src/core", "src/custom"],
-     }, 
-
-    // Run our existing npm scripts via shell
-    exec: {
-      ts_build: "npm run ts:bundle",
-      js_build: "npm run js:bundle",
-      sass_build: "npm run sass:build",
-      postcss_build: "npm run postcss:build"
+    clean: {
+      dist: ["dist"],
+      dev: ["src/core", "src/custom", "build"] // clear generated assets + intermediates
     },
 
+    // Run npm scripts
+    exec: {
+      sass_build: "npm run sass:build",      // scss → src/core/css & src/custom/css
+      postcss_build: "npm run postcss:build" // autoprefix src/core/css/core.css
+    },
 
     copy: {
-      html: {
-        files: [{ expand: true, cwd: "src", src: ["index.html"], dest: "dist" }]
-      },
+      html: { files: [{ expand: true, cwd: "src", src: ["index.html"], dest: "dist" }] },
       images: {
         files: [
-          // jQuery UI icons
           { expand: true, cwd: "node_modules/jquery-ui-dist", src: ["images/**"], dest: "dist/core/images" },
-          // your own images if any
           { expand: true, cwd: "src", src: ["core/images/**"], dest: "dist/core/images" },
-          // (optional) static files
-          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/core/static" } 
+          { expand: true, cwd: "static", src: ["**/*"], dest: "dist/core/static" }
         ]
       }
     },
 
+    /**
+     * DEV concat: assemble preview files (not watched) from quarantined bundle + custom JS
+     */
     concat: {
       dev: {
         files: {
           "src/core/js/core.js": [
-            "src/development/core/js/**/*.js",
-            "!src/development/core/js/experimental/**"
+            "src/development/core/js/**/*.js" // esbuild output
           ],
           "src/custom/js/custom.js": [
             "src/development/custom/js/**/*.js"
           ]
         }
       },
+
+      /**
+       * PROD concat: ship the same bundle + custom JS into dist
+       */
       prod: {
         files: {
           "dist/core/js/core.js": [
-            "src/core/js/**/*.js", // Example: use compiled output
-            "!build/core/js/debug/**"
+            "src/core/js/**/*.js"
           ],
           "dist/custom/js/custom.js": [
             "src/custom/js/**/*.js"
           ]
         }
       },
+
+      // CSS to dist (compiled CSS lives under src/core/css and src/custom/css)
       prod_css: {
         files: {
-          "dist/core/css/core.css": [
-            "src/core/css/**/*.css"
-          ],
-          "dist/custom/css/custom.css": [
-            "src/custom/css/**/*.css"
-          ]
+          "dist/core/css/core.css": ["src/core/css/**/*.css"],
+          "dist/custom/css/custom.css": ["src/custom/css/**/*.css"]
         }
       }
     },
 
-     uglify: {
+    uglify: {
       prod: {
-        files: {  "dist/core/js/core.min.js": ["dist/core/js/core.js"],
-                  "dist/custom/js/custom.min.js": ["dist/custom/js/custom.js"]
-         } 
+        files: {
+          "dist/core/js/core.min.js": ["dist/core/js/core.js"],
+          "dist/custom/js/custom.min.js": ["dist/custom/js/custom.js"]
+        }
       }
     },
 
     cssmin: {
       prod: {
-        options: {
-          rebase: true,
-          rebaseTo: "dist/core/css"
-        },
+        options: { rebase: true, rebaseTo: "dist/core/css" },
         files: {
           "dist/core/css/core.min.css": ["dist/core/css/core.css"],
           "dist/custom/css/custom.min.css": ["dist/custom/css/custom.css"]
@@ -91,31 +86,18 @@ module.exports = function (grunt) {
 
     replace: {
       html: {
-        overwrite: true,     
-        src: ['dist/index.html'],     // file to modify
+        overwrite: true,
+        src: ["dist/index.html"],
         replacements: [
-          {
-            from: '<!-- inject:css -->',
-            to:   '<link rel="stylesheet" href="core/css/core.min.css">\n\n<link rel="stylesheet" href="custom/css/custom.min.css">'
-          },
-          {
-            from: '<!-- inject:js -->',
-            to:   '<script src="core/js/core.min.js"></script>\n\n<script src="custom/js/custom.min.js"></script>'
-          },
-          {
-            from: /<!-- dev:css:start -->[\s\S]*?<!-- dev:css:end -->/g,
-            to: ''
-          },
-          {
-            from: /<!-- dev:js:start -->[\s\S]*?<!-- dev:js:end -->/g,
-            to: ''
-          }
+          { from: "<!-- inject:css -->", to: '<link rel="stylesheet" href="core/css/core.min.css">\n\n<link rel="stylesheet" href="custom/css/custom.min.css">' },
+          { from: "<!-- inject:js -->",  to: '<script src="core/js/core.min.js"></script>\n\n<script src="custom/js/custom.min.js"></script>' },
+          { from: /<!-- dev:css:start -->[\s\S]*?<!-- dev:css:end -->/g, to: "" },
+          { from: /<!-- dev:js:start -->[\s\S]*?<!-- dev:js:end -->/g, to: "" }
         ]
       }
     },
 
-
-    // Serve the project root so ../node_modules in src/index.html keeps working
+    // Dev servers
     connect: {
       server: {
         options: {
@@ -126,7 +108,6 @@ module.exports = function (grunt) {
           livereload: 35729
         }
       },
-      // ✅ NEW: prod preview server
       prod: {
         options: {
           port: 8082,
@@ -138,28 +119,46 @@ module.exports = function (grunt) {
       }
     },
 
+    /**
+     * WATCH only authoring sources (never watch build/, src/core/, src/custom/, or dist/)
+     */
     watch: {
-      options: {
-        livereload: true // ✅ triggers refresh
+      options: { livereload: true, debounceDelay: 300 },
+      js: {
+        files: ["src/development/core/js/**/*.js", "src/development/custom/js/**/*.js"],
+        tasks: ["concat:dev"]
       },
-      ts:   { files: ["src/development/core/ts/**/*.ts"],       tasks: ["exec:ts_build"] },
-      js:   { files: ["src/development/core/js/**/*.js"],       tasks: ["exec:js_build"] },
-      scss: { files: ["src/development/core/css/**/*.scss"],    tasks: ["exec:sass_build", "exec:postcss_build"] },
+      scss: {
+        files: [
+          "src/development/core/css/**/*.scss",
+          "src/development/custom/css/**/*.scss"
+        ],
+        tasks: ["exec:sass_build", "exec:postcss_build"]
+      },
       html: { files: ["src/**/*.html"] }
     }
   });
 
-  grunt.registerTask("build", ["exec:sass_build", "exec:postcss_build", "exec:ts_build"]);
+  // Pipelines
+  grunt.registerTask("build", [
+    "exec:sass_build",
+    "exec:postcss_build"
+  ]);
+
+  grunt.registerTask("dev", [
+    "clean:dev",
+    "build",
+    "concat:dev",
+    "connect:server",
+    "watch"
+  ]);
+
   grunt.registerTask("serve", ["connect:server"]);
-  grunt.registerTask("dev", ["build", "connect:server", "watch"]);
-  grunt.registerTask("preview", ["prod", "connect:prod"]);
 
   grunt.registerTask("prod", [
     "clean:dist",
     "exec:sass_build",
     "exec:postcss_build",
-    "exec:ts_build",
-    "exec:js_build",
     "copy:html",
     "copy:images",
     "concat:prod",
@@ -168,17 +167,6 @@ module.exports = function (grunt) {
     "cssmin:prod",
     "replace:html"
   ]);
-  
-  grunt.registerTask("dev", [
-    "clean:dev",
-    "build",
-    "exec:sass_build",
-    "exec:postcss_build",
-    "exec:ts_build",
-    "exec:js_build",
-    "concat:dev",
-    "connect:server",
-    "watch"
-  ]);
 
+  grunt.registerTask("preview", ["prod", "connect:prod"]);
 };
