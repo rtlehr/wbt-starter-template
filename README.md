@@ -17,8 +17,13 @@ git clean -fd   # optional: removes untracked files/folders
 # Duplicate this repository
 
 ```
-https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository
-# JS App Starter
+# 1) Make a bare mirror of the source repo (includes all refs/tags/branches)
+git clone --mirror https://github.com/rtlehr/js-app-starter.git
+cd js-app-starter.git
+
+# 2) Push everything to the new empty repo
+git remote set-url --push origin https://github.com/rtlehr/NEW-REPOSITORY-NAME.git
+git push --mirror
 ```
 
 A modern, lightweight **JavaScript + TypeScript starter framework** for building front-end web applications.  
