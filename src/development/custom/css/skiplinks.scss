@@ -1,0 +1,37 @@
+/* Skip Links */
+.skip-links {
+  position: fixed;
+  top: .5rem;
+  left: .5rem;
+  z-index: 10000; /* above fixed header */
+  transform: translateY(-200%); /* hide off-screen until focused */
+  transition: transform .15s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+
+  &:focus-within {
+    transform: translateY(0);
+  }
+}
+
+.skip-link {
+  background: #000;           /* high contrast */
+  color: #fff;
+  text-decoration: none;
+  padding: .5rem .75rem;
+  border-radius: .25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  outline: none;
+
+  &:focus,
+  &:active {
+    outline: 3px solid #fff;  /* visible focus ring on black bg */
+    outline-offset: 2px;
+  }
+}
+
+/* Optional: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .skip-links { transition: none; }
+}

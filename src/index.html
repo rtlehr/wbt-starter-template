@@ -19,6 +19,16 @@
   </head>
 
   <body class="site">
+
+    <!-- Skip Links (appears on keyboard focus) -->
+    <nav class="skip-links" aria-label="Skip links">
+      <a class="skip-link" href="#main">Skip to main content</a>
+      <a class="skip-link" href="#mainNav">Skip to navigation</a>
+      <a class="skip-link" href="#footer">Skip to footer</a>
+      <a class="skip-link" href="#courseWindow">Skip to course window</a>
+    </nav>
+
+
     <!-- =========================
          Header / Navigation
     ========================== -->
@@ -78,7 +88,7 @@
     <!-- =========================
          Main content
     ========================== -->
-    <main id="home" class="site-main" role="main">
+    <main id="main" class="site-main" role="main" tabindex="-1">
 
       <section class="container">
 
@@ -89,9 +99,10 @@
       </div>
 
 
-        <div id="courseWindow">
+        <div id="courseWindow" tabindex="-1">
           Course Window
         </div>
+
 
       <div id="coursePageNavigation" class="nextButton" aria-label="Previous Page">
         <svg viewBox="0 0 24 24" class="arrow-icon" xmlns="http://www.w3.org/2000/svg">
@@ -106,7 +117,7 @@
     <!-- =========================
          Footer
     ========================== -->
-    <footer class="site-footer" role="contentinfo">
+    <footer id="footer" class="site-footer" role="contentinfo" tabindex="-1">
       <div class="container">
         <div class="row vcenter">
           <div class="col-sm-6">
