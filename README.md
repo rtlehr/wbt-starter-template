@@ -14,7 +14,12 @@ git reset --hard HEAD
 git clean -fd   # optional: removes untracked files/folders
 ```
 
+# Duplicate this repository
+
+```
+https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository
 # JS App Starter
+```
 
 A modern, lightweight **JavaScript + TypeScript starter framework** for building front-end web applications.  
 This starter kit is designed for developers who want a clean, modular structure for scalable apps — using **ES modules**, **TypeScript**, and a clear separation between **models**, **services**, and **UI logic**.
