@@ -2,6 +2,33 @@
 
 TypeScript + Sass + Grunt + esbuild
 
+---
+
+## ⚡ Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/rtlehr/wbt-starter-template.git
+cd wbt-starter-template
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Compile TypeScript
+```bash
+npx tsc
+```
+
+### 4. Run your app
+```bash
+npx lite-server
+```
+
+---
+
 ## Scripts
 - `npm run dev` � dev server (http://127.0.0.1:8081/src/index.html)
 - `npm run prod` � production build to /dist
@@ -63,33 +90,6 @@ js-app-starter/
 ├── README.md                    # Project documentation
 └── (Optional) Gruntfile.js or build config files
 ```
-
----
-
-## ⚡ Getting Started
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/rtlehr/wbt-starter-template.git
-cd wbt-starter-template
-```
-
-### 2. Install dependencies
-```bash
-npm install
-```
-
-### 3. Compile TypeScript
-```bash
-npx tsc
-```
-
-### 4. Run your app
-```bash
-npx lite-server
-```
-
----
 
 ## 🧠 How It Works
 
