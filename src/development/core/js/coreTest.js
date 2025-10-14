@@ -1,1 +1,0 @@
-alert("message from coreTest.js II");

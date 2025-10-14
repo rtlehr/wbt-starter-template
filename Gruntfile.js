@@ -31,6 +31,12 @@ module.exports = function (grunt) {
           { expand: true, cwd: "src/core/data",   src: ["**/*.json"], dest: "dist/core/data" },
           { expand: true, cwd: "src/custom/data", src: ["**/*.json"], dest: "dist/core/data" }
         ]
+      },
+      cssToProd: {
+        files: [
+          { expand: true, cwd: "src/core/css",   src: ["**/*.css"], dest: "dist/core/css" },
+          { expand: true, cwd: "src/custom/css", src: ["**/*.css"], dest: "dist/custom/css" }
+        ]
       }
     },
 
@@ -55,19 +61,11 @@ module.exports = function (grunt) {
       prod: {
         files: {
           "dist/core/js/core.js": [
-            "src/core/js/**/*.js"
+            "src/development/core/js/**/*.js"
           ],
           "dist/custom/js/custom.js": [
-            "src/custom/js/**/*.js"
+            "src/development/custom/js/**/*.js"
           ]
-        }
-      },
-
-      // CSS to dist (compiled CSS lives under src/core/css and src/custom/css)  
-      prod_css: {
-        files: {
-          "dist/core/css/core.css": ["src/core/css/**/*.css"],
-          "dist/custom/css/custom.css": ["src/custom/css/**/*.css"]
         }
       }
     },
@@ -169,8 +167,8 @@ module.exports = function (grunt) {
     "copy:html",
     "copy:images",
     "copy:data",
+    "copy:cssToProd",
     "concat:prod",
-    "concat:prod_css",
     "uglify:prod",
     "cssmin:prod",
     "replace:html"
