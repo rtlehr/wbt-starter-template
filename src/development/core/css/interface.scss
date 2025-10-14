@@ -1,0 +1,82 @@
+/* ===== Layout variables ===== */
+:root {
+  /* Default Bootstrap 3 navbar-fixed-top height is ~50px */
+  --header-h: 50px;
+}
+
+/* ===== App shell: sticky footer with fixed header ===== */
+/* The <body> has class="site" in your HTML */
+.site {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+/* Fixed header (already fixed via Bootstrap class on <nav>) */
+.site-header .navbar {
+  border: 0;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+}
+.site-header .navbar-brand .brand-mark {
+  margin-right: 0.25em;
+}
+
+/* We are NOT using a separate spacer div. Hide it if present in HTML. */
+.header-offset {
+  display: none !important;
+  height: 0 !important;
+}
+
+/* Main fills the viewport height minus the fixed header.
+   Footer sits after main and stays at the bottom because of flex layout. */
+.site-main {
+  flex: 1;                /* expands to fill all space between header and footer */
+  margin-top: var(--header-h);
+  display: flex;          /* keeps your centered layout for courseWindow */
+}
+
+/* Make ONLY this container full-width and full-height, without touching Bootstrap globally */
+.site-main > .container {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+
+  /* center #courseWindow both vertically & horizontally */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* fill the available height between header and footer */
+  min-height: 100%;
+}
+
+/* Footer styling and sticky behavior (flex item after main) */
+.site-footer {
+  flex-shrink: 0;         /* footer stays visible and never collapses */
+
+  @include respond-phone {
+    display: none
+  }
+
+}
+.site-footer .footer-link {
+  text-decoration: underline;
+}
+.site-footer .vcenter {
+  display: flex;
+  align-items: center;
+}
+
+/* Minor responsive type scale (kept because headings/body appear in your HTML) */
+@media (min-width: 992px) {
+  body { font-size: 16px; }
+}
+@media (max-width: 991px) and (min-width: 768px) {
+  body { font-size: 15px; }
+}
+@media (max-width: 767px) {
+  body { font-size: 14px; }
+  h1 { font-size: 1.5rem; }
+}

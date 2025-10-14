@@ -19,95 +19,6 @@ a:hover {
   color: #0a58ca;
 }
 
-/* ===== Layout variables ===== */
-:root {
-  /* Default Bootstrap 3 navbar-fixed-top height is ~50px */
-  --header-h: 50px;
-}
-
-/* ===== App shell: sticky footer with fixed header ===== */
-/* The <body> has class="site" in your HTML */
-.site {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  /* Header is fixed, so the document needs a top offset to avoid overlap */
-  margin: 0;
-}
-
-/* Fixed header (already fixed via Bootstrap class on <nav>) */
-.site-header .navbar {
-  border: 0;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
-}
-.site-header .navbar-brand .brand-mark {
-  margin-right: 0.25em;
-}
-
-/* We are NOT using a separate spacer div. Hide it if present in HTML. */
-.header-offset {
-  display: none !important;
-  height: 0 !important;
-}
-
-/* Main fills the viewport height minus the fixed header.
-   Footer sits after main and stays at the bottom because of flex layout. */
-.site-main {
-  /* create room under the fixed header so content starts below it */
-  margin-top: var(--header-h);
-
-  /* ensure the main area occupies the remaining viewport height */
-  flex: 1 0 auto;
-  min-height: calc(100vh - var(--header-h) - 80px); /* subtract footer height */
-
-  /* allow the child section to stretch and center its content */
-  display: flex;
-  padding: 0; /* no extra padding so we can truly fill edge-to-edge */
-}
-
-/* Make ONLY this container full-width and full-height, without touching Bootstrap globally */
-.site-main > .container {
-  width: 100%;
-  max-width: none;
-  padding: 0;
-  margin: 0;
-
-  /* center #courseWindow both vertically & horizontally */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* fill the available height between header and footer */
-  min-height: 100%;
-}
-
-/* Footer styling and sticky behavior (flex item after main) */
-.site-footer {
-  background: #f7f7f7;
-  border-top: 1px solid #eee;
-  padding: 20px 0;
-  flex: 0 0 auto; /* explicit so it doesn’t try to grow/shrink */
-}
-.site-footer .footer-link {
-  text-decoration: underline;
-}
-.site-footer .vcenter {
-  display: flex;
-  align-items: center;
-}
-
-/* Minor responsive type scale (kept because headings/body appear in your HTML) */
-@media (min-width: 992px) {
-  body { font-size: 16px; }
-}
-@media (max-width: 991px) and (min-width: 768px) {
-  body { font-size: 15px; }
-}
-@media (max-width: 767px) {
-  body { font-size: 14px; }
-  h1 { font-size: 1.5rem; }
-}
-
 /* Optional: small visual for the demo element (safe to remove) */
 #courseWindow {
   padding: 16px;
@@ -122,12 +33,48 @@ a:hover {
   @include respond-tablet {}
 
   @include respond-phone {
-    height: 100%;
+    height: 765px;
     width: 100%;
     margin: 10px;
     padding: 10px;
-    margin-top: 31px;
     overflow: auto;
   }
 
+}
+
+/* Previuos and next page buttons*/
+
+#coursePageNavigation {
+  width: 80px;
+  height: 80px;
+  border: 3px solid $brand-color; /* primary blue border */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: $brand-color;
+  background: $color1;
+}
+
+#coursePageNavigation.previousButton {
+  position: relative;
+  left: 45px; 
+}
+
+#coursePageNavigation.nextButton {
+  position: relative;
+  left: -43px; 
+}
+
+#coursePageNavigation:hover {
+  background: $brand-color;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+#coursePageNavigation .arrow-icon {
+  width: 40px;
+  height: 40px;
 }
