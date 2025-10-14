@@ -1,4 +1,4 @@
-# JS App Starter
+# wbt-starter-template
 
 TypeScript + Sass + Grunt + esbuild
 
@@ -70,8 +70,8 @@ js-app-starter/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/rtlehr/js-app-starter.git
-cd js-app-starter
+git clone https://github.com/rtlehr/wbt-starter-template.git
+cd wbt-starter-template
 ```
 
 ### 2. Install dependencies
