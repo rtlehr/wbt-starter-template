@@ -12,23 +12,8 @@
 @import 'utils/components';
 @import 'utils/breakpoints';
 
-
 $brand: #0d6efd;
+/* ===== Base (leaned down to only what's used) ===== */
 
-body {
-  font-family: system-ui, 'Segoe UI', Arial, sans-serif;
-  background: #f8f9fa;
-}
 
-h1 {
-  color: $brand;
-  margin: 1rem 0;
-}
 
-#btnTest {
-  border-width: 2px;
-  border-color: color.adjust($brand, $lightness: -10%);
-  &:hover {
-    transform: translateY(-1px);
-  }
-}
