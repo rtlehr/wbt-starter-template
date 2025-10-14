@@ -7,7 +7,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     clean: {
       dist: ["dist"],
-      dev: ["src/core", "src/custom", "build"] // clear generated assets + intermediates
+      dev: ["src/core/css","src/core/js", "src/custom/css", "src/custom/js"] // clear generated assets + intermediates
     },
 
     // Run npm scripts
@@ -22,7 +22,14 @@ module.exports = function (grunt) {
         files: [
           { expand: true, cwd: "node_modules/jquery-ui-dist", src: ["images/**"], dest: "dist/core/images" },
           { expand: true, cwd: "src", src: ["core/images/**"], dest: "dist/core/images" },
+          { expand: true, cwd: "src", src: ["custom/images/**"], dest: "dist/custom/images" },
           { expand: true, cwd: "static", src: ["**/*"], dest: "dist/core/static" }
+        ]
+      },
+      data: {
+        files: [
+          { expand: true, cwd: "src/core/data",   src: ["**/*.json"], dest: "dist/core/data" },
+          { expand: true, cwd: "src/custom/data", src: ["**/*.json"], dest: "dist/core/data" }
         ]
       }
     },
@@ -161,6 +168,7 @@ module.exports = function (grunt) {
     "exec:postcss_build",
     "copy:html",
     "copy:images",
+    "copy:data",
     "concat:prod",
     "concat:prod_css",
     "uglify:prod",
