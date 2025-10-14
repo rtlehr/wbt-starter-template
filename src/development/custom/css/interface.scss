@@ -43,8 +43,17 @@ a:hover {
 }
 
 /* Previuos and next page buttons*/
+#previousButton {
+  position: relative;
+  left: 45px; 
+}
 
-#coursePageNavigation {
+#nextButton {
+  position: relative;
+  left: -43px; 
+}
+
+.coursePageNavigation {
   width: 80px;
   height: 80px;
   border: 3px solid $brand-color; /* primary blue border */
@@ -58,23 +67,13 @@ a:hover {
   background: $color1;
 }
 
-#coursePageNavigation.previousButton {
-  position: relative;
-  left: 45px; 
-}
-
-#coursePageNavigation.nextButton {
-  position: relative;
-  left: -43px; 
-}
-
-#coursePageNavigation:hover {
+.coursePageNavigation:hover {
   background: $brand-color;
   color: #fff;
   transform: scale(1.05);
 }
 
-#coursePageNavigation .arrow-icon {
+.coursePageNavigation .arrow-icon {
   width: 40px;
   height: 40px;
 }
