@@ -37,22 +37,6 @@ class Navigation {
     loadPage(mod, page, direction = 1)
     {
 
-        let newPos = 0;
-
-        if(direction > 0)
-        {
-            $("#nextPage").html("Module: " + mod + " Page: " + page);
-
-            newPos = this.animateLeft - this.animateWidth;
-
-        }
-        else
-        {
-            $("#previousPage").html("Module: " + mod + " Page: " + page);
-
-            newPos = this.animateLeft + this.animateWidth;
-        }
-
         let selector = (direction > 0) ? $('#nextPage') : $('#previousPage');
         let url = "content/mod" + mod + "/page" + page + ".html";
 
@@ -66,28 +50,22 @@ class Navigation {
         
         let methodName = "Lesson1Init"; // Example method name based on loaded content
 
-        console.log("Checking for method " + (typeof window[methodName]));
-
         if (typeof window[methodName] === 'function') {
-            console.log(`Calling method '${methodName}'`);
             window[methodName]();          // or: this[methodName].apply(this, args)
         }
 
-        //console.warn(`No method '${methodName}' on this`);
-
-        this.animatePage(newPos, direction);
+        this.animatePage();
 
         });
 
-
-        //this.animatePage(newPos, direction);
-
     }
 
-    animatePage(newPos, direction)
+    animatePage()
     {
+        let newPos = this.animateLeft + (-direction * this.animateWidth);
+
         const $row = $('#wbtContentRow');
-        const $loadDiv = (direction > 0) ? $('#nextPage') : $('#previousPage');
+        const $loadDiv = (Math.round(newPos) < 0) ? $('#nextPage') : $('#previousPage');
         const origLeft = this.animateLeft; // capture once
 
         $row.stop(true).animate({ left: newPos }, 800, function () {
