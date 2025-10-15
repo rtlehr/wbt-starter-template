@@ -54,13 +54,13 @@ class Navigation {
             window[methodName]();          // or: this[methodName].apply(this, args)
         }
 
-        this.animatePage();
+        this.animatePage(direction);
 
         });
 
     }
 
-    animatePage()
+    animatePage(direction)
     {
         let newPos = this.animateLeft + (-direction * this.animateWidth);
 
