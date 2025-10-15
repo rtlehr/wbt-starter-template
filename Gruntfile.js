@@ -37,6 +37,11 @@ module.exports = function (grunt) {
           { expand: true, cwd: "src/core/css",   src: ["**/*.css"], dest: "dist/core/css" },
           { expand: true, cwd: "src/custom/css", src: ["**/*.css"], dest: "dist/custom/css" }
         ]
+      },
+      content: {
+        files: [
+          { expand: true, cwd: "src",   src: ["content/**"], dest: "dist" }
+        ]
       }
     },
 
@@ -166,6 +171,7 @@ module.exports = function (grunt) {
     "exec:postcss_build",
     "copy:html",
     "copy:images",
+    "copy:content",
     "copy:data",
     "copy:cssToProd",
     "concat:prod",
