@@ -21,13 +21,12 @@ a:hover {
 
 /* Optional: small visual for the demo element (safe to remove) */
 #courseWindow {
-  padding: 16px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0,0,0,.06);
-  height: 800px;
-  width: 1200px;
+  height: $courseWindow-height;
+  width: $courseWindow-width;
   overflow: hidden;
 
   @include respond-tablet {}
@@ -46,11 +45,13 @@ a:hover {
 #previousButton {
   position: relative;
   left: 45px; 
+  z-index: 100;
 }
 
 #nextButton {
   position: relative;
   left: -43px; 
+  z-index: 100;
 }
 
 .coursePageNavigation {
@@ -76,4 +77,41 @@ a:hover {
 .coursePageNavigation .arrow-icon {
   width: 40px;
   height: 40px;
+}
+
+/* Content Holders*/
+
+#wbtContentRow
+{
+  position: relative;
+  left: 0 - $courseWindow-width;
+  height: $courseWindow-height;
+  width: $courseWindow-width * 3;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#previousPage
+{
+  /*background-color: aqua ;*/
+  height: $courseWindow-height;
+  border: #0d6efd solid 1px;
+  padding: 0;
+  margin: 0;
+}
+
+#currentPage
+{
+  border: lightgreen solid 1px;
+  height: $courseWindow-height;
+  padding: 0;
+  margin: 0;
+}
+
+#nextPage
+{
+  border: lightcoral solid 1px;
+  height: $courseWindow-height;
+  padding: 0;
+  margin: 0;
 }
