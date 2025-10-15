@@ -45,6 +45,7 @@ class JsonLoader {
 // export default JsonLoader;
 
 // Example usage (jQuery ready)
+/*
 $(async function () {
   const loader = new JsonLoader("data/sample.json");
 
@@ -58,3 +59,4 @@ $(async function () {
     $("#output").text("Failed to load JSON file.");
   }
 });
+*/
