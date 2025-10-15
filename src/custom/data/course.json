@@ -1,0 +1,42 @@
+{
+  "courseName": "Workplace Safety 101",
+  "modules": [
+    {
+      "id": "mod-1",
+      "title": "Introduction",
+      "pages": [
+        {
+          "id": "p-1",
+          "title": "Welcome",
+          "url": "pages/intro.html",
+          "preloadAssets": [
+            "assets/img/intro-hero.jpg",
+            "assets/audio/intro.mp3"
+          ]
+        },
+        {
+          "id": "p-2",
+          "title": "Course Navigation",
+          "url": "pages/navigation.html",
+          "preloadAssets": []
+        }
+      ]
+    },
+    {
+      "id": "mod-2",
+      "title": "Safety Basics",
+      "pages": [
+        {
+          "id": "p-3",
+          "title": "PPE Overview",
+          "url": "pages/ppe.html",
+          "preloadAssets": [
+            "assets/img/ppe-gloves.png",
+            "assets/video/ppe-demo.mp4",
+            "assets/captions/ppe-demo.vtt"
+          ]
+        }
+      ]
+    }
+  ]
+}
