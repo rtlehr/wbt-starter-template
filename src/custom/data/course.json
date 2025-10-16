@@ -41,6 +41,12 @@
           "title": "Page 02",
           "url": "content/mod01/page02.html",
           "preloadAssets": []
+        },
+        {
+          "id": "p-2",
+          "title": "Page 02",
+          "url": "content/mod01/page02.html",
+          "preloadAssets": []
         }
       ]
     },
