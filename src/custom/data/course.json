@@ -1,14 +1,15 @@
 {
-  "courseName": "Workplace Safety 101",
-  "modules": [
+  "name": "WBT Starter Template",
+  "modules": 
+  [
     {
-      "id": "mod-1",
+      "id": "mod-0",
       "title": "Introduction",
       "pages": [
         {
           "id": "p-1",
-          "title": "Welcome",
-          "url": "pages/intro.html",
+          "title": "Page 01",
+          "url": "content/mod00/page01.html",
           "preloadAssets": [
             "assets/img/intro-hero.jpg",
             "assets/audio/intro.mp3"
@@ -16,25 +17,9 @@
         },
         {
           "id": "p-2",
-          "title": "Course Navigation",
-          "url": "pages/navigation.html",
+          "title": "Page 02",
+          "url": "content/mod00/page02.html",
           "preloadAssets": []
-        }
-      ]
-    },
-    {
-      "id": "mod-2",
-      "title": "Safety Basics",
-      "pages": [
-        {
-          "id": "p-3",
-          "title": "PPE Overview",
-          "url": "pages/ppe.html",
-          "preloadAssets": [
-            "assets/img/ppe-gloves.png",
-            "assets/video/ppe-demo.mp4",
-            "assets/captions/ppe-demo.vtt"
-          ]
         }
       ]
     }

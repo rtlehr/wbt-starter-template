@@ -20,12 +20,26 @@ $(function () {
 });
 
 class Course {
-  constructor() {}
+  
+  constructor() {
+    this.courseContent = null;
+    this.jsonLoader = null;
+  }
 
-  init() {
+  async init() {
     console.log('Course Initialized');
+
+    // Load course data first (so Navigation can use it immediately)
+    const res = await fetch('custom/data/course.json');   // or your JsonLoader
+    if (!res.ok) throw new Error('Failed to load course.json');
+    this.courseContent = await res.json(); 
+
+    console.log('Course Name:', this.courseContent.name);
+
+    // Now safe to init navigation
     this.navigation = new Navigation(this);
     this.navigation.init();
+
   }
 
   gotoNextPage() {
