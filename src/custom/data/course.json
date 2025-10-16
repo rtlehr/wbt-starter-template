@@ -4,7 +4,7 @@
   [
     {
       "id": "mod-0",
-      "title": "Introduction",
+      "title": "Module 01",
       "pages": [
         {
           "id": "p-1",
@@ -19,6 +19,27 @@
           "id": "p-2",
           "title": "Page 02",
           "url": "content/mod00/page02.html",
+          "preloadAssets": []
+        }
+      ]
+    },
+    {
+      "id": "mod-0",
+      "title": "Module 02",
+      "pages": [
+        {
+          "id": "p-1",
+          "title": "Page 01",
+          "url": "content/mod01/page01.html",
+          "preloadAssets": [
+            "assets/img/intro-hero.jpg",
+            "assets/audio/intro.mp3"
+          ]
+        },
+        {
+          "id": "p-2",
+          "title": "Page 02",
+          "url": "content/mod01/page02.html",
           "preloadAssets": []
         }
       ]

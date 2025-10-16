@@ -23,7 +23,7 @@ class Course {
   
   constructor() {
     this.courseContent = null;
-    this.jsonLoader = null;
+    this.modules = [];
   }
 
   async init() {
@@ -34,11 +34,18 @@ class Course {
     if (!res.ok) throw new Error('Failed to load course.json');
     this.courseContent = await res.json(); 
 
-    console.log('Course Name:', this.courseContent.name);
+    //Load Modules and Pages
+    for(let count=0; count < this.courseContent.modules.length; count++) {
+      
+      this.modules.push(new Module(this.courseContent.modules[count]));
+
+    }
 
     // Now safe to init navigation
-    this.navigation = new Navigation(this);
+    this.navigation = new Navigation(this.modules);
     this.navigation.init();
+
+    this.gotoPage(0, 0);
 
   }
 
@@ -50,6 +57,9 @@ class Course {
     this.navigation.calcNextPage(-1);  // <- fixed typo
   }
 
-  gotoPage(mod, page) {}
+  gotoPage(mod, page) 
+  {
+    this.navigation.loadPage(mod, page);
+  }
 }
 

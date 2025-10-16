@@ -1,7 +1,9 @@
 class Navigation {
 
-    constructor(course) {
-        this.course = course;
+    constructor(modules) {
+
+        this.modules = modules;
+
     }
 
     init() {
@@ -19,15 +21,15 @@ class Navigation {
 
         curPage += direction;
 
-        if(curPage > 3)
+        if(curPage > this.modules[curMod].getPageCount() - 1)
         {
             curPage = 0;
             curMod++;
         }
         else if(curPage < 0)
         {
-            curPage = 3;
             curMod--;
+            curPage = this.modules[curMod].getPageCount()-1;
         }
 
         this.loadPage(curMod, curPage, direction);
@@ -38,7 +40,8 @@ class Navigation {
     {
 
         let selector = (direction > 0) ? $('#nextPage') : $('#previousPage');
-        let url = "content/mod" + mod + "/page" + page + ".html";
+        
+        let url = this.modules[mod].pages[page].getPageURL();
 
         // inside your class method
         $(selector).load(url, (response, status, xhr) => {
