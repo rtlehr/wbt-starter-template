@@ -51,11 +51,11 @@ class Course {
   }
 
   gotoNextPage() {
-    this.navigation.calcNextPage(1);   // <- fixed typo
+    this.navigation.calcNextPage(1);
   }
 
   gotoPreviousPage() {
-    this.navigation.calcNextPage(-1);  // <- fixed typo
+    this.navigation.calcNextPage(-1);
   }
 
   gotoPage(mod, page) 
