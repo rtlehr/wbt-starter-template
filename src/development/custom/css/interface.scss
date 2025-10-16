@@ -115,3 +115,37 @@ a:hover {
   padding: 0;
   margin: 0;
 }
+
+.activeModule {
+  font-weight: 600;
+  background-color: $color1;
+  color: white !important;
+}
+
+/* show the not-allowed cursor on the LI (the element that will receive the pointer after the A ignores events) */
+.notAvailableModule { cursor: not-allowed; }
+
+/* actually block clicks on the link */
+.notAvailableModule > a {
+  pointer-events: none;
+  color: #999;
+  opacity: .6;
+  text-decoration: none;
+}
+
+/* actually block clicks on the link */
+.notAvailablePage
+{
+  pointer-events: none;
+  opacity: .4;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+#pageNumber
+{
+  color: #777;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  text-align: right;
+}

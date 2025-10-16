@@ -1,10 +1,14 @@
 class Page {
 
-  constructor(pageInfo) 
+  constructor(course, pageInfo) 
   {
+    
+    this.course = course;
+
     this.pageInfo = pageInfo;
 
     console.log("Page Initialized: " + this.pageInfo.title);
+
   }
 
   init() {

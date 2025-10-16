@@ -1,6 +1,8 @@
 class Module {
 
-  constructor(modInfo) {
+  constructor(course, modInfo) {
+
+    this.course = course;
 
     this.modInfo = modInfo;
 
@@ -10,16 +12,16 @@ class Module {
 
     for(let count=0; count < this.modInfo.pages.length; count++) {
 
-      this.pages.push(new Page(this.modInfo.pages[count]));
+      this.pages.push(new Page(this.course, this.modInfo.pages[count]));
     
     }
 
   }
 
-  getPageCount() {
+  getTotalPages() {
 
     return this.pages.length;
-    
+
   }
 
   init() {}

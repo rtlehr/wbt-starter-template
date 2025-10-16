@@ -2,6 +2,7 @@ let curMod = 0;
 let curPage = 0;
 
 $(function () {
+
   const course = new Course();
   course.init();
 
@@ -37,12 +38,12 @@ class Course {
     //Load Modules and Pages
     for(let count=0; count < this.courseContent.modules.length; count++) {
       
-      this.modules.push(new Module(this.courseContent.modules[count]));
+      this.modules.push(new Module(this, this.courseContent.modules[count]));
 
     }
 
     // Now safe to init navigation
-    this.navigation = new Navigation(this.modules);
+    this.navigation = new Navigation(this, this.modules);
     this.navigation.init();
 
     this.gotoPage(0, 0);
@@ -61,5 +62,13 @@ class Course {
   {
     this.navigation.loadPage(mod, page);
   }
+
+  getTotalMods()
+  {
+
+    return this.modules.length;
+
+  }
+
 }
 

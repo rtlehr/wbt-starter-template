@@ -1,8 +1,12 @@
 class Navigation {
 
-    constructor(modules) {
+    constructor(course, modules) {
+
+        this.course = course;
 
         this.modules = modules;
+
+        this.interface = new Interface(this.course, this.modules);
 
     }
 
@@ -21,7 +25,7 @@ class Navigation {
 
         curPage += direction;
 
-        if(curPage > this.modules[curMod].getPageCount() - 1)
+        if(curPage > this.modules[curMod].getTotalPages() - 1)
         {
             curPage = 0;
             curMod++;
@@ -29,7 +33,7 @@ class Navigation {
         else if(curPage < 0)
         {
             curMod--;
-            curPage = this.modules[curMod].getPageCount()-1;
+            curPage = this.modules[curMod].getTotalPages()-1;
         }
 
         this.loadPage(curMod, curPage, direction);
@@ -40,7 +44,7 @@ class Navigation {
     {
 
         let selector = (direction > 0) ? $('#nextPage') : $('#previousPage');
-        
+
         let url = this.modules[mod].pages[page].getPageURL();
 
         // inside your class method
@@ -63,21 +67,23 @@ class Navigation {
 
     }
 
-    animatePage(direction)
-    {
-        let newPos = this.animateLeft + (-direction * this.animateWidth);
-
+    animatePage(direction) {
+        const newPos = this.animateLeft + (-direction * this.animateWidth);
         const $row = $('#wbtContentRow');
-        const $loadDiv = (Math.round(newPos) < 0) ? $('#nextPage') : $('#previousPage');
-        const origLeft = this.animateLeft; // capture once
+        const $loadDiv = (direction > 0) ? $('#nextPage') : $('#previousPage'); // clearer
+        const origLeft = this.animateLeft;
 
-        $row.stop(true).animate({ left: newPos }, 800, function () {
+        $row.stop(true).animate({ left: newPos }, 800, () => {
 
             $row.css('left', origLeft);
-            $('#currentPage').html($loadDiv.html()); 
+            $('#currentPage').html($loadDiv.html());
+            $($loadDiv).empty();
+            this.interface.setInterface();
+            this.interface.setPageNumber(this.modules[curMod].getTotalPages());
 
         });
-    }
+        }
+
 
 }
 
