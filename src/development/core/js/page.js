@@ -7,8 +7,6 @@ class Page {
 
     this.pageInfo = pageInfo;
 
-    console.log("Page Initialized: " + this.pageInfo.title);
-
   }
 
   init() {

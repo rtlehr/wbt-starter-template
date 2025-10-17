@@ -59,6 +59,16 @@ class Interface {
 
   }
 
+  showFooter()
+  {
+    $("#courseFooter").stop(true).animate({ top: -50 }, 500, () => {});
+  }
+
+  hideFooter()
+  {
+    $("#courseFooter").css({ top: 0 });
+  }
+
 }
 
 

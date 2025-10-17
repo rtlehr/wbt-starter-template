@@ -68,13 +68,17 @@ class Navigation {
     }
 
     animatePage(direction) {
+
+        if($("#courseFooter").css("top") == "0px") {
+            this.interface.showFooter();    
+        }
+
         const newPos = this.animateLeft + (-direction * this.animateWidth);
         const $row = $('#wbtContentRow');
         const $loadDiv = (direction > 0) ? $('#nextPage') : $('#previousPage'); // clearer
         const origLeft = this.animateLeft;
 
         $row.stop(true).animate({ left: newPos }, 800, () => {
-
             $row.css('left', origLeft);
             $('#currentPage').html($loadDiv.html());
             $($loadDiv).empty();

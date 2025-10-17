@@ -1,3 +1,5 @@
+/* interface.scss */
+
 html, body {
   margin: 0;
   padding: 0;
@@ -85,7 +87,7 @@ a:hover {
 {
   position: relative;
   left: 0 - $courseWindow-width;
-  height: $courseWindow-height;
+  height: $courseWindow-height - 50px;
   width: $courseWindow-width * 3;
   margin-left: 0;
   margin-right: 0;
@@ -114,6 +116,35 @@ a:hover {
   height: $courseWindow-height;
   padding: 0;
   margin: 0;
+}
+
+#courseFooter {
+  height: 50px;
+  line-height: 50px;      /* vertical align single-line text */
+  padding: 0 15px;
+  overflow: hidden;       /* keeps text inside the bar */
+  position: relative;
+  top: 0px;
+  padding-top: 13px;
+}
+
+#courseFooter .row > [class*="col-"] > * {
+  line-height: normal;    /* reset for nested elements if needed */
+}
+
+#leftCourseFooter
+{
+  text-align: center;
+}
+
+#centerCourseFooter
+{
+  text-align: center;
+}
+
+#rightCourseFooter
+{
+  text-align: center;
 }
 
 .activeModule {
