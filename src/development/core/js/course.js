@@ -1,6 +1,12 @@
 let curMod = 0;
 let curPage = 0;
 
+const isPhone   = () => window.matchMedia('(max-width: 575.98px)').matches;
+const isTablet  = () => window.matchMedia('(min-width: 768px) and (max-width: 991.98px)').matches;
+const isDesktop = () => window.matchMedia('(min-width: 992px)').matches;
+
+console.log(`isPhone: ${isPhone()}, isTablet: ${isTablet()}, isDesktop: ${isDesktop()}`);
+
 $(function () {
 
   const course = new Course();

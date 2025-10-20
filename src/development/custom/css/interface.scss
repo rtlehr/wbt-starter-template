@@ -24,7 +24,7 @@ a:hover {
 /* Optional: small visual for the demo element (safe to remove) */
 #courseWindow {
   background: #fff;
-  border: 1px solid #e5e7eb;
+  /*border: 1px solid #e5e7eb;*/
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0,0,0,.06);
   height: $courseWindow-height;
@@ -41,6 +41,12 @@ a:hover {
     overflow: auto;
   }
 
+}
+
+#courseContent
+{
+  width: 100%;
+  height: $courseWindow-height - 50px;
 }
 
 /* Previuos and next page buttons*/
@@ -97,14 +103,14 @@ a:hover {
 {
   /*background-color: aqua ;*/
   height: $courseWindow-height;
-  border: #0d6efd solid 1px;
+  /*border: #0d6efd solid 1px;*/
   padding: 0;
   margin: 0;
 }
 
 #currentPage
 {
-  border: lightgreen solid 1px;
+  /*border: lightgreen solid 1px;*/
   height: $courseWindow-height;
   padding: 0;
   margin: 0;
@@ -112,7 +118,7 @@ a:hover {
 
 #nextPage
 {
-  border: lightcoral solid 1px;
+  /*border: lightcoral solid 1px;*/
   height: $courseWindow-height;
   padding: 0;
   margin: 0;
@@ -180,3 +186,48 @@ a:hover {
   padding-bottom: 15px;
   text-align: right;
 }
+
+/* ToolTip */
+
+.ui-tooltip, .arrow:after {
+    background: black;
+    border: 2px solid white;
+  }
+  .ui-tooltip {
+    padding: 10px 20px;
+    color: white;
+    border-radius: 20px;
+    font: bold 14px "Helvetica Neue", Sans-Serif;
+    text-transform: uppercase;
+    box-shadow: 0 0 7px black;
+  }
+  .arrow {
+    width: 70px;
+    height: 16px;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    margin-left: -35px;
+    bottom: -16px;
+  }
+  .arrow.top {
+    top: -16px;
+    bottom: auto;
+  }
+  .arrow.left {
+    left: 20%;
+  }
+  .arrow:after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    width: 25px;
+    height: 25px;
+    box-shadow: 6px 5px 9px -9px black;
+    transform: rotate(45deg);
+  }
+  .arrow.top:after {
+    bottom: -20px;
+    top: auto;
+  }

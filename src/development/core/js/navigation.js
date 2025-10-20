@@ -6,6 +6,10 @@ class Navigation {
 
         this.modules = modules;
 
+        this.modalWindow = new modalWindow();
+
+        this.toolTip = new toolTip();
+
         this.interface = new Interface(this.course, this.modules);
 
     }
@@ -55,10 +59,8 @@ class Navigation {
             return; // bail on error
         }
         
-        let methodName = "Lesson1Init"; // Example method name based on loaded content
-
-        if (typeof window[methodName] === 'function') {
-            window[methodName]();          // or: this[methodName].apply(this, args)
+        if (typeof window["pageLoadedFunction"] === 'function') {
+            window["pageLoadedFunction"]();          // or: this[methodName].apply(this, args)
         }
 
         this.animatePage(direction);
@@ -84,6 +86,15 @@ class Navigation {
             $($loadDiv).empty();
             this.interface.setInterface();
             this.interface.setPageNumber(this.modules[curMod].getTotalPages());
+
+            this.modalWindow.addModal();
+
+            this.toolTip.addToolTip();
+
+            if (typeof window["finishedMovingIn"] === 'function') {
+                window["finishedMovingIn"]();          // or: this[methodName].apply(this, args)
+            }
+
 
         });
         }

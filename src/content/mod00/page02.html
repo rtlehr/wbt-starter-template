@@ -2,16 +2,22 @@
 <meta name="wbt-init" content="Lesson1Init">
 
 <section class="page" aria-labelledby="l1-title">
-  <h1 id="l1-title">Mod 00 Page 02</h1>
+  <h1 id="l1-title">PAGE TITLE</h1>
   <p>Content goes here…</p>
-  <button id="l1-check">Check</button>
 </section>
 
 <script>
-  // Must be global by this name because the loader will call window['Lesson1Init']
-  function Lesson1Init() {
+
+  function pageLoadedFunction() {
     
-    console.log("Page 0 Init function called");
+    console.log("Page 02 pageLoadedFunction function called");
 
   }
+
+  function finishedMovingIn() {
+    
+    console.log("Page 02 finishedMovingIn function called");
+
+  }
+
 </script>

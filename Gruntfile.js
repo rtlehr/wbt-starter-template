@@ -169,12 +169,12 @@ module.exports = function (grunt) {
     "clean:dist",
     "exec:sass_build",
     "exec:postcss_build",
+    "concat:prod",
     "copy:html",
     "copy:images",
     "copy:content",
     "copy:data",
     "copy:cssToProd",
-    "concat:prod",
     "uglify:prod",
     "cssmin:prod",
     "replace:html"
