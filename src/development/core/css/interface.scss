@@ -1,11 +1,19 @@
-/* ===== Layout variables ===== */
+/* =========================================
+   Layout — Refactor (same behavior)
+   ========================================= */
+
+/* ------------------------------
+   Layout variables
+------------------------------ */
 :root {
   /* Default Bootstrap 3 navbar-fixed-top height is ~50px */
   --header-h: 50px;
 }
 
-/* ===== App shell: sticky footer with fixed header ===== */
-/* The <body> has class="site" in your HTML */
+/* ------------------------------
+   App shell: sticky footer + fixed header
+   (body has class="site")
+------------------------------ */
 .site {
   min-height: 100vh;
   display: flex;
@@ -13,49 +21,54 @@
   margin: 0;
 }
 
-/* Fixed header (already fixed via Bootstrap class on <nav>) */
+/* ------------------------------
+   Header
+------------------------------ */
 .site-header .navbar {
   border: 0;
   box-shadow: 0 1px 0 rgba(0,0,0,0.05);
 }
+
 .site-header .navbar-brand .brand-mark {
   margin-right: 0.25em;
 }
 
-/* We are NOT using a separate spacer div. Hide it if present in HTML. */
+/* We are NOT using a spacer div; ensure any existing one is suppressed */
 .header-offset {
   display: none !important;
-  height: 0 !important;  
+  height: 0 !important;
 }
 
-/* Main fills the viewport height minus the fixed header.
-   Footer sits after main and stays at the bottom because of flex layout. */
+/* ------------------------------
+   Main area
+   - fills viewport minus fixed header
+   - centers #courseWindow via flex
+------------------------------ */
 .site-main {
-  flex: 1;                /* expands to fill all space between header and footer */
+  flex: 1;                       /* fills space between header and footer */
   margin-top: var(--header-h);
-  display: flex;          /* keeps your centered layout for courseWindow */
+  display: flex;                 /* for centering inner container */
 
   @include respond-tablet {}
 
   @include respond-phone {
     height: auto;
   }
-
 }
 
-/* Make ONLY this container full-width and full-height, without touching Bootstrap globally */
+/* Only this container is made full-bleed; Bootstrap globals untouched */
 .site-main > .container {
   width: 100%;
   max-width: none;
   padding: 0;
   margin: 0;
 
-  /* center #courseWindow both vertically & horizontally */
+  /* center #courseWindow vertically & horizontally */
   display: flex;
   align-items: center;
   justify-content: center;
 
-  /* fill the available height between header and footer */
+  /* fill available height between header and footer */
   min-height: 100%;
 
   @include respond-tablet {}
@@ -63,55 +76,40 @@
   @include respond-phone {
     height: auto;
   }
-  
 }
 
-/* Footer styling and sticky behavior (flex item after main) */
+/* ------------------------------
+   Footer (sticky flex item after main)
+------------------------------ */
 .site-footer {
-  flex-shrink: 0;         /* footer stays visible and never collapses */
+  flex-shrink: 0;                /* footer stays visible, no collapse */
 
   @include respond-phone {
-    display: none
+    display: none;               /* was missing semicolon */
   }
-
 }
+
 .site-footer .footer-link {
   text-decoration: underline;
 }
+
 .site-footer .vcenter {
   display: flex;
   align-items: center;
 }
 
-/* Minor responsive type scale (kept because headings/body appear in your HTML) */
+/* ------------------------------
+   Responsive type scale
+------------------------------ */
 @media (min-width: 992px) {
   body { font-size: 16px; }
 }
+
 @media (max-width: 991px) and (min-width: 768px) {
   body { font-size: 15px; }
 }
+
 @media (max-width: 767px) {
   body { font-size: 14px; }
-  h1 { font-size: 1.5rem; }
-
-
-  /* Footer: stack the three outer columns */
-  #courseFooter .row > [class*="col-"] {
-    float: none;          /* cancel BS3 float so they stack */
-    width: 100%;
-  }
-  /* Add a little vertical spacing between stacked footer items */
-  #courseFooter .row > [class*="col-"] + [class*="col-"] {
-    margin-top: 10px;
-  }
-
-  /* Footer center area: stack its two inner columns as well */
-  #centerCourseFooter .row > [class*="col-"] {
-    float: none;
-    width: 100%;
-  }
-  #centerCourseFooter .row > [class*="col-"] + [class*="col-"] {
-    margin-top: 8px;
-  }
-
+  h1   { font-size: 1.5rem; }
 }

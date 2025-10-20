@@ -1,5 +1,10 @@
-/* interface.scss */
+/* =========================================
+   interface.scss — Refactor (same behavior)
+   ========================================= */
 
+/* ------------------------------
+   Base / Typography / Links
+------------------------------ */
 html, body {
   margin: 0;
   padding: 0;
@@ -17,14 +22,14 @@ a {
   color: #0d6efd;
   text-decoration: none;
 }
-a:hover {
-  color: #0a58ca;
-}
+a:hover { color: #0a58ca; }
 
-/* Optional: small visual for the demo element (safe to remove) */
+/* ------------------------------
+   Course Window & Content
+------------------------------ */
 #courseWindow {
   background: #fff;
-  /*border: 1px solid #e5e7eb;*/
+  /* border: 1px solid #e5e7eb; */
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0,0,0,.06);
   height: $courseWindow-height;
@@ -35,7 +40,7 @@ a:hover {
 
   @include respond-phone {
     width: 100%;
-    /*background-color: yellow;*/
+    /* background-color: yellow; */
     border-radius: 0;
     box-shadow: none;
     height: auto !important;
@@ -44,11 +49,9 @@ a:hover {
     position: absolute;
     top: 0px;
   }
-
 }
 
-#courseContent
-{
+#courseContent {
   width: 100%;
   height: $courseWindow-height - 50px;
 
@@ -59,13 +62,15 @@ a:hover {
     min-height: 0 !important;
     overflow: visible;
   }
-
 }
 
+/* ------------------------------
+   Page Navigation Buttons (round)
+------------------------------ */
 .coursePageNavigation {
   width: 80px;
   height: 80px;
-  border: 3px solid $brand-color; /* primary blue border */
+  border: 3px solid $brand-color;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -75,22 +80,32 @@ a:hover {
   color: $brand-color;
   background: $color1;
 }
-
 .coursePageNavigation:hover {
   background: $brand-color;
   color: #fff;
   transform: scale(1.05);
 }
-
 .coursePageNavigation .arrow-icon {
   width: 40px;
   height: 40px;
 }
 
-/* Content Holders*/
+/* Position tweaks for prev/next buttons */
+#previousButton {
+  position: relative;
+  left: 45px;
+  z-index: 100;
+}
+#nextButton {
+  position: relative;
+  left: -43px;
+  z-index: 100;
+}
 
-#wbtContentRow
-{
+/* ------------------------------
+   Content Holders / Sliding Row
+------------------------------ */
+#wbtContentRow {
   position: relative;
   left: 0 - $courseWindow-width;
   height: $courseWindow-height - 50px;
@@ -107,56 +122,38 @@ a:hover {
     height: auto !important;
     min-height: 0 !important;
     overflow: visible;
-    /*background-color: purple;*/
+    /* background-color: purple; */
   }
-
 }
 
-#previousPage
-{
+/* Individual page panes */
+#previousPage,
+#currentPage,
+#nextPage {
   height: $courseWindow-height;
   padding: 0;
   margin: 0;
 
   @include respond-tablet {}
-
-  @include respond-phone {
-    display: none
-  }
 }
 
-#currentPage
-{
-  height: $courseWindow-height;
-  padding: 0;
-  margin: 0;
+/* Phone overrides for panes */
+@include respond-phone {
+  #previousPage { display: none; }       /* was missing semicolon */
+  #nextPage     { display: none; }       /* was missing semicolon */
 
-  @include respond-tablet {}
-
-  @include respond-phone {
+  #currentPage {
     display: block;
-    float: none;          /* override Bootstrap 3 floats if any */
+    float: none;                         /* override Bootstrap 3 floats if any */
     width: 100% !important;
     height: auto !important;
-   /* background-color: lightblue;*/
+    /* background-color: lightblue; */
   }
-
 }
 
-#nextPage
-{
-  height: $courseWindow-height;
-  padding: 0;
-  margin: 0;
-
-  @include respond-tablet {}
-
-  @include respond-phone {
-    display: none
-  }
-
-}
-
+/* ------------------------------
+   Footer Bar
+------------------------------ */
 #courseFooter {
   height: 50px;
   line-height: 50px;      /* vertical align single-line text */
@@ -172,51 +169,31 @@ a:hover {
     height: 150px;
     padding-top: 0px;
   }
-
 }
 
+/* Reset nested line-height if needed inside footer columns */
 #courseFooter .row > [class*="col-"] > * {
-  line-height: normal;    /* reset for nested elements if needed */
+  line-height: normal;
 }
 
-#leftCourseFooter
-{
+/* Footer column alignment */
+#leftCourseFooter,
+#centerCourseFooter,
+#rightCourseFooter {
   text-align: center;
 }
 
-#centerCourseFooter
-{
-  text-align: center;
-}
-
-/* Previuos and next page buttons*/
-#previousButton {
-  position: relative;
-  left: 45px; 
-  z-index: 100;
-}
-
-#nextButton {
-  position: relative;
-  left: -43px; 
-  z-index: 100;
-}
-
-#rightCourseFooter
-{
-  text-align: center;
-}
-
+/* ------------------------------
+   Module/Page State & Menu
+------------------------------ */
 .activeModule {
   font-weight: 600;
   background-color: $color1;
   color: white !important;
 }
 
-/* show the not-allowed cursor on the LI (the element that will receive the pointer after the A ignores events) */
+/* Disabled module (LI) cursor + link blocking */
 .notAvailableModule { cursor: not-allowed; }
-
-/* actually block clicks on the link */
 .notAvailableModule > a {
   pointer-events: none;
   color: #999;
@@ -224,64 +201,65 @@ a:hover {
   text-decoration: none;
 }
 
-/* actually block clicks on the link */
-.notAvailablePage
-{
+/* Disabled page links */
+.notAvailablePage {
   pointer-events: none;
   opacity: .4;
   text-decoration: none;
   cursor: not-allowed;
 }
 
-#pageNumber
-{
+/* Page number (top-right of navbar area) */
+#pageNumber {
   color: #777;
   padding-top: 15px;
   padding-bottom: 15px;
   text-align: right;
 }
 
-/* ToolTip */
+/* ------------------------------
+   jQuery UI Tooltip Skin
+------------------------------ */
+.ui-tooltip,
+.arrow:after {
+  background: black;
+  border: 2px solid white;
+}
 
-.ui-tooltip, .arrow:after {
-    background: black;
-    border: 2px solid white;
-  }
-  .ui-tooltip {
-    padding: 10px 20px;
-    color: white;
-    border-radius: 20px;
-    font: bold 14px "Helvetica Neue", Sans-Serif;
-    text-transform: uppercase;
-    box-shadow: 0 0 7px black;
-  }
-  .arrow {
-    width: 70px;
-    height: 16px;
-    overflow: hidden;
-    position: absolute;
-    left: 50%;
-    margin-left: -35px;
-    bottom: -16px;
-  }
-  .arrow.top {
-    top: -16px;
-    bottom: auto;
-  }
-  .arrow.left {
-    left: 20%;
-  }
-  .arrow:after {
-    content: "";
-    position: absolute;
-    left: 20px;
-    top: -20px;
-    width: 25px;
-    height: 25px;
-    box-shadow: 6px 5px 9px -9px black;
-    transform: rotate(45deg);
-  }
-  .arrow.top:after {
-    bottom: -20px;
-    top: auto;
-  }
+.ui-tooltip {
+  padding: 10px 20px;
+  color: white;
+  border-radius: 20px;
+  font: bold 14px "Helvetica Neue", Sans-Serif;
+  text-transform: uppercase;
+  box-shadow: 0 0 7px black;
+}
+
+.arrow {
+  width: 70px;
+  height: 16px;
+  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  margin-left: -35px;
+  bottom: -16px;
+}
+.arrow.top {
+  top: -16px;
+  bottom: auto;
+}
+.arrow.left { left: 20%; }
+.arrow:after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: -20px;
+  width: 25px;
+  height: 25px;
+  box-shadow: 6px 5px 9px -9px black;
+  transform: rotate(45deg);
+}
+.arrow.top:after {
+  bottom: -20px;
+  top: auto;
+}
