@@ -34,11 +34,15 @@ a:hover {
   @include respond-tablet {}
 
   @include respond-phone {
-    height: 765px;
     width: 100%;
-    margin: 10px;
-    padding: 10px;
-    overflow: auto;
+    /*background-color: yellow;*/
+    border-radius: 0;
+    box-shadow: none;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible;
+    position: absolute;
+    top: 0px;
   }
 
 }
@@ -47,19 +51,15 @@ a:hover {
 {
   width: 100%;
   height: $courseWindow-height - 50px;
-}
 
-/* Previuos and next page buttons*/
-#previousButton {
-  position: relative;
-  left: 45px; 
-  z-index: 100;
-}
+  @include respond-tablet {}
 
-#nextButton {
-  position: relative;
-  left: -43px; 
-  z-index: 100;
+  @include respond-phone {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible;
+  }
+
 }
 
 .coursePageNavigation {
@@ -97,31 +97,64 @@ a:hover {
   width: $courseWindow-width * 3;
   margin-left: 0;
   margin-right: 0;
+
+  @include respond-tablet {}
+
+  @include respond-phone {
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible;
+    /*background-color: purple;*/
+  }
+
 }
 
 #previousPage
 {
-  /*background-color: aqua ;*/
   height: $courseWindow-height;
-  /*border: #0d6efd solid 1px;*/
   padding: 0;
   margin: 0;
+
+  @include respond-tablet {}
+
+  @include respond-phone {
+    display: none
+  }
 }
 
 #currentPage
 {
-  /*border: lightgreen solid 1px;*/
   height: $courseWindow-height;
   padding: 0;
   margin: 0;
+
+  @include respond-tablet {}
+
+  @include respond-phone {
+    display: block;
+    float: none;          /* override Bootstrap 3 floats if any */
+    width: 100% !important;
+    height: auto !important;
+   /* background-color: lightblue;*/
+  }
+
 }
 
 #nextPage
 {
-  /*border: lightcoral solid 1px;*/
   height: $courseWindow-height;
   padding: 0;
   margin: 0;
+
+  @include respond-tablet {}
+
+  @include respond-phone {
+    display: none
+  }
+
 }
 
 #courseFooter {
@@ -132,6 +165,14 @@ a:hover {
   position: relative;
   top: 0px;
   padding-top: 13px;
+
+  @include respond-tablet {}
+
+  @include respond-phone {
+    height: 150px;
+    padding-top: 0px;
+  }
+
 }
 
 #courseFooter .row > [class*="col-"] > * {
@@ -146,6 +187,19 @@ a:hover {
 #centerCourseFooter
 {
   text-align: center;
+}
+
+/* Previuos and next page buttons*/
+#previousButton {
+  position: relative;
+  left: 45px; 
+  z-index: 100;
+}
+
+#nextButton {
+  position: relative;
+  left: -43px; 
+  z-index: 100;
 }
 
 #rightCourseFooter

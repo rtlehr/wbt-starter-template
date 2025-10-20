@@ -51,6 +51,27 @@ class Navigation {
 
         let url = this.modules[mod].pages[page].getPageURL();
 
+        console.log("isPhone: " + isPhone());
+
+        if(isPhone())
+        {
+            $("#currentPage").load(url, (response, status, xhr) => {
+
+                if (status === "error") {
+                    $(selector).html('<p role="alert">Sorry, failed to load this page.</p>');
+                    console.error("Load error:", xhr.status, xhr.statusText);
+                    return; // bail on error
+                }
+                
+                if (typeof window["pageLoadedFunction"] === 'function') {
+                    window["pageLoadedFunction"]();          // or: this[methodName].apply(this, args)
+                }
+
+            });
+
+            return;
+        }
+
         // inside your class method
         $(selector).load(url, (response, status, xhr) => {
         if (status === "error") {

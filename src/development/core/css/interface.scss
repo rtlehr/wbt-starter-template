@@ -25,7 +25,7 @@
 /* We are NOT using a separate spacer div. Hide it if present in HTML. */
 .header-offset {
   display: none !important;
-  height: 0 !important;
+  height: 0 !important;  
 }
 
 /* Main fills the viewport height minus the fixed header.
@@ -34,6 +34,13 @@
   flex: 1;                /* expands to fill all space between header and footer */
   margin-top: var(--header-h);
   display: flex;          /* keeps your centered layout for courseWindow */
+
+  @include respond-tablet {}
+
+  @include respond-phone {
+    height: auto;
+  }
+
 }
 
 /* Make ONLY this container full-width and full-height, without touching Bootstrap globally */
@@ -50,6 +57,13 @@
 
   /* fill the available height between header and footer */
   min-height: 100%;
+
+  @include respond-tablet {}
+
+  @include respond-phone {
+    height: auto;
+  }
+  
 }
 
 /* Footer styling and sticky behavior (flex item after main) */
@@ -79,4 +93,25 @@
 @media (max-width: 767px) {
   body { font-size: 14px; }
   h1 { font-size: 1.5rem; }
+
+
+  /* Footer: stack the three outer columns */
+  #courseFooter .row > [class*="col-"] {
+    float: none;          /* cancel BS3 float so they stack */
+    width: 100%;
+  }
+  /* Add a little vertical spacing between stacked footer items */
+  #courseFooter .row > [class*="col-"] + [class*="col-"] {
+    margin-top: 10px;
+  }
+
+  /* Footer center area: stack its two inner columns as well */
+  #centerCourseFooter .row > [class*="col-"] {
+    float: none;
+    width: 100%;
+  }
+  #centerCourseFooter .row > [class*="col-"] + [class*="col-"] {
+    margin-top: 8px;
+  }
+
 }
