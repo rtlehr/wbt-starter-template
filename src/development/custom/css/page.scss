@@ -1,0 +1,11 @@
+.pageContent {
+
+    padding: 20px;
+
+    @include respond-tablet {}
+
+    @include respond-phone {
+        padding: 15px 5px;
+    }
+
+}
