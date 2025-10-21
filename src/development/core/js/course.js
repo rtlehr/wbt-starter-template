@@ -95,6 +95,8 @@ class Course {
 
     this.navigation.checkFooterVisibility();
 
+    this.navigation.adjustContentVisibility();
+
   }
 
 }

@@ -53,6 +53,8 @@
 
   @include respond-phone {
     height: auto;
+    position: relative;
+    top: 0px;
   }
 }
 

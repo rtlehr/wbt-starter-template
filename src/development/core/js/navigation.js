@@ -67,6 +67,9 @@ class Navigation {
                     window["pageLoadedFunction"]();          // or: this[methodName].apply(this, args)
                 }
 
+                this.interface.setInterface();
+                this.addPageFunctionality();
+
             });
 
             return;
@@ -90,13 +93,6 @@ class Navigation {
 
     }
     
-    checkFooterVisibility()
-    {
-        if($("#courseFooter").css("top") == "0px") {
-            this.interface.showFooter();    
-        }
-    }
-
     animatePage(direction) {
 
         this.checkFooterVisibility();
@@ -113,9 +109,7 @@ class Navigation {
             this.interface.setInterface();
             this.interface.setPageNumber(this.modules[curMod].getTotalPages());
 
-            this.modalWindow.addModal();
-
-            this.toolTip.addToolTip();
+            this.addPageFunctionality();
 
             if (typeof window["finishedMovingIn"] === 'function') {
                 window["finishedMovingIn"]();          // or: this[methodName].apply(this, args)
@@ -123,7 +117,47 @@ class Navigation {
 
 
         });
+    }
+
+    checkFooterVisibility()
+    {
+
+        if($("#courseFooter").css("top") == "0px" && mqDesktop.matches) {
+            this.interface.showFooter();    
         }
+
+        if($("#courseFooter").css("top") == "-50px" && mqPhone.matches) {
+            $("#courseFooter").css("top","0px");
+        }
+
+    }
+
+    adjustContentVisibility()
+    {   
+        
+        console.log("adjustContentVisibility() called");
+
+        if($("#wbtContentRow").css("left") < "0px"  && mqPhone.matches)
+        {
+            this.contentRowDesktopPos = $("#wbtContentRow").css("left");
+
+            $("#wbtContentRow").css("left", "0px"); 
+        }
+
+        if(mqDesktop.matches)
+        {
+            $("#wbtContentRow").css("left", this.contentRowDesktopPos); 
+        }
+    }
+
+    addPageFunctionality()
+    {
+        console.log("addPageFunctionality() called");
+
+        this.modalWindow.addModal();
+
+        this.toolTip.addToolTip();
+    }
 
 
 }
