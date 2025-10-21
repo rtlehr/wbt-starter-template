@@ -166,7 +166,7 @@ a:hover { color: #0a58ca; }
   @include respond-tablet {}
 
   @include respond-phone {
-    height: 150px;
+    height: 100px;
     padding-top: 0px;
   }
 }
