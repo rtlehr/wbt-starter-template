@@ -1,20 +1,22 @@
 <meta name="wbt-init" content="Lesson1Init">
 
-<style>
-
-
-</style>
+<style></style>
 
 <section class="pageContent" aria-labelledby="l1-title">
   <h1 id="l1-title">PAGE TITLE</h1>
   <p>Content goes here…</p>
   <p><a id="pageTemplate" class="modalWindow" href="#" data-width="400" data-height="200">Click to show modal window</a></p>
-  <p><a class="toolTip" href="#" title="THis is a tool tip">Show Tool Tip</a></p>
-</section>
+  <p><a href="#" class="has-tip" data-tip="This is a tool tip.">Tool Tip</a></p>
+  </section>
 
 <!-- MODAL WINDOW -->
 <div id="pageTemplate-dialog" title="Basic dialog" style="display: none;">
   <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+
+<!-- one reusable dialog -->
+<div id="tipDialog" title="Info" style="display:none;">
+  <div class="tip-body"></div>
 </div>
 
 <script>

@@ -9,12 +9,17 @@
   <p>Lorem ipsum dolor sit amet, consectetur a<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ultrices ipsum eget nisi ultricies viverra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam maximus viverra feugiat. Vestibulum condimentum ullamcorper mauris, ac fringilla ligula varius eu. Ut tortor arcu, volutpat sit amet iaculis sed, euismod nec est. Suspendisse bibendum mattis ipsum sed viverra. Nulla at congue velit. Sed tempus eros sit amet tristique maximus. Cras lobortis, ipsum in laoreet commodo, quam leo placerat diam, ac elementum libero erat a mauris. Donec at pretium neque, non venenatis ligula. Nunc dictum augue id sem viverra, et hendrerit ipsum venenatis. Phasellus sed nisl augue.</p>
 
 <p><a id="pageTemplate" class="modalWindow" href="#" data-width="400" data-height="200">Click to show modal window</a></p>
-  <p><a class="toolTip" href="#" title="THis is a tool tip">Show Tool Tip</a></p>
+  <p><a href="#" class="has-tip" data-tip="This is a tool tip.">Tool Tip</a></p>
 </section>
 
 <!-- MODAL WINDOW -->
 <div id="pageTemplate-dialog" title="Basic dialog" style="display: none;">
   <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+
+<!-- one reusable dialog -->
+<div id="tipDialog" title="Info" style="display:none;">
+  <div class="tip-body"></div>
 </div>
 
 <script>

@@ -97,6 +97,8 @@ class Course {
 
     this.navigation.adjustContentVisibility();
 
+    this.navigation.adjustToolTip();
+
   }
 
 }
