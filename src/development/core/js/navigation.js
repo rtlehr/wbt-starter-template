@@ -51,9 +51,9 @@ class Navigation {
 
         let url = this.modules[mod].pages[page].getPageURL();
 
-        console.log("isPhone: " + isPhone());
+        console.log("isPhone: " + mqPhone.matches);
 
-        if(isPhone())
+        if(mqPhone.matches)
         {
             $("#currentPage").load(url, (response, status, xhr) => {
 
@@ -89,12 +89,17 @@ class Navigation {
         });
 
     }
-
-    animatePage(direction) {
-
+    
+    checkFooterVisibility()
+    {
         if($("#courseFooter").css("top") == "0px") {
             this.interface.showFooter();    
         }
+    }
+
+    animatePage(direction) {
+
+        this.checkFooterVisibility();
 
         const newPos = this.animateLeft + (-direction * this.animateWidth);
         const $row = $('#wbtContentRow');

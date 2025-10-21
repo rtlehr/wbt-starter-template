@@ -195,7 +195,7 @@ a:hover { color: #0a58ca; }
 /* Disabled module (LI) cursor + link blocking */
 .notAvailableModule { cursor: not-allowed; }
 .notAvailableModule > a {
-  pointer-events: none;
+  pointer-events: none;   
   color: #999;
   opacity: .6;
   text-decoration: none;

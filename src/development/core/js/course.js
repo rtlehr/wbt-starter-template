@@ -1,15 +1,29 @@
 let curMod = 0;
 let curPage = 0;
+let course;
 
-const isPhone   = () => window.matchMedia('(max-width: 575.98px)').matches;
-const isTablet  = () => window.matchMedia('(min-width: 768px) and (max-width: 991.98px)').matches;
-const isDesktop = () => window.matchMedia('(min-width: 992px)').matches;
+// define your queries once
+const mqPhone   = window.matchMedia('(max-width: 575.98px)');
+const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 991.98px)');
+const mqDesktop = window.matchMedia('(min-width: 992px)');
 
-console.log(`isPhone: ${isPhone()}, isTablet: ${isTablet()}, isDesktop: ${isDesktop()}`);
+// a single function to run whenever the breakpoint might change
+function handleBreakpointChange() {
+
+  console.log(`isPhone: ${mqPhone.matches}, isTablet: ${mqTablet.matches}, isDesktop: ${mqDesktop.matches}`);
+
+  course.screenSizeChange();
+
+}
+
+// wire listeners (fires whenever match state flips)
+[mqPhone, mqTablet, mqDesktop].forEach(mq => {
+  mq.addEventListener('change', handleBreakpointChange);
+});
 
 $(function () {
 
-  const course = new Course();
+  course = new Course();
   course.init();
 
   // Use arrow functions so `this` = outer scope (but we don't need `this` anyway)
@@ -73,6 +87,13 @@ class Course {
   {
 
     return this.modules.length;
+
+  }
+
+  screenSizeChange()
+  {
+
+    this.navigation.checkFooterVisibility();
 
   }
 
