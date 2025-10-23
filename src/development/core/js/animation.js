@@ -119,6 +119,8 @@ class Animation {
 
     let delay = $box.data('delay') || 0;
 
+    let chain = $box.data('animationchain') || null
+
     // Optional: delay before the animation starts (in the "fx" queue)
     $box
     .delay(delay) // 200ms delay; remove if you don't need it
@@ -160,8 +162,11 @@ class Animation {
         },
 
         // Fires once when this specific animation completes successfully
-        complete: function () {
-            console.log('Finished moving in (complete)');
+        complete: () => {
+          console.log('Finished moving in (complete)');
+          if (chain) {
+            this.playAnimation(chain);  // now works
+          }
         },
 
         // jQuery 3 adds these Deferred-style hooks:
