@@ -1,188 +1,225 @@
 class Animation {
-
-  constructor(course, pageInfo) 
-  {
-    
+  constructor(course, pageInfo) {
     this.course = course;
 
+    // Cached selectors we reuse a lot
+    this.$win = $('#courseWindow');
   }
 
   init() {
-
-    console.log("Animation Initialized")
-  
+    console.log('Animation Initialized');
   }
 
-  setUpAnimation()
-  {
-    console.log("setUpAnimation()");
+  /**
+   * Scan .animateMe elements, compute their initial positions (off-screen or faded),
+   * then store the target end-state in data-animation as "left|top|opacity".
+   */
+  setUpAnimation() {
+    console.log('setUpAnimation()');
 
-    let _this = this;
+    const win = this._getWindowMetrics();
 
-    $(".animateMe").each(function(){
+    $('.animateMe').each((_, el) => {
+      const $el = $(el);
 
-        let eWidth = $(this).width();   
-        let eHeight = $(this).height();
-        let eTop = $(this).offset().top; 
-        let eLeft = $(this).offset().left;
+      // Current element metrics relative to the document
+      const elm = this._getElementMetrics($el);
 
-        let wHeight = $("#courseWindow").height();
-        let wWidth = $("#courseWindow").width();
-        let wTop = $("#courseWindow").offset().top;
-        let wLeft = $("#courseWindow").offset().left;
+      // Starting offsets (where the element should start before animating in)
+      const start = this._computeStartOffsets($el, win, elm);
 
-        let newTop = 0;
-        let newLeft = 0;
+      // Target end-state (where the element should end after animation)
+      const target = this._computeTargetOffsets($el, win, elm);
 
-        let goToTop = 0;
-        let goToLeft = 0;
-        let goToOpacity = 1;
+      // Fade presets based on classes (does not change the target; only start)
+      this._applyFadePreset($el);
 
-        //slideInBottom
-        if($(this).hasClass("slideInBottom"))
-        {
-            newTop = (wHeight - (eTop - wTop));
-        }
+      // Apply starting position and make visible
+      this._setInitialStyles($el, start);
 
-        //slideInRight
-        if($(this).hasClass("slideInRight"))
-        {
-            newLeft = (wWidth - (eLeft - wLeft));
-        }
-
-        //slideInTop
-        if($(this).hasClass("slideInTop"))
-        {
-            newTop = 0 - ((eTop - wTop) + eHeight);
-        }
-
-        //slideInLeft
-        if($(this).hasClass("slideInLeft"))
-        {
-            newLeft = 0 - ((eLeft - wLeft) + eWidth);
-        }
-
-        //slideOutLeft
-        if($(this).hasClass("slideOutLeft"))
-        {
-            newLeft = 0;
-            goToLeft = 0 - ((eLeft - wLeft) + eWidth);
-        }
-
-        //slideOutRight
-        if($(this).hasClass("slideOutRight"))
-        {
-            newLeft = 0;
-            goToLeft = (wWidth - (eLeft - wLeft));
-        }
-        
-        //slideOutTop
-        if($(this).hasClass("slideOutTop"))
-        {
-            newTop = 0;
-            goToTop = 0 - ((eTop - wTop) + eHeight);
-        }
-
-        //slideOutBottom
-        if($(this).hasClass("slideOutBottom"))
-        {
-            newTop = 0;
-            goToTop = (wHeight - (eTop - wTop));
-        }
-
-        //fadeIn
-        if($(this).hasClass("fadeIn"))
-        {
-            $(this).css("opacity", 0);
-        }
-
-        $(this).css("top", newTop);
-        $(this).css("left", newLeft);
-
-        $(this).css("visibility", "visible");
-
-        $(this).attr("data-animation", goToLeft + "|" + goToTop + "|" + goToOpacity);
-
-        //_this.playAnimation($(this).attr("id"));
-
+      // Persist the target as a simple pipe string: "left|top|opacity"
+      this._writeAnimationData($el, target);
     });
   }
 
-  playAnimation(element)
-  {
+  /**
+   * Play one element's animation. Will honor optional data attributes:
+   *   data-delay, data-duration, data-easing, data-animationchain
+   * Uses the data-animation string created in setUpAnimation().
+   */
+  playAnimation(element) {
+    console.log('Animate ID: ' + element);
 
-    console.log("Animate ID: " + element);
+    const $box = $('#' + element);
+    if ($box.length === 0) return;
 
-    const $box = $("#" + element);
+    // Parse data-animation → { left, top, opacity }
+    const anim = this._readAnimationData($box); // { left, top, opacity }
 
-    let anim = $box.data('animation').split("|");
+    // Optional per-element overrides
+    const delay   = this._toInt($box.data('delay'), 0);
+    const duration =
+      this._prefersReducedMotion() ? 0 : this._toInt($box.data('duration'), 1000);
+    const easing  = ($box.data('easing') || 'swing');            // 'swing' | 'linear' | (jQuery UI easings if loaded)
+    const chain   = $box.data('animationchain') || null;
 
-    let delay = $box.data('delay') || 0;
-
-    let chain = $box.data('animationchain') || null
-
-    // Optional: delay before the animation starts (in the "fx" queue)
-    $box
-    .delay(delay) // 200ms delay; remove if you don't need it
-
-    // Animate with options object
-    .animate(
-        // --- properties to animate ---
-        { left: anim[0], top: anim[1], opacity: anim[2] },
-
-        // --- options ---
-        {
-        duration: 1000,         // ms
-        easing: 'swing',        // 'swing' | 'linear' (more easings if jQuery UI is loaded)
-
-        // Per-property easing (overrides the main easing for specific props)
-        specialEasing: {
-            left: 'linear',       // left uses linear easing
-            top:  'linear'         // top uses swing
-            // With jQuery UI you can use: 'easeInOutQuad', etc.
-        },
-
-        queue: 'fx',            // which queue to use; set false to run immediately (no queue)
-
-        // Fires once, when the animation is about to start
-        start: function (animation) {
-            // console.log('start', animation);
-        },
-
-        // Fires for every animation tick (per property value update)
-        step: function (now, tween) {
-            // now  = current value, tween.prop = 'left' | 'top' | ...
-            // e.g., console.log('stepping', tween.prop, now);
-        },
-
-        // Fires repeatedly with overall progress across all properties
-        progress: function (animation, progress, remainingMs) {
-            // progress = 0..1, remainingMs ~ time left
-            // e.g., update a progress bar
-        },
-
-        // Fires once when this specific animation completes successfully
-        complete: () => {
-          console.log('Finished moving in (complete)');
-          if (chain) {
-            this.playAnimation(chain);  // now works
-          }
-        },
-
-        // jQuery 3 adds these Deferred-style hooks:
-        done: function (animation, jumpedToEnd) {
-            // called on success; jumpedToEnd === true if .stop(true, true) forced completion
-        },
-        fail: function (animation, jumpedToEnd) {
-            // called if animation was stopped without jumping to end
-        },
-        always: function (animation, jumpedToEnd) {
-            // called whether done or fail (like finally)
+    // Optional: per-property easing can also be provided via data-* if you want later
+    const options = {
+      duration,
+      easing,
+      specialEasing: { left: 'linear', top: 'linear' },
+      queue: 'fx',
+      start: function () {},
+      step: function (now, tween) {},
+      progress: function (animation, progress, remainingMs) {},
+      complete: () => {
+        if (chain) {
+          this.playAnimation(chain); // continue the chain
         }
-        }
-    );
+      },
+      done: function () {},
+      fail: function () {},
+      always: function () {}
+    };
 
+    // Make sure CSS left/top have numeric baselines if you animate those properties
+    if ($box.css('left') === 'auto') $box.css('left', 0);
+    if ($box.css('top')  === 'auto') $box.css('top',  0);
+
+    // Run
+    $box.delay(delay).animate(anim, options);
+  }
+
+  /* =========================================================
+     Helpers — small, focused utilities (no API changes above)
+     ========================================================= */
+
+  // Window (courseWindow) metrics used for slides in/out
+  _getWindowMetrics() {
+    const $w = this.$win;
+    return {
+      width:  $w.width(),
+      height: $w.height(),
+      top:    $w.offset().top,
+      left:   $w.offset().left
+    };
+  }
+
+  // Element metrics used for distance calculations
+  _getElementMetrics($el) {
+    return {
+      width:  $el.outerWidth(),
+      height: $el.outerHeight(),
+      top:    $el.offset().top,
+      left:   $el.offset().left
+    };
+  }
+
+  /**
+   * Determine where the element should start (before animation begins),
+   * based on slideIn* classes. Defaults to (0,0).
+   */
+  _computeStartOffsets($el, win, elm) {
+    let startTop = 0;
+    let startLeft = 0;
+
+    if ($el.hasClass('slideInBottom')) {
+      // Move it below the window by the distance from element to window top
+      startTop = (win.height - (elm.top - win.top));
+    }
+    if ($el.hasClass('slideInRight')) {
+      startLeft = (win.width - (elm.left - win.left));
+    }
+    if ($el.hasClass('slideInTop')) {
+      startTop = -((elm.top - win.top) + elm.height);
+    }
+    if ($el.hasClass('slideInLeft')) {
+      startLeft = -((elm.left - win.left) + elm.width);
+    }
+
+    return { top: startTop, left: startLeft };
+  }
+
+  /**
+   * Determine the animation target offsets based on slideOut* classes.
+   * Defaults to staying in place (0,0) with opacity 1.
+   */
+  _computeTargetOffsets($el, win, elm) {
+    let goToTop = 0;
+    let goToLeft = 0;
+    let goToOpacity = 1;
+
+    if ($el.hasClass('slideOutLeft')) {
+      goToLeft = -((elm.left - win.left) + elm.width);
+    }
+    if ($el.hasClass('slideOutRight')) {
+      goToLeft = (win.width - (elm.left - win.left));
+    }
+    if ($el.hasClass('slideOutTop')) {
+      goToTop = -((elm.top - win.top) + elm.height);
+    }
+    if ($el.hasClass('slideOutBottom')) {
+      goToTop = (win.height - (elm.top - win.top));
+    }
+
+    if ($el.hasClass('fadeOut')) {
+      // Start fully visible; end at 0
+      $el.css('opacity', 1);
+      goToOpacity = 0;
+    }
+
+    return { left: goToLeft, top: goToTop, opacity: goToOpacity };
+  }
+
+  /**
+   * For fadeIn, we set starting opacity to 0.
+   * (Your original logic treated fadeOut separately in target computation.)
+   */
+  _applyFadePreset($el) {
+    if ($el.hasClass('fadeIn')) {
+      $el.css('opacity', 0);
+    }
+  }
+
+  // Apply initial styles before animation
+  _setInitialStyles($el, start) {
+    $el.css({
+      top:  start.top,
+      left: start.left,
+      visibility: 'visible'
+    });
+  }
+
+  // Persist target into data-animation pipe string (left|top|opacity)
+  _writeAnimationData($el, target) {
+    const str = [target.left, target.top, target.opacity].join('|');
+    $el.attr('data-animation', str);
+  }
+
+  // Read data-animation pipe string and return an object compatible with .animate()
+  _readAnimationData($el) {
+    const raw = String($el.data('animation') || '0|0|1');
+    const parts = raw.split('|');
+
+    // Convert numeric-looking values; pass through strings like "+=50"
+    const parseVal = (v) => {
+      const n = parseFloat(v);
+      return isNaN(n) ? v : n;
+    };
+
+    return {
+      left:    parseVal(parts[0]),
+      top:     parseVal(parts[1]),
+      opacity: parseVal(parts[2])
+    };
+  }
+
+  _toInt(v, fallback) {
+    const n = parseInt(v, 10);
+    return isNaN(n) ? fallback : n;
+  }
+
+  _prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 }
-
-
