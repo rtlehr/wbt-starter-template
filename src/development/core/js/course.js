@@ -62,8 +62,10 @@ class Course {
 
     }
 
+    this.animation = new Animation();
+
     // Now safe to init navigation
-    this.navigation = new Navigation(this, this.modules);
+    this.navigation = new Navigation(this, this.animation, this.modules);
     this.navigation.init();
 
     this.gotoPage(0, 0);
@@ -81,6 +83,11 @@ class Course {
   gotoPage(mod, page) 
   {
     this.navigation.loadPage(mod, page);
+  }
+
+  playAnimation(element)
+  {
+    this.navigation.playAnimation(element);
   }
 
   getTotalMods()

@@ -1,6 +1,8 @@
 class Navigation {
-  constructor(course, modules) {
+  constructor(course, animation, modules) {
+
     this.course  = course;
+    this.animation = animation;
     this.modules = modules;
 
     // Dependencies
@@ -122,11 +124,19 @@ class Navigation {
     console.log('addPageFunctionality() called');
     this.modalWindow.addModal();
     this.toolTip.addToolTip();
+    this.animation.setUpAnimation();
   }
 
   adjustToolTip()
   {
     this.toolTip.adjustForScreenSize();
+  }
+
+  playAnimation(element)
+  {
+
+    this.animation.playAnimation(element);
+
   }
 
   /* ---------- Helpers ---------- */

@@ -10,6 +10,18 @@
 
 <p><a id="pageTemplate" class="modalWindow" href="#" data-width="400" data-height="200">Click to show modal window</a></p>
   <p><a href="#" class="has-tip" data-tip="This is a tool tip.">Tool Tip</a></p>
+
+  <p>&nbsp;</p>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div id="animated" class="animateMe slideInTop" style="background-color: aqua;">ANIMATION</div>
+    </div>
+    <div class="col-md-6">
+      <div id="animatedTwo" class="animateMe slideInBottom" data-delay="1000" style="background-color: yellowgreen;">ANIMATION Two</div>
+    </div>
+  </div>
+
 </section>
 
 <!-- MODAL WINDOW -->
@@ -33,6 +45,10 @@
   function finishedMovingIn() {
     
     console.log("finishedMovingIn function called");
+
+    course.playAnimation("animated");
+
+    course.playAnimation("animatedTwo");
 
   }
 
