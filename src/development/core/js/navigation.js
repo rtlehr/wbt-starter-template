@@ -5,6 +5,8 @@ class Navigation {
     this.animation = animation;
     this.modules = modules;
 
+    this.lmsManagement = new lmsManagement();
+    
     // Dependencies
     this.modalWindow = new modalWindow();
     this.toolTip     = new toolTip();
