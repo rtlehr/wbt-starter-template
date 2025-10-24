@@ -123,5 +123,37 @@
 .animateMe
 {
   position: relative;
+}
+
+.slideInBottom
+{
+  visibility: hidden;
+}
+
+.slideInRight
+{
+  visibility: hidden;
+}
+
+.slideInTop
+{
+  visibility: hidden;
+}
+
+.slideInLeft
+{
+  visibility: hidden;
+}
+
+.slideOutLeft{}
+
+.slideOutRight{}
+
+.slideOutTop{}
+
+.fadeOut{}
+
+.fadeIn
+{
   visibility: hidden;
 }
