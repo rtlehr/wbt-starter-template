@@ -15,14 +15,14 @@
 
   <div class="row">
     <div class="col-md-6">
-      <div id="animated" class="animateMe slideInLeft fadeIn" data-animationchain="animatedTwo" style="background-color: aqua;">ANIMATION</div>
+      <div id="animated" class="" data-animationchain="animatedTwo" style="background-color: aqua;">ANIMATION</div>
     </div>
     <div class="col-md-6">
-      <div id="animatedTwo" class="animateMe slideOutRight fadeOut" data-delay="1000" style="background-color: yellowgreen;">ANIMATION Two</div>
+      <div id="animatedTwo" class="" data-delay="1000" style="background-color: yellowgreen;">ANIMATION Two</div>
     </div>
   </div>
 
-  <div id="bob" class="animateMe" style="position: absolute; top: 200px; left: 200px; height: 100px; width: 100px; background-color: blueviolet;">Bob</div>
+  <div id="bob" class="" style="position: relative; top: 200px; left: 200px; height: 100px; width: 100px; background-color: blueviolet;">Bob</div>
 </section>
 
 <!-- MODAL WINDOW -->
@@ -47,12 +47,24 @@
     
     console.log("finishedMovingIn function called");
 
-    course.playAnimation("animated");
+    //course.playAnimation("animated");
 
     //course.playAnimation("bob");
 
     //course.playAnimation("animatedTwo");
 
+    gsap.to("#bob", {
+        x: 500,            // move horizontally
+        duration: 1.2,     // seconds
+        ease: "power2.out" // easing
+      });
+
+
+      gsap.to("#animatedTwo", {
+        x: 500,            // move horizontally
+        duration: 1.2,     // seconds
+        ease: "power2.out" // easing
+      });
   }
 
 </script>

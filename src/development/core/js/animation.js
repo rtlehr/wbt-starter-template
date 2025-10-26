@@ -19,8 +19,12 @@ class Animation {
 
     let _this = this;
 
-    $(".animateMe").each(function(){
 
+
+  //return { top: a.top - b.top, left: a.left - b.left };
+
+    $(".animateMe").each(function(){
+    
         let eWidth = $(this).width();   
         let eHeight = $(this).height();
         let eTop = $(this).offset().top; 
