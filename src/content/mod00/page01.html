@@ -22,21 +22,22 @@
 
   <div class="row">
     <div class="col-md-6">
-      <div id="animated" class="" data-animationchain="animatedTwo" style="background-color: aqua;">ANIMATION</div>
+      <div id="animated" class="animateMe slideInTop" style="background-color: aqua;">ANIMATION</div>
     </div>
     <div class="col-md-6">
-      <div id="animatedTwo" class="" data-delay="1000" style="background-color: yellowgreen;">ANIMATION Two</div>
+      <div id="animatedTwo" class="animateMe slideInBottom" data-chain="#mybox" data-delay="1" style="background-color: yellowgreen;">ANIMATION Two</div>
     </div>
   </div>
 
   <div id="box" class="" style="position: relative; top: -200px; left: -200px; height: 100px; width: 100px; background-color: blueviolet;">Bob</div>
 
-
-  <div id="mybox"
-     data-animation='{"left": 1300, "top": 0, "opacity": 0.5, "duration": 0.6, "delay": 0.1}'
+<div id="mybox"
      data-startFunction="startAnimateFunction"
      data-endFunction="endAnimateFunction"
-     style="width:120px;height:80px;background:#4f8ef7;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+     data-delay="0"
+     data-duration="1"
+     style="width:120px;height:80px;background-color:brown;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;"
+     class="animateMe slideOutRight fadeOut">
   Hello
 </div>
 
@@ -89,7 +90,11 @@
 
         //animateMe('#mybox');
 
-        course.playAnimation("#mybox");
+        //course.playAnimation("#mybox");
+
+        course.playAnimation("#animated");
+
+        course.playAnimation("#animatedTwo");
 
   }
 
