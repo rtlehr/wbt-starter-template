@@ -72,6 +72,11 @@ class Animation {
   setUpAnimation() {
     console.log("setUpAnimation()");
 
+    if(mqPhone.matches)
+    {
+        return;
+    }
+
     $(".animateMe").each(function(){
       let eWidth = $(this).width();   
       let eHeight = $(this).height();
@@ -165,6 +170,12 @@ class Animation {
   }
 
   playAnimation(target) {
+
+    if(mqPhone.matches)
+    {
+        return;
+    }
+    
     const $el = (typeof target === 'string') ? $(target).first() : $(target);
     if (!$el || !$el.length) return;
 
