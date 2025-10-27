@@ -112,85 +112,106 @@ class Animation {
     });
   }
 
-  playAnimation(element)
+  playAnimation(target) 
   {
+    console.log("---animateMe called:", target);
 
-    console.log("Animate ID: " + element);
+    var $el = (typeof target === 'string') ? $(target).first() : $(target);
+    if (!$el || !$el.length) return;
 
-    const $box = $("#" + element);
+    var cfg = this.parseAnimationJSON($el);
 
-    let anim = $box.data('animation').split("|");
+    console.log("data-animation:", $el.data('animation'));
 
-    let delay = $box.data('delay') || 0;
+    // Options with defaults
+    var left     = Number(cfg.left || 0);        // px
+    var top      = Number(cfg.top  || 0);        // px
+    var opacity  = (cfg.opacity == null) ? null : Number(cfg.opacity);
+    var duration = Number(cfg.duration || 0.6);   // seconds
+    var delay    = Number(cfg.delay    || 0);     // seconds
+    var easing   = cfg.easing || 'ease';
 
-    let chain = $box.data('animationchain') || null
+    // Optional callback names on the element
+    var startFnName = $el.attr('data-startFunction');
+    var endFnName   = $el.attr('data-endFunction');
+    var startFn = (startFnName && window[startFnName]) || null;
+    var endFn   = (endFnName   && window[endFnName])   || null;
 
-    // Optional: delay before the animation starts (in the "fx" queue)
-    $box
-    .delay(delay) // 200ms delay; remove if you don't need it
+    // Build transition CSS
+    var props = (opacity == null) ? 'transform' : 'transform, opacity';
+    $el.css({
+        transitionProperty: props,
+        transitionDuration: duration + 's',
+        transitionTimingFunction: easing,
+        transitionDelay: delay + 's'
+    });
 
-    // Animate with options object
-    .animate(
-        // --- properties to animate ---
-        { left: anim[0], top: anim[1], opacity: anim[2] },
+    // Call start just before triggering transition
+    if (typeof startFn === 'function') startFn($el[0]);
 
-        // --- options ---
-        {
-        duration: 1000,         // ms
-        easing: 'swing',        // 'swing' | 'linear' (more easings if jQuery UI is loaded)
+    // Force reflow so the transition will run
+    // (jQuery doesn't have a reflow helper; read offsetWidth)
+    void $el[0].offsetWidth;
 
-        // Per-property easing (overrides the main easing for specific props)
-        specialEasing: {
-            left: 'linear',       // left uses linear easing
-            top:  'linear'         // top uses swing
-            // With jQuery UI you can use: 'easeInOutQuad', etc.
-        },
+    // Apply final state
+    $el.css('transform', 'translate(' + left + 'px,' + top + 'px)');
+    if (opacity != null) $el.css('opacity', String(opacity));
 
-        queue: 'fx',            // which queue to use; set false to run immediately (no queue)
+    // End handler: fires once, for transform/opacity only
+    var onEnd = function (ev) {
+        if (ev && ev.originalEvent && !/^(transform|opacity)$/.test(ev.originalEvent.propertyName)) {
+        return; // ignore other transitioned properties
+        }
+        $el.off('transitionend', onEnd);
 
-        // Fires once, when the animation is about to start
-        start: function (animation) {
-            // console.log('start', animation);
-        },
+        // Optional cleanup of transition inline styles
+        $el.css({
+        transitionProperty: '',
+        transitionDuration: '',
+        transitionTimingFunction: '',
+        transitionDelay: ''
+        });
 
-        // Fires for every animation tick (per property value update)
-        step: function (now, tween) {
-            // now  = current value, tween.prop = 'left' | 'top' | ...
-            // e.g., console.log('stepping', tween.prop, now);
-        },
+        if (typeof endFn === 'function') endFn($el[0]);
+    };
 
-        // Fires repeatedly with overall progress across all properties
-        progress: function (animation, progress, remainingMs) {
-            // progress = 0..1, remainingMs ~ time left
-            // e.g., update a progress bar
-        },
+    // Use .one to auto-remove after first relevant end event
+    $el.one('transitionend', onEnd);
+    }
 
-        // Fires once when this specific animation completes successfully
-        complete: () => {
-          console.log('Finished moving in (complete)');
-          if (chain) {
-            this.playAnimation(chain);  // now works
-          }
-        },
+    parseAnimationJSON($el) {
+        // Get raw attribute exactly as the browser sees it
+        var raw = $el.attr('data-animation');
+        console.log('data-animation (raw):', raw, 'length:', raw ? raw.length : 0);
 
-        // jQuery 3 adds these Deferred-style hooks:
-        done: function (animation, jumpedToEnd) {
-            // called on success; jumpedToEnd === true if .stop(true, true) forced completion
-        },
-        fail: function (animation, jumpedToEnd) {
-            // called if animation was stopped without jumping to end
-        },
-        always: function (animation, jumpedToEnd) {
-            // called whether done or fail (like finally)
+        if (!raw) return {};
+
+        // Normalize: convert &quot; → " and strip smart quotes
+        raw = raw
+            .replace(/&quot;/g, '"')
+            .replace(/[“”]/g, '"')
+            .replace(/[‘’]/g, "'")
+            .trim();
+
+        // If someone used semicolons as separators, make them commas
+        // (only between value pairs: ; followed by optional space + ")
+        if (raw.indexOf(';') !== -1) {
+            raw = raw.replace(/;\s*(?=")/g, ',');
+        }
+
+        try {
+            return JSON.parse(raw);
+        } catch (e) {
+            console.error('Invalid data-animation JSON after normalization:', raw, e);
+            return {};
         }
         }
-    );
 
-  }
 }
 
 
 // jQuery version
+/*
 function animateMe(target) {
   console.log("---animateMe called:", target);
 
@@ -284,5 +305,5 @@ function parseAnimationJSON($el) {
     return {};
   }
 }
-
+*/
 
