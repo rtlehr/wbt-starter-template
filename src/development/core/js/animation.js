@@ -52,8 +52,6 @@ class Animation {
         if($(this).hasClass("slideInRight"))
         {
             newLeft = (wWidth - (eLeft - wLeft));
-
-            console.log("set slideInRight: " + newLeft);
         }
 
         //slideInTop
@@ -66,8 +64,6 @@ class Animation {
         if($(this).hasClass("slideInLeft"))
         {
             newLeft = 0 - ((eLeft - wLeft) + eWidth);
-
-            console.log("set slideInLeft: " + newLeft);
         }
 
         //slideOutLeft
@@ -213,7 +209,6 @@ class Animation {
             if (typeof endFn === 'function') endFn($el[0]);
 
             if (chain) {
-                console.log("Chain:", chain);
                 this.playAnimation(chain);   // <-- works: 'this' is your object
             }
         };
