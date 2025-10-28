@@ -60,7 +60,7 @@ class Navigation {
       this._loadInto(this.$currentPage, url, () => {
         this._callPageLoadedHook();
         this.interface.setInterface();
-        this.addPageFunctionality();
+        this.cleanCourse();
       });
       return;
     }
@@ -88,9 +88,10 @@ class Navigation {
       // update UI/state
       this.interface.setInterface();
       this.interface.setPageNumber(this.modules[curMod].getTotalPages());
-      this.addPageFunctionality();
+      this.cleanCourse();
 
       this._callHookIfExists('finishedMovingIn');
+
     });
   }
 
@@ -122,6 +123,22 @@ class Navigation {
     }
   }
 
+   cleanCourse()
+  {
+    //remove uneeded DIVS
+    $(".ui-widget-content").each(function(){
+
+      if(!$(this).hasClass("modalKeepMe"))
+      {
+        $(this).remove();
+      }
+
+    });
+
+    this.addPageFunctionality();
+    
+  }
+
   addPageFunctionality() {
     console.log('addPageFunctionality() called');
     this.modalWindow.addModal();
@@ -140,6 +157,7 @@ class Navigation {
     this.animation.playAnimation(element);
 
   }
+
 
   /* ---------- Helpers ---------- */
 

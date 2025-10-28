@@ -1,0 +1,96 @@
+/* =========================
+   Developer Tools (top-right)
+   ========================= */
+
+/* Container fixed in the upper-right corner */
+.dev-tools {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+  /* Keep it small until focused/hovered */
+  transform: translateX(calc(100% - 44px)); /* show only the tab width */
+  transition: transform 200ms ease;
+  visibility: hidden;
+}
+
+/* Reveal on hover or keyboard focus within */
+.dev-tools:hover,
+.dev-tools:focus-within {
+  transform: translateX(0);
+}
+
+/* The small tab that’s always visible */
+.dev-tools .dev-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px 0 0 8px;
+  background: #2b2f38;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  border: 1px solid rgba(0,0,0,.15);
+  border-right: none;
+}
+
+/* The flyout list panel */
+.dev-tools .dev-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  min-width: 220px;
+  max-height: 80vh;
+  overflow: auto;
+
+  background: #ffffff;
+  border: 1px solid #d9dee6;
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+
+  /* Visually attach to the tab */
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* Items */
+.dev-tools .dev-list li + li {
+  margin-top: 4px;
+}
+.dev-tools .dev-list a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #1f2937;
+  background: transparent;
+}
+.dev-tools .dev-list a:hover,
+.dev-tools .dev-list a:focus {
+  background: #eef2ff;
+  outline: 0;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .dev-tools {
+    transition: none;
+  }
+}
+
+/* Hide in print */
+@media print {
+  .dev-tools { display: none !important; }
+}
+
+/* High-contrast tweak (optional) */
+@media (forced-colors: active) {
+  .dev-tools .dev-tab,
+  .dev-tools .dev-list {
+    border: 1px solid ButtonText;
+  }
+}

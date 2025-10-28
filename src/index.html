@@ -28,6 +28,19 @@
       <a class="skip-link" href="#courseWindow">Skip to course window</a>
     </nav>
 
+    <!-- Developer Tools (appears on hover or keyboard focus) -->
+    <nav id="dev-tools" class="dev-tools" aria-label="Developer quick actions">
+      <a class="dev-tab" href="#dev-tools-list" aria-controls="dev-tools-list" aria-expanded="false">
+        Dev
+      </a>
+      <ul id="dev-tools-list" class="dev-list">
+        <!-- Use real links or data-action hooks for JS later -->
+        <li><a href="#!" id="reload">Reload page</a></li>
+        <li><a href="#!" data-action="toggle-outlines">Toggle outlines</a></li>
+        <li><a href="#!" data-action="show-grid">Show grid overlay</a></li>
+        <li><a href="#!" data-action="reset-progress">Reset course progress</a></li>
+      </ul>
+    </nav>
 
     <!-- =========================
          Header / Navigation
@@ -60,17 +73,6 @@
               <li class="module"><a href="#home">Module 1</a></li>
               <li class="module notAvailableModule"><a href="#features">Module 2</a></li>
               <li class="module notAvailableModule"><a href="#ui-demo">Module 3</a></li>
-              <!--<li class="module dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  More <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a href="#about">About</a></li>
-                  <li><a href="#contact">Contact</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#docs">Docs</a></li>
-                </ul>
-              </li>-->
             </ul>
 
             <!-- Right side menu -->

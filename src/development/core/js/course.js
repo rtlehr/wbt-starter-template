@@ -1,6 +1,8 @@
 let curMod = 0;
 let curPage = 0;
+let devMode = true;
 let course;
+let developmentMenu;
 
 // define your queries once
 const mqPhone   = window.matchMedia('(max-width: 575.98px)');
@@ -25,6 +27,17 @@ $(function () {
 
   course = new Course();
   course.init();
+
+  if(devMode)
+  {
+    developmentMenu = new DevelopmentMenu(course);
+    developmentMenu.init();
+    $("#dev-tools").css("visibility", "visible");
+  }
+  else
+  {
+    $("#dev-tools").remove();
+  }
 
   // Use arrow functions so `this` = outer scope (but we don't need `this` anyway)
   $('#previousButton').on('click', (e) => {
@@ -108,5 +121,6 @@ class Course {
 
   }
 
+ 
 }
 
