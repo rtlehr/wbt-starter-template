@@ -14,8 +14,6 @@ const mqDesktop = window.matchMedia('(min-width: 992px)');
 // a single function to run whenever the breakpoint might change
 function handleBreakpointChange() {
 
-  console.log(`isPhone: ${mqPhone.matches}, isTablet: ${mqTablet.matches}, isDesktop: ${mqDesktop.matches}`);
-
   course.screenSizeChange();
 
 }
@@ -47,14 +45,12 @@ $(function () {
   // Use arrow functions so `this` = outer scope (but we don't need `this` anyway)
   $('#previousButton').on('click', (e) => {
     e.preventDefault();
-    console.log('previousButton clicked!');
     course.playSound("buttonClick");
     course.gotoPreviousPage();      // <- use captured variable
   });
 
   $('#nextButton').on('click', (e) => {
     e.preventDefault();
-    console.log('nextButton clicked!');
     course.playSound("buttonClick");
     course.gotoNextPage();          // <- use captured variable
   });

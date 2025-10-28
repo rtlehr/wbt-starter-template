@@ -70,7 +70,6 @@ class Animation {
   // -------------------------------------------------------------------------
 
   setUpAnimation() {
-    console.log("setUpAnimation()");
 
     if(mqPhone.matches)
     {
@@ -197,7 +196,7 @@ class Animation {
     const endFn   = (endFnName   && window[endFnName])   || null;
 
     const beginSound = $el.attr('data-beginSound');
-    console.log("__beginSound: " + beginSound);
+
     const endSound = $el.attr('data-endSound');
 
     // ACCESSIBILITY: if we’re going to show (opacity > 0), make it visible and restore focusability
@@ -207,7 +206,6 @@ class Animation {
     }
 
     if (beginSound != undefined) { 
-      console.log("in the beginSound IF: " + beginSound);
       course.playSound(beginSound); 
     }
     

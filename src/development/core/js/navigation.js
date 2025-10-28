@@ -110,7 +110,6 @@ class Navigation {
   }
 
   adjustContentVisibility() {
-    console.log('adjustContentVisibility() called');
 
     var leftStr = this.$row.css('left'); // e.g. "-1200px"
 
@@ -143,7 +142,6 @@ class Navigation {
   }
 
   addPageFunctionality() {
-    console.log('addPageFunctionality() called');
     this.modalWindow.addModal();
     this.toolTip.addToolTip();
     this.animation.setUpAnimation();
@@ -210,8 +208,6 @@ class Navigation {
   {
 
     this.pageName = this.modules[mod].getId() + "-" + this.modules[mod].pages[page].getId();
-
-    console.log("this.pageName: " + this.pageName);
 
   }
 

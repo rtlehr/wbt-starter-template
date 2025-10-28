@@ -41,22 +41,3 @@ class JsonLoader {
   }
 }
 
-// Export if using ES modules or bundlers
-// export default JsonLoader;
-
-// Example usage (jQuery ready)
-/*
-$(async function () {
-  const loader = new JsonLoader("data/sample.json");
-
-  try {
-    const jsonData = await loader.load();
-    console.log("✅ JSON Loaded:", jsonData);
-
-    // Display in browser (for testing)
-    $("#output").text(JSON.stringify(jsonData, null, 2));
-  } catch (err) {
-    $("#output").text("Failed to load JSON file.");
-  }
-});
-*/

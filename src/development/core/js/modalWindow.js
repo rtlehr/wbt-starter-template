@@ -12,7 +12,6 @@ class modalWindow {
 
   addModal() {
     const self = this;
-    console.log("Adding modal window functionality");
 
     // Sort triggers by order
     this.$triggers = $('.modalWindow').toArray().sort((a, b) => {
@@ -83,7 +82,6 @@ class modalWindow {
   }
 
   _nudge($el) {
-    console.log("adding nudge: ");
     $el.addClass('nudge');
     setTimeout(() => $el.removeClass('nudge'), 250);
   }

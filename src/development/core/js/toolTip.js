@@ -18,8 +18,6 @@ class toolTip {
     ]
   });
 
-  console.log("mqPhone.matches: " + mqPhone.matches);
-
   //if (mqPhone.matches) {
     // Mobile/touch: open dialog on tap
     $('.has-tip')
@@ -38,7 +36,6 @@ class toolTip {
 
  // } else {
     // Desktop/hover: standard jQuery UI tooltip
-    console.log("in the desktop if");
     $('.has-tip').tooltip({
       items: '.has-tip',
       content: function () { return $(this).data('tip') || $(this).attr('title') || ''; },
