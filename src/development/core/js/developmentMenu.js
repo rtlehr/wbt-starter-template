@@ -9,12 +9,17 @@ class DevelopmentMenu {
 
     $("#reload").on('click', (event) => {
       event.preventDefault();
-      this.reloadPage();   // <-- 'this' is the class instance
+      this.reloadPage();  
     });
 
     $("#switchModes").on('click', (event) => {
       event.preventDefault();
-      this.switchModes();   // <-- 'this' is the class instance
+      this.switchModes();  
+    });
+
+    $('#dev-go').on('click', (event) => {
+      event.preventDefault();
+      this.goToPage();  
     });
     
   }
@@ -39,6 +44,14 @@ class DevelopmentMenu {
       $("#courseMode").html("Browse Mode");
     }
 
+  }
+
+  goToPage()
+  {
+      const mod  = $('#dev-mod').val().trim();
+      const page = $('#dev-page').val().trim();
+
+      this.course.gotoPage((mod-1), (page-1));
   }
 
 }

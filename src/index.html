@@ -39,6 +39,17 @@
         <li><a href="#!" id="switchModes">Switch Modes</a></li>
         <li><a href="#!" data-action="show-grid">Show grid overlay</a></li>
         <li><a href="#!" data-action="reset-progress">Reset course progress</a></li>
+
+        <!-- New: Go To Page controls -->
+        <li class="dev-goto">
+          <label for="dev-mod" class="sr-only">Module</label>
+          <input id="dev-mod" class="dev-input" type="text" inputmode="numeric" pattern="[0-9]{1,2}"
+                maxlength="2" size="2" aria-label="Module" placeholder="M">
+          <label for="dev-page" class="sr-only">Page</label>
+          <input id="dev-page" class="dev-input" type="text" inputmode="numeric" pattern="[0-9]{1,2}"
+                maxlength="2" size="2" aria-label="Page" placeholder="P">
+          <a href="#!" id="dev-go">Go To Page</a>
+        </li>
       </ul>
     </nav>
 

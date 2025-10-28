@@ -71,7 +71,6 @@ class Interface {
 
   checkViewedCount()
   {
-    console.log("notViewed count: " + $(".notViewed").length);
 
     this.setInterface();
 
