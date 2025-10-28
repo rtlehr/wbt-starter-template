@@ -75,7 +75,7 @@ class Interface {
 
     this.setInterface();
 
-    if($(".notViewed").length > 0)
+    if(($(".notViewed").length > 0) && creditMode)
     {
       this.turnOffPreviousButton();
       this.turnOffNextButton();

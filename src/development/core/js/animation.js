@@ -9,7 +9,7 @@ class Animation {
   }
 
   init() {
-    console.log("Animation Initialized")
+    console.log("Animation Initialized")    
   }
 
   // --- Helpers (A11y + utils) ---------------------------------------------
@@ -82,10 +82,14 @@ class Animation {
       let eTop = $(this).offset().top; 
       let eLeft = $(this).offset().left;
 
-      let wHeight = $("#courseWindow").height();
-      let wWidth = $("#courseWindow").width();
-      let wTop = $("#courseWindow").offset().top;
-      let wLeft = $("#courseWindow").offset().left;
+      console.log("animation Pane: " + $(this).attr("data-animationPane"));
+
+      let cW = $(this).attr("data-animationPane") || "#courseWindow";
+
+      let wHeight = $(cW).height();
+      let wWidth = $(cW).width();
+      let wTop = $(cW).offset().top;
+      let wLeft = $(cW).offset().left;
 
       let newTop = 0;
       let newLeft = 0;
@@ -311,4 +315,17 @@ class Animation {
       return {};
     }
   }
+
+  // Resolve "Foo.bar.baz" to window.Foo.bar.baz if it’s a function
+  _resolveFn(path) {
+    if (!path) return null;
+    let ctx = window;
+    for (const part of String(path).split('.')) {
+      ctx = (ctx && ctx[part]) || null;
+      if (ctx == null) return null;
+    }
+    return (typeof ctx === 'function') ? ctx : null;
+  }
+
+
 }

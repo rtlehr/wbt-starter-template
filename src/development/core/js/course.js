@@ -29,7 +29,12 @@ $(function () {
   course.init();
 
   sound = new Sound(course);
-  course.addSound();
+
+  course.addSound("buttonClick", "content/audio/computer-mouse-click.mp3");
+  course.addSound("holdMyBeer", "content/audio/hold-my-beerwatch-this.mp3");
+  course.addSound("piano", "content/audio/piano_with_horror_me.mp3");
+  course.addSound("waitAMinute", "content/audio/wait-a-minute-who-are-you.mp3");
+  course.addSound("wow", "content/audio/wow.mp3");
 
   if(devMode)
   {
@@ -157,11 +162,9 @@ class Course {
 
   addSound(soundName, soundURL)
   {
-    sound.add("buttonClick", "content/audio/computer-mouse-click.mp3");
-    sound.add("holdMyBeer", "content/audio/hold-my-beerwatch-this.mp3");
-    sound.add("piano", "content/audio/piano_with_horror_me.mp3");
-    sound.add("waitAMinute", "content/audio/wait-a-minute-who-are-you.mp3");
-    sound.add("wow", "content/audio/wow.mp3");
+
+    sound.add(soundName, soundURL);
+
   }
 
   playSound(soundName)
