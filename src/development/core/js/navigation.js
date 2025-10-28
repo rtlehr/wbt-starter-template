@@ -4,7 +4,8 @@ class Navigation {
     this.course  = course;
     this.animation = animation;
     this.modules = modules;
-
+    this.pageName = "";
+    
     this.lmsManagement = new lmsManagement();
     
     // Dependencies
@@ -83,6 +84,8 @@ class Navigation {
       // swap + reset position
       this.$row.css('left', origLeft);
       this.$currentPage.html($loadDiv.html());
+      this._buildPageName(curMod, curPage);
+      this.$currentPage.find(".pageContent").attr("id", this.pageName);
       $loadDiv.empty();
 
       // update UI/state
@@ -201,6 +204,15 @@ class Navigation {
       try { fn(); }
       catch (e) { console.error('Error in ' + fnName + '()', e); }
     }
+  }
+
+  _buildPageName(mod, page)
+  {
+
+    this.pageName = this.modules[mod].getId() + "-" + this.modules[mod].pages[page].getId();
+
+    console.log("this.pageName: " + this.pageName);
+
   }
 
   destroy() {

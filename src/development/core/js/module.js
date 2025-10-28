@@ -22,6 +22,11 @@ class Module {
 
   }
 
+  getId()
+  {
+    return this.modInfo.id;
+  }
+
   init() {}
 
 }

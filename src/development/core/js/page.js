@@ -22,6 +22,12 @@ class Page {
   
   }
 
+
+  getId()
+  {
+    return this.pageInfo.id;
+  }
+
 }
 
 

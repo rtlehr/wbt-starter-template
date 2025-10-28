@@ -1,0 +1,80 @@
+<meta name="wbt-init" content="Lesson1Init">
+
+<style>
+
+#introScreen {
+  min-height: 100%;        /* fill the viewport height */
+  display: flex;
+  flex-direction: column;   /* stack rows */
+  justify-content: center;  /* vertical centering */
+  align-items: center;      /* horizontal centering */
+}
+
+</style>
+
+<section id="introScreen" class="pageContent" aria-labelledby="l1-title">
+
+  <div class="row">
+    <div class="col-12" style="text-align: center;">
+        <img src="content/images/rtlLogo.png">
+    </div>
+  </div>
+  <div class="row" style="padding: 25px;">
+    <div class="col-12" style="text-align: center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eleifend vestibulum purus, finibus commodo purus tempor quis. Proin vel condimentum nisl, sed posuere diam. Etiam feugiat nunc finibus libero rutrum scelerisque. Donec et tempus tellus. Nunc interdum, ex in vulputate fringilla, purus mauris tempor felis, at egestas elit leo eget sem. Mauris et mauris vel lorem hendrerit pellentesque. Vivamus consequat libero quis tortor malesuada, sit amet eleifend nunc hendrerit. Fusce et nulla risus. Sed magna sem, laoreet ut lectus eget, semper cursus felis. Curabitur placerat augue nec nunc pellentesque interdum. Quisque eget luctus enim. Proin lacinia, velit eu tincidunt cursus, nunc tortor consectetur quam, quis rutrum massa nunc ut diam.</div>
+  </div>
+  <div class="row" style="padding-top: 25px;">
+    <div class="col-md-6" style="text-align: center;">
+        <button id="credit">Credit</button>
+    </div>
+    <div class="col-md-6" style="text-align: center;">
+        <button id="browse">Browse</button>
+    </div>
+  </div>
+
+  </section>
+
+    <div id="dialog-confirm" title="Empty the recycle bin?">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>It looks like you have started this course before.  Where would you like to begin?</p>
+    </div>
+
+<script>
+
+  $(function () {
+
+    console.log("Intro Screen");
+    $( "#dialog-confirm" ).dialog({
+        autoOpen: false,
+        resizable: false,
+        height: 300,
+        width: 600,
+        modal: true,
+        buttons: {
+            "Restart Course": function() {
+                creditMode = true;
+                course.gotoPage(0, 0);
+                $( this ).dialog( "close" );
+            },
+            "Begin where you left off": function() {
+                creditMode = false;
+                course.gotoPage(0, 1);
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+
+    $("#credit").on('click', (event) => {
+      event.preventDefault();
+      //course.gotoPage(0, 0);
+      $("#dialog-confirm").dialog('open');
+    });
+
+    $("#browse").on('click', (event) => {
+      event.preventDefault();
+      course.gotoPage(0, 0);
+    });
+
+    
+
+  });
+
+</script>

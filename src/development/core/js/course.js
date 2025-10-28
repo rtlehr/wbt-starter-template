@@ -1,6 +1,7 @@
 let curMod = 0;
 let curPage = 0;
 let devMode = true;
+let creditMode = false;
 let course;
 let developmentMenu;
 
@@ -81,7 +82,9 @@ class Course {
     this.navigation = new Navigation(this, this.animation, this.modules);
     this.navigation.init();
 
-    this.gotoPage(0, 0);
+    $('#currentPage').load('content/introScreen.html'); 
+
+    //this.gotoPage(0, 0);
 
   }
 
