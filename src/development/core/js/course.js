@@ -4,6 +4,7 @@ let devMode = true;
 let creditMode = false;
 let course;
 let developmentMenu;
+let sound;
 
 // define your queries once
 const mqPhone   = window.matchMedia('(max-width: 575.98px)');
@@ -29,6 +30,9 @@ $(function () {
   course = new Course();
   course.init();
 
+  sound = new Sound(course);
+  course.addSound();
+
   if(devMode)
   {
     developmentMenu = new DevelopmentMenu(course);
@@ -44,12 +48,14 @@ $(function () {
   $('#previousButton').on('click', (e) => {
     e.preventDefault();
     console.log('previousButton clicked!');
+    course.playSound();
     course.gotoPreviousPage();      // <- use captured variable
   });
 
   $('#nextButton').on('click', (e) => {
     e.preventDefault();
     console.log('nextButton clicked!');
+    course.playSound();
     course.gotoNextPage();          // <- use captured variable
   });
 });
@@ -124,6 +130,15 @@ class Course {
 
   }
 
+  addSound(soundName, soundURL)
+  {
+    sound.add("buttonClick", "content/audio/computer-mouse-click.mp3");
+  }
+
+  playSound(soundName)
+  {
+    sound.playsound("buttonClick");
+  }
  
 }
 
