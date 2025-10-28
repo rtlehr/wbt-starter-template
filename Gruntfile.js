@@ -29,7 +29,7 @@ module.exports = function (grunt) {
       data: {
         files: [
           { expand: true, cwd: "src/core/data",   src: ["**/*.json"], dest: "dist/core/data" },
-          { expand: true, cwd: "src/custom/data", src: ["**/*.json"], dest: "dist/core/data" }
+          { expand: true, cwd: "src/custom/data", src: ["**/*.json"], dest: "dist/custom/data" }
         ]
       },
       cssToProd: {
