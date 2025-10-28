@@ -54,6 +54,22 @@ $(function () {
     course.playSound("buttonClick");
     course.gotoNextPage();          // <- use captured variable
   });
+
+  $('.moduleMenu').on('click', 'li.module', function (e) {
+    // Don’t navigate the anchor
+    if ($(e.target).closest('a').length) e.preventDefault();
+
+    // Ignore disabled items
+    if ($(this).hasClass('notAvailableModule')) return;
+
+    // Index of this <li> among its .module siblings (0-based)
+    const $ul = $(this).closest('ul.moduleMenu');
+    const index0 = $ul.children('li.module').index(this); // 0-based
+    const index1 = index0 + 1;                            // 1-based (if you prefer)
+
+    course.handleModuleClick(index0); // <-- your function
+  });
+
 });
 
 class Course {
@@ -90,6 +106,19 @@ class Course {
 
   }
 
+  handleModuleClick(module) {
+
+    let d = 1;
+
+    if(module < curMod)
+    {
+      d = -1;
+    }
+
+    this.gotoPage(module, 0, d);
+    // do stuff...
+  }
+
   gotoNextPage() {
     this.navigation.calcNextPage(1);
   }
@@ -98,9 +127,9 @@ class Course {
     this.navigation.calcNextPage(-1);
   }
 
-  gotoPage(mod, page) 
+  gotoPage(mod, page, d = 1) 
   {
-    this.navigation.loadPage(mod, page);
+    this.navigation.loadPage(mod, page, d);
   }
 
   playAnimation(element)
