@@ -44,6 +44,8 @@ class DevelopmentMenu {
       $("#courseMode").html("Browse Mode");
     }
 
+    this.course.checkViewedCount();
+    
   }
 
   goToPage()
