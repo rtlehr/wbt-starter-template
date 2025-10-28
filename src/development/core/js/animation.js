@@ -196,12 +196,21 @@ class Animation {
     const startFn = (startFnName && window[startFnName]) || null;
     const endFn   = (endFnName   && window[endFnName])   || null;
 
+    const beginSound = $el.attr('data-beginSound');
+    console.log("__beginSound: " + beginSound);
+    const endSound = $el.attr('data-endSound');
+
     // ACCESSIBILITY: if we’re going to show (opacity > 0), make it visible and restore focusability
     if (opacity == null || opacity > 0) {
       $el.css('visibility', 'visible');
       this._setHiddenForA11y($el, false);
     }
 
+    if (beginSound != undefined) { 
+      console.log("in the beginSound IF: " + beginSound);
+      course.playSound(beginSound); 
+    }
+    
     // Respect reduce motion: jump to end state, still honor callbacks/chain
     if (this.reduceMotion) {
       if (typeof startFn === 'function') startFn($el[0]);
@@ -269,6 +278,11 @@ class Animation {
       }
 
       if (typeof endFn === 'function') endFn($el[0]);
+
+      if(endSound != undefined)
+      {
+        course.playSound(endSound);
+      }
 
       if (chain) {
         this.playAnimation(chain);

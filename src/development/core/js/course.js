@@ -48,14 +48,14 @@ $(function () {
   $('#previousButton').on('click', (e) => {
     e.preventDefault();
     console.log('previousButton clicked!');
-    course.playSound();
+    course.playSound("buttonClick");
     course.gotoPreviousPage();      // <- use captured variable
   });
 
   $('#nextButton').on('click', (e) => {
     e.preventDefault();
     console.log('nextButton clicked!');
-    course.playSound();
+    course.playSound("buttonClick");
     course.gotoNextPage();          // <- use captured variable
   });
 });
@@ -133,11 +133,15 @@ class Course {
   addSound(soundName, soundURL)
   {
     sound.add("buttonClick", "content/audio/computer-mouse-click.mp3");
+    sound.add("holdMyBeer", "content/audio/hold-my-beerwatch-this.mp3");
+    sound.add("piano", "content/audio/piano_with_horror_me.mp3");
+    sound.add("waitAMinute", "content/audio/wait-a-minute-who-are-you.mp3");
+    sound.add("wow", "content/audio/wow.mp3");
   }
 
   playSound(soundName)
   {
-    sound.playsound("buttonClick");
+    sound.playsound(soundName);
   }
  
 }
