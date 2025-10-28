@@ -30,8 +30,11 @@ class Navigation {
   /* ---------- Lifecycle ---------- */
   init() {
     console.log('Navigation Initialized');
+
     this._updateMeasurements();
+
     $(window).on('resize.navigation', () => this._updateMeasurements());
+
   }
 
   /* ---------- Navigation API (same names) ---------- */
@@ -142,9 +145,18 @@ class Navigation {
   }
 
   addPageFunctionality() {
+
     this.modalWindow.addModal();
     this.toolTip.addToolTip();
     this.animation.setUpAnimation();
+
+    this.checkViewedCount();
+
+  }
+
+  checkViewedCount()
+  {
+    this.interface.checkViewedCount();
   }
 
   adjustToolTip()

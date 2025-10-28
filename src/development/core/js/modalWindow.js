@@ -42,7 +42,17 @@ class modalWindow {
           self._nudge($trigger); // locked; tiny cue
           return;
         }
+
+        console.log("has notViewed: " + $trigger.hasClass("notViewed"));
+
+        if($trigger.hasClass("notViewed"))
+        {
+          $trigger.removeClass('notViewed').addClass('viewed');
+          course.checkViewedCount();
+        }
+
         $dialog.dialog('open');
+
       });
 
       // When closed, mark complete and refresh locks (so previous remain clickable)

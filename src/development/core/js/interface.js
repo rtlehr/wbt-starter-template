@@ -69,6 +69,20 @@ class Interface {
     $("#courseFooter").css({ top: 0 });
   }
 
+  checkViewedCount()
+  {
+    console.log("notViewed count: " + $(".notViewed").length);
+
+    this.setInterface();
+
+    if($(".notViewed").length > 0)
+    {
+      this.turnOffPreviousButton();
+      this.turnOffNextButton();
+    }
+
+  }
+
 }
 
 

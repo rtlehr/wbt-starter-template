@@ -168,6 +168,12 @@ class Course {
   {
     sound.playsound(soundName);
   }
+
+  checkViewedCount()
+  {
+    console.log("checkViewedCount() " + $(".notViewed").length);
+    this.navigation.checkViewedCount();
+  }
  
 }
 
