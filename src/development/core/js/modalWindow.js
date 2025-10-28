@@ -83,6 +83,7 @@ class modalWindow {
   }
 
   _nudge($el) {
+    console.log("adding nudge: ");
     $el.addClass('nudge');
     setTimeout(() => $el.removeClass('nudge'), 250);
   }
