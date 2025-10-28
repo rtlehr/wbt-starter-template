@@ -1,0 +1,16 @@
+.modalWindow.is-locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modalWindow.nudge {
+  animation: mw-shake 0.25s ease;
+}
+
+@keyframes mw-shake {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-3px); }
+  50%  { transform: translateX(3px); }
+  75%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}

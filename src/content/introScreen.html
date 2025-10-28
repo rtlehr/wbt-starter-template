@@ -65,15 +65,15 @@
     $("#credit").on('click', (event) => {
       event.preventDefault();
       //course.gotoPage(0, 0);
+      $("#courseMode").html("Credit Mode");
       $("#dialog-confirm").dialog('open');
     });
 
     $("#browse").on('click', (event) => {
       event.preventDefault();
+      $("#courseMode").html("Browse Mode");
       course.gotoPage(0, 0);
     });
-
-    
 
   });
 
