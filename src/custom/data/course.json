@@ -43,9 +43,9 @@
           "preloadAssets": []
         },
         {
-          "id": "p-2",
+          "id": "p-3",
           "title": "Page 02",
-          "url": "content/mod01/page02.html",
+          "url": "content/mod01/page03.html",
           "preloadAssets": []
         }
       ]
@@ -57,7 +57,7 @@
         {
           "id": "p-1",
           "title": "Page 01",
-          "url": "content/mod01/page01.html",
+          "url": "content/mod02/page01.html",
           "preloadAssets": [
             "assets/img/intro-hero.jpg",
             "assets/audio/intro.mp3"
@@ -66,7 +66,7 @@
         {
           "id": "p-2",
           "title": "Page 02",
-          "url": "content/mod01/page02.html",
+          "url": "content/mod02/page02.html",
           "preloadAssets": []
         }
       ]
