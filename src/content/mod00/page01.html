@@ -33,14 +33,17 @@
   </div>
 <p>&nbsp;</p>
 
-<div id="mybox"
-     data-startFunction="startAnimateFunction"
-     data-endFunction="endAnimateFunction"
-     data-delay="0"
-     data-duration="1"
-     style="width:120px;height:80px;background-color:brown;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;"
-     class="animateMe slideOutRight fadeOut">
-  Hello
+<div id="mainRow" style="position: relative; height: 200px; width: 1362px; border: red solid 1px;">
+  <div id="mybox"
+      data-startFunction="startAnimateFunction"
+      data-endFunction="endAnimateFunction"
+      data-delay="0"
+      data-duration="1"
+      data-animationPane="#mainRow"
+      style="position: absolute; width:120px; height:80px; background-color:brown; color:#fff; border-radius:8px; float: left; bottom: 0;"
+      class="animateMe slideRight">
+    Hello
+  </div>
 </div>
 
 </section>

@@ -110,9 +110,30 @@ class Animation {
       if($(this).hasClass("slideInTop")) {
         newTop = 0 - ((eTop - wTop) + eHeight);
       }
+
       //slideInLeft
       if($(this).hasClass("slideInLeft")) {
         newLeft = 0 - ((eLeft - wLeft) + eWidth);
+      }
+
+      //slideRight
+      if($(this).hasClass("slideRight")) {
+        goToLeft = wWidth - eWidth;
+      }
+
+      //slideLeft
+      if($(this).hasClass("slideLeft")) {
+        goToLeft = 0 - (wWidth - eWidth);
+      }
+
+      //slideBottom
+      if($(this).hasClass("slideBottom")) {
+        goToTop = wHeight - eHeight;
+      }
+
+      //slideTop
+      if($(this).hasClass("slideTop")) {
+        goToTop = 0 - (wHeight - eHeight);
       }
 
       //slideOutLeft
@@ -198,7 +219,7 @@ class Animation {
     const chain       = $el.attr('data-chain') || null;
     const startFn = (startFnName && window[startFnName]) || null;
     const endFn   = (endFnName   && window[endFnName])   || null;
-
+     
     const beginSound = $el.attr('data-beginSound');
 
     const endSound = $el.attr('data-endSound');
