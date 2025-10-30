@@ -7,6 +7,21 @@
   <p>Should be a sound playing</p>
   <p><a id="pageTemplate" class="modalWindow" href="#" data-width="400" data-height="200">Click to show modal window</a></p>
   <p><a href="#" class="has-tip" data-tip="This is a tool tip.">Tool Tip</a></p>
+
+  <p>&nbsp;</p>
+  <button onclick="runnerPlay()">Play</button>
+<button onclick="runnerPause()">Pause</button>
+<button onclick="runnerStop()">Stop</button>
+<button onclick="runnerGoto(0)">Frame 0</button>
+<button onclick="runnerGoto(7)">Frame 7</button>
+<button onclick="runnerSetRange(8, 15)">Set Range 8–15</button>
+<button onclick="runnerFPS(20)">FPS 20</button>
+<p>&nbsp;</p>
+
+  <div id="runner" style="width:64px; height:64px;"></div>
+
+
+
   </section>
 
 <!-- MODAL WINDOW -->
@@ -27,11 +42,50 @@
 
   }
 
-  function finishedMovingIn() {
+  async function finishedMovingIn() {
     
     console.log("finishedMovingIn function called");
 
-    course.playSound("holdMyBeer");
+    const cssAnim = new SpriteSheet({
+      src: 'content/images/runner/runner.png',
+      frameWidth: 64,
+      frameHeight: 64,
+      fps: 12,
+      mode: 'css'
+    });
+
+    await cssAnim.init('#runner');
+
+    cssAnim.setRange(3,6);
+
+    cssAnim.play();
+
+    
+
+    
+
+    //cssAnim.play();
+
+    /*runner = new SpriteSheet({
+      src: 'runner.png',    // your sheet
+      frameWidth: 64,
+      frameHeight: 64,
+      fps: 12,
+      loop: true,
+      mode: 'css'           // <-- CSS background-position mode
+    });
+
+    await runner.init('#runner');*/ // or pass the element node
+    // runner.play(); // autoplay if you want
+
+
+    // ---- Public controls you can call from anywhere ----
+   /* window.runnerPlay   = () => runner?.play();
+    window.runnerPause  = () => runner?.pause();
+    window.runnerStop   = () => runner?.stop();
+    window.runnerGoto   = (i) => runner?.gotoFrame(parseInt(i, 10));
+    window.runnerSetRange = (a, b) => runner?.setRange(parseInt(a,10), parseInt(b,10));
+    window.runnerFPS    = (f) => runner?.setFPS(parseInt(f, 10));*/
 
   }
 
