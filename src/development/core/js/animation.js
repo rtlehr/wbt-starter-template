@@ -195,6 +195,8 @@ class Animation {
 
   playAnimation(target) {
 
+    console.log("Play Animation: " + target);
+
     if(mqPhone.matches)
     {
         return;
@@ -211,7 +213,7 @@ class Animation {
     const opacity  = (cfg.opacity == null) ? null : Number(cfg.opacity);
     const duration = Number(cfg.duration || 0.6);
     const delay    = Number(cfg.delay    || 0);
-    const easing   = cfg.easing || 'ease';
+    const easing   = cfg.easing || 'linear';
 
     // Callbacks & chaining
     const startFnName = $el.attr('data-startFunction');

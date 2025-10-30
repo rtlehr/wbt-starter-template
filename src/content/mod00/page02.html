@@ -18,9 +18,9 @@
 <button onclick="runnerFPS(20)">FPS 20</button>
 <p>&nbsp;</p>
 
-  <div id="runner" style="width:64px; height:64px;"></div>
-
-
+  <div id="runnerAnimate" data-duration="2.5" data-endFunction="stopRunner" class="animateMe slideRight" style="left: 0px; width: 300px; height: 300px;">
+    <div id="runner" style="width:300px; height:300px;"></div>
+  </div>
 
   </section>
 
@@ -36,6 +36,10 @@
 
 <script>
 
+  if (window.cssAnim) {
+    window.cssAnim = null;
+  }
+
   function pageLoadedFunction() {
     
     console.log("pageLoadedFunction function called");
@@ -43,50 +47,34 @@
   }
 
   async function finishedMovingIn() {
-    
+
     console.log("finishedMovingIn function called");
 
-    const cssAnim = new SpriteSheet({
-      src: 'content/images/runner/runner.png',
-      frameWidth: 64,
-      frameHeight: 64,
-      fps: 12,
+    console.log("window.cssAnim2 " + window.cssAnim);
+
+    window.cssAnim = new SpriteSheet({
+      src: 'content/images/runner/runner2.png',
+      frameWidth: 300,
+      frameHeight: 300,
+      fps: 6,
       mode: 'css'
     });
 
-    await cssAnim.init('#runner');
+    await window.cssAnim.init('#runner');
 
-    cssAnim.setRange(3,6);
+    window.cssAnim.setRange(4,6);
 
-    cssAnim.play();
+    window.cssAnim.play();
 
-    
+    course.playAnimation("#runnerAnimate");
 
-    
+  }
 
-    //cssAnim.play();
-
-    /*runner = new SpriteSheet({
-      src: 'runner.png',    // your sheet
-      frameWidth: 64,
-      frameHeight: 64,
-      fps: 12,
-      loop: true,
-      mode: 'css'           // <-- CSS background-position mode
-    });
-
-    await runner.init('#runner');*/ // or pass the element node
-    // runner.play(); // autoplay if you want
-
-
-    // ---- Public controls you can call from anywhere ----
-   /* window.runnerPlay   = () => runner?.play();
-    window.runnerPause  = () => runner?.pause();
-    window.runnerStop   = () => runner?.stop();
-    window.runnerGoto   = (i) => runner?.gotoFrame(parseInt(i, 10));
-    window.runnerSetRange = (a, b) => runner?.setRange(parseInt(a,10), parseInt(b,10));
-    window.runnerFPS    = (f) => runner?.setFPS(parseInt(f, 10));*/
-
+  async function stopRunner()
+  {
+    window.cssAnim.pause();           
+    window.cssAnim.setRange(0, window.cssAnim.totalFrames - 1, { snap: false });
+    window.cssAnim.gotoFrame(0); 
   }
 
 </script>

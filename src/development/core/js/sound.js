@@ -1,7 +1,7 @@
 class Sound {
     
   constructor(course) {
-    this.course = this.course;
+    this.course = course;
     this.sounds = {};           // name -> HTMLAudioElement
     this.masterVolume = 1;      // 0..1
     this.muted = false;
