@@ -9,7 +9,7 @@
         {
           "id": "p-1",
           "title": "Page 01",
-          "url": "content/mod00/page01.html",
+          "url": "content/mod01/page01.html",
           "preloadAssets": [
             "assets/img/intro-hero.jpg",
             "assets/audio/intro.mp3"

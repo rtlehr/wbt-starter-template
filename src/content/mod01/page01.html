@@ -3,10 +3,26 @@
 <style></style>
 
 <section class="pageContent" aria-labelledby="l1-title">
-  <h1 id="l1-title">Mod 2 Page 1</h1>
+  <h1 id="l1-title">Parallax - Mod 2 Page 1</h1>
   <p>Content goes here…</p>
   <p><a id="pageTemplate" class="modalWindow" href="#" data-width="400" data-height="200">Click to show modal window</a></p>
   <p><a href="#" class="has-tip" data-tip="This is a tool tip.">Tool Tip</a></p>
+
+  <p>&nbsp;</p>
+
+  <div id="hero" class="parallax-scene" style="width: 1300px; height: 500px;">
+    <img id="Layer_0"  src="content/images/paralax/PNG/layer_0.png" class="parallax-layer" style="width: 2600;"/>
+    <img id="Layer_1" src="content/images/paralax/PNG/layer_1.png" class="parallax-layer" style="width: 2600;"/>
+    <img id="Layer_2" src="content/images/paralax/PNG/layer_2.png" class="parallax-layer" style="width: 2600;"/>
+
+    <div id="runnerAnimate" data-duration="10" data-endFunction="stopRunner" class="animateMe slideRight parallaxExclude" style="left: 0px; top:175px; width: 300px; height: 300px;">
+      <div id="runner" style="width:300px; height:300px;"></div>
+    </div>
+
+
+    <img id="Layer_3" src="content/images/paralax/PNG/layer_3.png" class="parallax-layer" style="width: 2600;"/>
+  </div>
+
   </section>
 
 <!-- MODAL WINDOW -->
@@ -27,10 +43,73 @@
 
   }
 
-  function finishedMovingIn() {
+  async function finishedMovingIn() {
     
     console.log("finishedMovingIn function called");
 
+    const par = new Parallax({
+      parent: "#hero",
+      duration: 10,
+      distance: [0.15,0.25,0.5,1],
+      imageWidths: [2600, 2600, 2600, 2600]
+    });
+
+     window.cssAnim = new SpriteSheet({
+      src: 'content/images/runner/runner2.png',
+      frameWidth: 300,
+      frameHeight: 300,
+      fps: 6,
+      mode: 'css'
+    });
+
+    await window.cssAnim.init('#runner');
+
+    window.cssAnim.setRange(4,6);
+
+    window.cssAnim.play();
+
+    course.playAnimation("#runnerAnimate");
+
+    /*
+    const par = new Parallax();
+    await par.init('#hero');
+    par.addLayer({ src: document.getElementById('ship'),  depth: 0.1 });
+    par.addLayer({ src: $('#waves'),                      depth: 0.5 });
+    */
+
+    // Create the scene
+    /*
+    const par = new Parallax(null, {
+      mouse: true,
+      scroll: false,                 // set true to add scroll influence
+      strength: { mouse: 50, scroll: 0.3 },
+      clampPx: 140,
+      center: 'center'
+    });
+
+  (async () => {
+    await par.init('#hero');
+
+    // Add layers (near to far). depth: 0 (foreground) → big movement; higher = smaller movement
+    par.addLayer({ src: 'content/images/paralax/waves.png', depth: 0.0, speed: 1.0, className: 'fg' });
+    par.addLayer({ src: 'content/images/paralax/ship.png',  depth: 0.8, speed: 1.0, className: 'mid' });
+
+    // Toggle examples:
+    // par.setEnabled(false);  // freeze at neutral
+    // par.setReduceMotion(true); // respect user setting or app mode
+    // par.setStrength({ mouse: 30 });
+
+  })();*/
+
+
+  }
+
+
+  async function stopRunner()
+  {
+    window.cssAnim.pause();           
+    window.cssAnim.setRange(0, window.cssAnim.totalFrames - 1, { snap: false });
+    window.cssAnim.gotoFrame(0); 
   }
 
 </script>
