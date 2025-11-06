@@ -44,6 +44,7 @@
 .typewriter {
   white-space: pre-wrap;          /* keep line breaks */
   position: relative;
+  visibility: hidden;
 }
 
 .typewriter::after {
