@@ -39,3 +39,22 @@
 {
   visibility: hidden;
 }
+
+/* Put with your component CSS/SCSS */
+.typewriter {
+  white-space: pre-wrap;          /* keep line breaks */
+  position: relative;
+}
+
+.typewriter::after {
+  content: '';
+  display: inline-block;
+  width: 1ch;
+  border-right: 1px solid currentColor;
+  animation: caret-blink 1s steps(1) infinite;
+  transform: translateY(0.15em);  /* aligns caret with baseline */
+}
+
+@keyframes caret-blink {
+  50% { border-color: transparent; }
+}

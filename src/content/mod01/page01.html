@@ -4,9 +4,15 @@
 
 <section class="pageContent" aria-labelledby="l1-title">
   <h1 id="l1-title">Parallax - Mod 2 Page 1</h1>
-  <p>Content goes here…</p>
-  <p><a id="pageTemplate" class="modalWindow" href="#" data-width="400" data-height="200">Click to show modal window</a></p>
-  <p><a href="#" class="has-tip" data-tip="This is a tool tip.">Tool Tip</a></p>
+
+  <div id="type"
+     class="animateMe typewriter fadeIn"
+     data-duration="3"
+     data-delay="0.5"
+     data-cps="22"
+     style="height: 100px;">
+    <p>Welcome to the Parallax example page. In this example we have a parallax scene with multiple layers moving at different speeds to create a sense of depth. Additionally, we have animated elements such as a running character and a flying bird to enhance the visual experience.</p>
+  </div>
 
   <p>&nbsp;</p>
 
@@ -15,10 +21,13 @@
     <img id="Layer_1" src="content/images/paralax/PNG/layer_1.png" class="parallax-layer" style="width: 2600;"/>
     <img id="Layer_2" src="content/images/paralax/PNG/layer_2.png" class="parallax-layer" style="width: 2600;"/>
 
-    <div id="runnerAnimate" data-duration="10" data-endFunction="stopRunner" class="animateMe slideRight parallaxExclude" style="left: 0px; top:175px; width: 300px; height: 300px;">
-      <div id="runner" style="width:300px; height:300px;"></div>
+    <div id="birdAnimate" data-duration="20" class="animateMe slideRight parallaxExclude" style="left: 300px; top:25px; width: 123px; height: 130px;">
+      <div id="bird" style="width:300px; height:300px;"></div>
     </div>
 
+    <div id="runnerAnimate" data-duration="10" data-endFunction="stopRunner" class="animateMe slideRight parallaxExclude" style="left: 0px; top:50px; width: 300px; height: 300px;">
+      <div id="runner" style="width:300px; height:300px;"></div>
+    </div>
 
     <img id="Layer_3" src="content/images/paralax/PNG/layer_3.png" class="parallax-layer" style="width: 2600;"/>
   </div>
@@ -47,6 +56,7 @@
     
     console.log("finishedMovingIn function called");
 
+    
     const par = new Parallax({
       parent: "#hero",
       duration: 10,
@@ -62,44 +72,31 @@
       mode: 'css'
     });
 
+     window.bird = new SpriteSheet({
+      src: 'content/images/bird/bird.png',
+      frameWidth: 123,
+      frameHeight: 130,
+      fps: 6,
+      mode: 'css'
+    });
+
     await window.cssAnim.init('#runner');
+
+    await window.bird.init('#bird');
 
     window.cssAnim.setRange(4,6);
 
+    window.bird.setRange(0,7);
+
     window.cssAnim.play();
+
+     window.bird.play();
 
     course.playAnimation("#runnerAnimate");
 
-    /*
-    const par = new Parallax();
-    await par.init('#hero');
-    par.addLayer({ src: document.getElementById('ship'),  depth: 0.1 });
-    par.addLayer({ src: $('#waves'),                      depth: 0.5 });
-    */
+    course.playAnimation("#birdAnimate");
 
-    // Create the scene
-    /*
-    const par = new Parallax(null, {
-      mouse: true,
-      scroll: false,                 // set true to add scroll influence
-      strength: { mouse: 50, scroll: 0.3 },
-      clampPx: 140,
-      center: 'center'
-    });
-
-  (async () => {
-    await par.init('#hero');
-
-    // Add layers (near to far). depth: 0 (foreground) → big movement; higher = smaller movement
-    par.addLayer({ src: 'content/images/paralax/waves.png', depth: 0.0, speed: 1.0, className: 'fg' });
-    par.addLayer({ src: 'content/images/paralax/ship.png',  depth: 0.8, speed: 1.0, className: 'mid' });
-
-    // Toggle examples:
-    // par.setEnabled(false);  // freeze at neutral
-    // par.setReduceMotion(true); // respect user setting or app mode
-    // par.setStrength({ mouse: 30 });
-
-  })();*/
+    course.playAnimation("#type");
 
 
   }
