@@ -81,8 +81,6 @@ class Animation {
       let eTop = $(this).offset().top;
       let eLeft = $(this).offset().left;
 
-      // console.log("animation Pane: " + $(this).attr("data-animationPane"));
-
       let cW = $(this).attr("data-animationPane") || "#courseWindow";
 
       let wHeight = $(cW).height();
@@ -177,6 +175,30 @@ class Animation {
         else { goToLeft = 0 - newLeft; }
       }
 
+      // ---- ZOOM: read data and set transform-origin upfront -------------
+      const rawZoom = $(this).data('zoom');
+      const hasZoomClass = $(this).hasClass('zoomIn') || $(this).hasClass('zoomOut');
+      const scaleTarget = Number.isFinite(rawZoom) ? Number(rawZoom) : null;
+
+      // Map data-anchor to CSS transform-origin
+      const anchorRaw = String($(this).data('anchor') || 'center').toLowerCase().trim();
+      const anchor = (() => {
+        switch (anchorRaw) {
+          case 'left-top':
+          case 'top-left':   return '0% 0%';
+          case 'right-top':
+          case 'top-right':  return '100% 0%';
+          case 'left-bottom':
+          case 'bottom-left': return '0% 100%';
+          case 'right-bottom':
+          case 'bottom-right': return '100% 100%';
+          case 'center':
+          default:           return '50% 50%';
+        }
+      })();
+      $(this).css('transform-origin', anchor);
+
+      // Build animation config payload
       const cfg = {
         left: goToLeft,
         top: goToTop,
@@ -184,6 +206,14 @@ class Animation {
         duration: $(this).data('duration') ?? 1,
         delay: $(this).data('delay') ?? 0
       };
+
+      // If zoom requested (by class or just data-zoom), store scale & anchor
+      if (hasZoomClass || scaleTarget != null) {
+        cfg.scale = (scaleTarget != null) ? scaleTarget : 1;
+        cfg.anchor = anchor;
+        // No need to preset transform; we animate from scale(1) → scale(cfg.scale)
+        // (If you ever want from-custom, support data-zoom-from and set here.)
+      }
 
       // TYPEWRITER: prep the node (store full text; create visual span)
       if ($(this).hasClass('typewriter')) {
@@ -225,6 +255,11 @@ class Animation {
     const easing = cfg.easing || 'linear';
     const isTypewriter = $el.hasClass('typewriter');
 
+    // NEW: Zoom parameters
+    const hasZoom = (cfg.scale != null);
+    const scaleTarget = hasZoom ? Number(cfg.scale) : 1;
+    const transformOrigin = cfg.anchor || '50% 50%';
+
     // Callbacks & chaining
     const startFnName = $el.attr('data-startFunction');
     const endFnName = $el.attr('data-endFunction');
@@ -258,6 +293,9 @@ class Animation {
       }
 
       // immediate final state (no transform timing here)
+      const transformFinal = this._composeTransform(left, top, scaleTarget);
+      $el.css('transform-origin', transformOrigin);
+      $el.css('transform', transformFinal);
       if (opacity != null) $el.css('opacity', String(opacity));
 
       // A11y when hidden at end
@@ -322,16 +360,20 @@ class Animation {
       transitionDuration: duration + 's',
       transitionTimingFunction: easing,
       transitionDelay: delay + 's',
-      willChange: 'transform, opacity' // perf hint during animation
+      willChange: 'transform, opacity'
     });
+
+    // Ensure the requested transform origin is used for scaling
+    $el.css('transform-origin', transformOrigin);
 
     if (typeof startFn === 'function') startFn($el[0]);
 
     // Force reflow
     void $el[0].offsetWidth;
 
-    // Apply final state
-    $el.css('transform', `translate(${left}px, ${top}px)`);
+    // Apply final state (translate + optional scale)
+    const transformFinal = this._composeTransform(left, top, scaleTarget);
+    $el.css('transform', transformFinal);
     if (opacity != null) $el.css('opacity', String(opacity));
 
     // Fallback guard if transitionend never fires
@@ -345,7 +387,7 @@ class Animation {
       clearTimeout(guard);
       $el.off('transitionend.anim', onEnd);
 
-      // Cleanup transition styles
+      // Cleanup transition styles (keep transform-origin intact)
       $el.css({
         transitionProperty: '',
         transitionDuration: '',
@@ -458,6 +500,18 @@ class Animation {
   _getTypingOptions($el, duration, delay) {
     const cps = Number($el.data('cps'));
     return { duration, delay, cps: Number.isFinite(cps) ? cps : null };
+  }
+
+  // === Transform helpers ====================================================
+
+  // Compose transform string. IMPORTANT ORDER:
+  // We apply scale FIRST so the translate distances are not scaled.
+  _composeTransform(leftPx, topPx, scaleVal) {
+    const s = Number.isFinite(scaleVal) ? scaleVal : 1;
+    const x = Number.isFinite(leftPx) ? leftPx : 0;
+    const y = Number.isFinite(topPx) ? topPx : 0;
+    // scale then translate (translate applied after scale)
+    return `scale(${s}) translate(${x}px, ${y}px)`;
   }
 
 }

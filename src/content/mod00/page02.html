@@ -8,15 +8,14 @@
   <p><a id="pageTemplate" class="modalWindow" href="#" data-width="400" data-height="200">Click to show modal window</a></p>
   <p><a href="#" class="has-tip" data-tip="This is a tool tip.">Tool Tip</a></p>
 
-  <p>&nbsp;</p>
-  <button onclick="runnerPlay()">Play</button>
-<button onclick="runnerPause()">Pause</button>
-<button onclick="runnerStop()">Stop</button>
-<button onclick="runnerGoto(0)">Frame 0</button>
-<button onclick="runnerGoto(7)">Frame 7</button>
-<button onclick="runnerSetRange(8, 15)">Set Range 8–15</button>
-<button onclick="runnerFPS(20)">FPS 20</button>
-<p>&nbsp;</p>
+  <div id="zoomMe" class="animateMe zoomIn fadeOut"
+     data-zoom="2"
+     data-anchor="bottom-left"
+     data-duration="0.8"
+     data-delay="0.2"
+     style="background-color: aqua; width: 200px;">
+  Zoom me from 100% → 175% anchored at bottom-right
+</div>
 
   <div id="runnerAnimate" data-duration="2.5" data-endFunction="stopRunner" class="animateMe slideRight" style="left: 0px; width: 300px; height: 300px;">
     <div id="runner" style="width:300px; height:300px;"></div>
@@ -67,6 +66,8 @@
     window.cssAnim.play();
 
     course.playAnimation("#runnerAnimate");
+
+    course.playAnimation("#zoomMe");
 
   }
 
