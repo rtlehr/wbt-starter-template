@@ -71,6 +71,9 @@ class Animation {
 
   setUpAnimation() {
 
+    const self = this;
+
+
     if (mqPhone.matches) {
       return;
     }
@@ -176,44 +179,28 @@ class Animation {
       }
 
       // ---- ZOOM: read data and set transform-origin upfront -------------
-      const rawZoom = $(this).data('zoom');
-      const hasZoomClass = $(this).hasClass('zoomIn') || $(this).hasClass('zoomOut');
-      const scaleTarget = Number.isFinite(rawZoom) ? Number(rawZoom) : null;
+      // ---- ZOOM: read data and set transform-origin upfront -------------
+const rawZoom = $(this).data('zoom');
+const hasZoomClass = $(this).hasClass('zoomIn') || $(this).hasClass('zoomOut');
+const scaleTarget = Number.isFinite(rawZoom) ? Number(rawZoom) : null;
 
-      // Map data-anchor to CSS transform-origin
-      const anchorRaw = String($(this).data('anchor') || 'center').toLowerCase().trim();
-      const anchor = (() => {
-        switch (anchorRaw) {
-          case 'left-top':
-          case 'top-left':   return '0% 0%';
-          case 'right-top':
-          case 'top-right':  return '100% 0%';
-          case 'left-bottom':
-          case 'bottom-left': return '0% 100%';
-          case 'right-bottom':
-          case 'bottom-right': return '100% 100%';
-          case 'center':
-          default:           return '50% 50%';
-        }
-      })();
-      $(this).css('transform-origin', anchor);
+// Use new per-axis attributes (with legacy fallback)
+const anchor = self._readAnchor($(this)); // NOTE: add `const self = this;` at top of setUpAnimation()
+$(this).css('transform-origin', anchor);
 
-      // Build animation config payload
-      const cfg = {
-        left: goToLeft,
-        top: goToTop,
-        opacity: goToOpacity,
-        duration: $(this).data('duration') ?? 1,
-        delay: $(this).data('delay') ?? 0
-      };
+const cfg = {
+  left: goToLeft,
+  top: goToTop,
+  opacity: goToOpacity,
+  duration: $(this).data('duration') ?? 1,
+  delay: $(this).data('delay') ?? 0
+};
 
-      // If zoom requested (by class or just data-zoom), store scale & anchor
-      if (hasZoomClass || scaleTarget != null) {
-        cfg.scale = (scaleTarget != null) ? scaleTarget : 1;
-        cfg.anchor = anchor;
-        // No need to preset transform; we animate from scale(1) → scale(cfg.scale)
-        // (If you ever want from-custom, support data-zoom-from and set here.)
-      }
+if (hasZoomClass || scaleTarget != null) {
+  cfg.scale = (scaleTarget != null) ? scaleTarget : 1;
+  cfg.anchor = anchor; // store for playAnimation()
+}
+
 
       // TYPEWRITER: prep the node (store full text; create visual span)
       if ($(this).hasClass('typewriter')) {
@@ -258,7 +245,9 @@ class Animation {
     // NEW: Zoom parameters
     const hasZoom = (cfg.scale != null);
     const scaleTarget = hasZoom ? Number(cfg.scale) : 1;
-    const transformOrigin = cfg.anchor || '50% 50%';
+    const transformOrigin = cfg.anchor || this._readAnchor($el); // fallback if needed
+    $el.css('transform-origin', transformOrigin);
+
 
     // Callbacks & chaining
     const startFnName = $el.attr('data-startFunction');
@@ -513,5 +502,45 @@ class Animation {
     // scale then translate (translate applied after scale)
     return `scale(${s}) translate(${x}px, ${y}px)`;
   }
+
+  // Map per-axis anchors to a CSS transform-origin string.
+// Accepts data-horizontalAnchor: left|center|right
+// and data-verticleAnchor / data-verticalAnchor: top|center|bottom
+_readAnchor($el) {
+  // Back-compat single attribute (data-anchor) if both per-axis are missing
+  const legacy = String($el.data('anchor') ?? '').toLowerCase().trim();
+
+  // Per-axis (preferred)
+  let hx = String($el.data('horizontalanchor') ?? '').toLowerCase().trim();
+  // Support both "verticle" (as requested) and "vertical" (common spelling)
+  let vy = String(
+    ($el.data('verticleanchor') ?? $el.data('verticalanchor') ?? '')
+  ).toLowerCase().trim();
+
+  // If neither per-axis provided, try to parse legacy combined anchor
+  if (!hx && !vy && legacy) {
+    switch (legacy) {
+      case 'left-top':
+      case 'top-left':      return '0% 0%';
+      case 'right-top':
+      case 'top-right':     return '100% 0%';
+      case 'left-bottom':
+      case 'bottom-left':   return '0% 100%';
+      case 'right-bottom':
+      case 'bottom-right':  return '100% 100%';
+      case 'center':
+      default:              return '50% 50%';
+    }
+  }
+
+  // Normalize per-axis values
+  const mapX = { left: '0%', center: '50%', right: '100%' };
+  const mapY = { top: '0%', center: '50%', bottom: '100%' };
+
+  const x = mapX[hx] ?? '50%';
+  const y = mapY[vy] ?? '50%';
+
+  return `${x} ${y}`;
+}
 
 }

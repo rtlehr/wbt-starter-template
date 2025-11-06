@@ -10,9 +10,11 @@
 
   <div id="zoomMe" class="animateMe zoomIn fadeOut"
      data-zoom="2"
-     data-anchor="bottom-left"
+     data-horizontalAnchor="center"
+     data-verticleAnchor="bottom"
      data-duration="0.8"
      data-delay="0.2"
+     data-endFunction="zoomedIn"
      style="background-color: aqua; width: 200px;">
   Zoom me from 100% → 175% anchored at bottom-right
 </div>
@@ -78,4 +80,8 @@
     window.cssAnim.gotoFrame(0); 
   }
 
+  function zoomedIn()
+  {
+    console.log("zoomedIn function called");
+  }
 </script>
