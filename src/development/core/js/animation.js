@@ -178,10 +178,8 @@ class Animation {
         else { goToLeft = 0 - newLeft; }
       }
 
-      // ---- ZOOM: read data and set transform-origin upfront -------------
-      // ---- ZOOM: read data and set transform-origin upfront -------------
 const rawZoom = $(this).data('zoom');
-const hasZoomClass = $(this).hasClass('zoomIn') || $(this).hasClass('zoomOut');
+const hasZoomClass = $(this).hasClass('zoom');
 const scaleTarget = Number.isFinite(rawZoom) ? Number(rawZoom) : null;
 
 // Use new per-axis attributes (with legacy fallback)
