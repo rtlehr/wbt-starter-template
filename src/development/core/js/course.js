@@ -35,6 +35,9 @@ $(function () {
   course.addSound("piano", "content/audio/piano_with_horror_me.mp3");
   course.addSound("waitAMinute", "content/audio/wait-a-minute-who-are-you.mp3");
   course.addSound("wow", "content/audio/wow.mp3");
+  course.addSound("typewriterkeys", "content/audio/typewriter-keys.mp3");
+  course.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");
+  course.addSound("wow", "content/audio/wow.mp3");
 
   if(devMode)
   {
@@ -170,6 +173,11 @@ class Course {
   playSound(soundName)
   {
     sound.playsound(soundName);
+  }
+
+  stopSound(soundName)
+  {
+    sound.stop(soundName);
   }
 
   checkViewedCount()
