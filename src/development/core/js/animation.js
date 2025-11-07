@@ -298,8 +298,14 @@ class Animation {
 			
       if (endSound != undefined) 
       {
-        course.stopSound(beginSound);
+
+        if(beginSound != undefined)
+        {
+          course.stopSound(beginSound);
+        }
+
         course.playSound(endSound);
+
       }
 
 			if (chain) this.playAnimation(chain);
@@ -342,11 +348,19 @@ class Animation {
 
 				if (typeof endFn === 'function') endFn($el[0]);
 
-				if (endSound != undefined) 
+				if (typeof endFn === 'function') endFn($el[0]);
+			
+      if (endSound != undefined) 
+      {
+
+        if(beginSound != undefined)
         {
           course.stopSound(beginSound);
-          course.playSound(endSound);
         }
+
+        course.playSound(endSound);
+
+      }
 
 				if (chain) this.playAnimation(chain);
 			});
@@ -406,10 +420,18 @@ class Animation {
 
 			if (typeof endFn === 'function') endFn($el[0]);
 
-			if (endSound != undefined) 
+			if (typeof endFn === 'function') endFn($el[0]);
+			
+      if (endSound != undefined) 
       {
-        course.stopSound(beginSound);
+
+        if(beginSound != undefined)
+        {
+          course.stopSound(beginSound);
+        }
+
         course.playSound(endSound);
+
       }
 
 			if (chain) {
