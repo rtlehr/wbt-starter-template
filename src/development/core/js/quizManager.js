@@ -36,10 +36,16 @@ class QuizManager {
     const inputType = multiple ? 'checkbox' : 'radio';
     const questionId = $quiz.data('questionId') || `quiz-${quizIndex}`;
 
+    // Pull feedback (if present in HTML)
+    const fbCorrect = $.trim($quiz.find('.quiz-feedback-correct').text() || '');
+    const fbIncorrect = $.trim($quiz.find('.quiz-feedback-incorrect').text() || '');
+
     // Store meta on the quiz container
     $quiz.data('multiple', multiple);
     $quiz.data('correctIndexes', correctIndexes);
     $quiz.data('questionId', questionId);
+    $quiz.data('feedbackCorrect', fbCorrect);
+    $quiz.data('feedbackIncorrect', fbIncorrect);
 
     // Inject inputs into each option
     $options.each(function (i) {
@@ -60,7 +66,7 @@ class QuizManager {
         id: inputId,
         name: questionId,         // same name → radio group
         'data-index': i,
-        'aria-label': text        // basic accessibility
+        'aria-label': text
       });
 
       const $span = $('<span/>', {
@@ -82,9 +88,11 @@ class QuizManager {
 
   // Evaluate one quiz: compare selections to correctIndexes
   _checkQuiz($quiz) {
-    const questionId      = $quiz.data('questionId');
-    const correctIndexes  = $quiz.data('correctIndexes') || [];
-    const multiple        = !!$quiz.data('multiple');
+    const questionId       = $quiz.data('questionId');
+    const correctIndexes   = $quiz.data('correctIndexes') || [];
+    const multiple         = !!$quiz.data('multiple');
+    const feedbackCorrect  = $quiz.data('feedbackCorrect')  || '';
+    const feedbackIncorrect= $quiz.data('feedbackIncorrect')|| '';
 
     const selectedIndexes = [];
 
@@ -104,12 +112,19 @@ class QuizManager {
 
     // Visual state (optional)
     $quiz.removeClass('quiz-correct quiz-incorrect');
+
     if (isCorrect) {
       $quiz.addClass('quiz-correct');
-      console.log('Question "' + questionId + '": CORRECT');
+      console.log(
+        'Question "' + questionId + '": CORRECT' +
+        (feedbackCorrect ? ' — ' + feedbackCorrect : '')
+      );
     } else {
       $quiz.addClass('quiz-incorrect');
-      console.log('Question "' + questionId + '": INCORRECT');
+      console.log(
+        'Question "' + questionId + '": INCORRECT' +
+        (feedbackIncorrect ? ' — ' + feedbackIncorrect : '')
+      );
     }
   }
 

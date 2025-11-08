@@ -11,12 +11,6 @@
   <!-- Your compiled CSS that includes quiz.scss -->
   <link rel="stylesheet" href="core/css/core.css" />
   <link rel="stylesheet" href="custom/css/custom.css" />
-  <!-- ensure quiz.scss is compiled into one of these, or include separately -->
-
-  <style>
-    /* inline just for demo if you want:
-       paste compiled quiz.scss output here if needed */
-  </style>
 </head>
 <body>
 
@@ -28,12 +22,20 @@
         1. Which of the following is a JavaScript library?
       </div>
       <ul class="quiz-options">
-        <!-- data-correct="true" marks the right one(s) -->
         <li class="quiz-option" data-correct="false">CSS</li>
         <li class="quiz-option" data-correct="true">jQuery</li>
         <li class="quiz-option" data-correct="false">HTML</li>
         <li class="quiz-option" data-correct="false">PNG</li>
       </ul>
+
+      <!-- Optional feedback text blocks -->
+      <div class="quiz-feedback quiz-feedback-correct">
+        Correct: jQuery is the only JavaScript library in this list.
+      </div>
+      <div class="quiz-feedback quiz-feedback-incorrect">
+        Not quite. Remember, a JavaScript library is code written in JS that you can reuse.
+      </div>
+
       <button type="button" class="quiz-submit">Check answer</button>
     </section>
 
@@ -48,16 +50,24 @@
         <li class="quiz-option" data-correct="true">JavaScript</li>
         <li class="quiz-option" data-correct="false">SQL</li>
       </ul>
+
+      <div class="quiz-feedback quiz-feedback-correct">
+        Correct: HTML, CSS, and JavaScript are all used on the front end.
+      </div>
+      <div class="quiz-feedback quiz-feedback-incorrect">
+        Check again. Think about which technologies run in the browser.
+      </div>
+
       <button type="button" class="quiz-submit">Check answer</button>
     </section>
 
   </main>
 
-    <script src="core/js/core.js"></script>
+  <script src="core/js/core.js"></script>
     <script src="custom/js/custom.js"></script>
-
+    
   <script>
-    // Paste the QuizManager class here or include via <script src="...">
+    // Paste or include the QuizManager class file before this
 
     $(document).ready(function () {
       const quizMgr = new QuizManager(/* course or null */);

@@ -54,7 +54,7 @@
   border-color: #0a58ca;
 }
 
-/* Optional visual feedback */
+/* Optional visual feedback on container */
 
 .wbt-quiz.quiz-correct {
   border-color: #198754;
@@ -64,4 +64,26 @@
 .wbt-quiz.quiz-incorrect {
   border-color: #dc3545;
   box-shadow: 0 0 0 1px rgba(220, 53, 69, 0.25);
+}
+
+/* Optional block elements for future visible feedback (currently just used as text sources) */
+
+.quiz-feedback {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.quiz-feedback-correct {
+  color: #198754;
+}
+
+.quiz-feedback-incorrect {
+  color: #dc3545;
+}
+
+/* Feedback blocks are just text sources for now — keep them hidden */
+.quiz-feedback,
+.quiz-feedback-correct,
+.quiz-feedback-incorrect {
+  display: none;
 }
