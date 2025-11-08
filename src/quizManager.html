@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>QuizManager Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- Your compiled CSS that includes quiz.scss -->
+  <link rel="stylesheet" href="core/css/core.css" />
+  <link rel="stylesheet" href="custom/css/custom.css" />
+  <!-- ensure quiz.scss is compiled into one of these, or include separately -->
+
+  <style>
+    /* inline just for demo if you want:
+       paste compiled quiz.scss output here if needed */
+  </style>
+</head>
+<body>
+
+  <main class="container">
+
+    <!-- Single-correct question (radios) -->
+    <section class="wbt-quiz" data-question-id="q1">
+      <div class="quiz-question">
+        1. Which of the following is a JavaScript library?
+      </div>
+      <ul class="quiz-options">
+        <!-- data-correct="true" marks the right one(s) -->
+        <li class="quiz-option" data-correct="false">CSS</li>
+        <li class="quiz-option" data-correct="true">jQuery</li>
+        <li class="quiz-option" data-correct="false">HTML</li>
+        <li class="quiz-option" data-correct="false">PNG</li>
+      </ul>
+      <button type="button" class="quiz-submit">Check answer</button>
+    </section>
+
+    <!-- Multiple-correct question (checkboxes) -->
+    <section class="wbt-quiz" data-question-id="q2">
+      <div class="quiz-question">
+        2. Which of the following are front-end technologies? (Select all that apply.)
+      </div>
+      <ul class="quiz-options">
+        <li class="quiz-option" data-correct="true">HTML</li>
+        <li class="quiz-option" data-correct="true">CSS</li>
+        <li class="quiz-option" data-correct="true">JavaScript</li>
+        <li class="quiz-option" data-correct="false">SQL</li>
+      </ul>
+      <button type="button" class="quiz-submit">Check answer</button>
+    </section>
+
+  </main>
+
+    <script src="core/js/core.js"></script>
+    <script src="custom/js/custom.js"></script>
+
+  <script>
+    // Paste the QuizManager class here or include via <script src="...">
+
+    $(document).ready(function () {
+      const quizMgr = new QuizManager(/* course or null */);
+      quizMgr.init();
+    });
+  </script>
+</body>
+</html>

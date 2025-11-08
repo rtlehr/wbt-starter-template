@@ -2,6 +2,7 @@ let curMod = 0;
 let curPage = 0;
 let devMode = true;
 let creditMode = false;
+
 let course;
 let developmentMenu;
 let sound;
