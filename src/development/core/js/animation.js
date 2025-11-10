@@ -10,6 +10,11 @@ class Animation {
 
 	init() {
 		console.log("Animation Initialized");
+
+		// Safety net: cancel animations (and stop begin sounds) when page is hidden/unloaded
+		window.addEventListener('pagehide', () => {
+			$('.animateMe').each((_, node) => this._cancelAnim($(node), { stopSounds: true }));
+		});
 	}
 
 	// --- Helpers (A11y + utils) ---------------------------------------------
@@ -189,7 +194,7 @@ class Animation {
 			const scaleTarget = Number.isFinite(rawZoom) ? Number(rawZoom) : null;
 
 			// Use new per-axis attributes (with legacy fallback)
-			const anchor = self._readAnchor($(this)); // NOTE: add const self = this; at top of setUpAnimation()
+			const anchor = self._readAnchor($(this));
 			$(this).css('transform-origin', anchor);
 
 			const cfg = {
@@ -266,8 +271,12 @@ class Animation {
 			this._setHiddenForA11y($el, false);
 		}
 
+		// mark this run as the active animation instance for this element
+		const startToken = this._markAnimStart($el);
+
+		// Begin sound (no adapter here—uses your course API)
 		if (beginSound != undefined) {
-			course.playSound(beginSound);
+			try { course.playSound(beginSound); } catch (e) {}
 		}
 
 		// Respect reduce motion: jump to end state, still honor callbacks/chain
@@ -295,20 +304,19 @@ class Animation {
 			}
 
 			if (typeof endFn === 'function') endFn($el[0]);
-			
-      if (endSound != undefined) 
-      {
 
-        if(beginSound != undefined)
-        {
-          course.stopSound(beginSound);
-        }
+			// Only play endSound if still valid
+			if (this._shouldStillPlay($el, startToken) && endSound != undefined) {
+				try {
+					if (beginSound != undefined) course.stopSound(beginSound);
+				} catch (e) {}
+				try { course.playSound(endSound); } catch (e) {}
+			}
 
-        course.playSound(endSound);
+			if (chain && this._shouldStillPlay($el, startToken)) this.playAnimation(chain);
 
-      }
-
-			if (chain) this.playAnimation(chain);
+			// clear any guards for safety (none set in reduced motion, but keeps state clean)
+			this._cancelAnim($el);
 			return;
 		}
 
@@ -346,23 +354,23 @@ class Animation {
 					this._setHiddenForA11y($el, true);
 				}
 
-				if (typeof endFn === 'function') endFn($el[0]);
+				if (!this._shouldStillPlay($el, startToken)) {
+					this._cancelAnim($el);
+					return;
+				}
 
 				if (typeof endFn === 'function') endFn($el[0]);
-			
-      if (endSound != undefined) 
-      {
 
-        if(beginSound != undefined)
-        {
-          course.stopSound(beginSound);
-        }
-
-        course.playSound(endSound);
-
-      }
+				if (endSound != undefined) {
+					try {
+						if (beginSound != undefined) course.stopSound(beginSound);
+					} catch (e) {}
+					try { course.playSound(endSound); } catch (e) {}
+				}
 
 				if (chain) this.playAnimation(chain);
+
+				this._cancelAnim($el);
 			});
 
 			return; // IMPORTANT: skip the transform-based flow below
@@ -394,7 +402,13 @@ class Animation {
 
 		// Fallback guard if transitionend never fires
 		const total = (delay + duration) * 1000 + 50;
-		const guard = setTimeout(() => $el.trigger('transitionend'), total);
+		const guard = setTimeout(() => {
+			// Only synthesize if still valid
+			if (this._shouldStillPlay($el, startToken)) {
+				$el.trigger('transitionend');
+			}
+		}, total);
+		this._setGuardTimer($el, guard);
 
 		// End handler (namespaced)
 		const onEnd = (ev) => {
@@ -418,25 +432,26 @@ class Animation {
 				this._setHiddenForA11y($el, true);
 			}
 
-			if (typeof endFn === 'function') endFn($el[0]);
+			// If this completion is stale (navigated away, element removed, etc.), stop here
+			if (!this._shouldStillPlay($el, startToken)) {
+				this._cancelAnim($el);
+				return;
+			}
 
 			if (typeof endFn === 'function') endFn($el[0]);
-			
-      if (endSound != undefined) 
-      {
 
-        if(beginSound != undefined)
-        {
-          course.stopSound(beginSound);
-        }
-
-        course.playSound(endSound);
-
-      }
+			if (endSound != undefined) {
+				try {
+					if (beginSound != undefined) course.stopSound(beginSound);
+				} catch (e) {}
+				try { course.playSound(endSound); } catch (e) {}
+			}
 
 			if (chain) {
 				this.playAnimation(chain);
 			}
+
+			this._cancelAnim($el);
 		};
 
 		$el.one('transitionend.anim', onEnd);
@@ -578,5 +593,47 @@ class Animation {
 		const y = mapY[vy] ?? '50%';
 
 		return `${x} ${y}`;
+	}
+
+	// === Animation cancel/guard helpers ======================================
+
+	_markAnimStart($el) {
+		const active = ($el.data('_animActive') || 0) + 1;
+		$el.data('_animActive', active);
+		return active; // token
+	}
+
+	_setGuardTimer($el, id) {
+		const timers = $el.data('_animGuards') || [];
+		timers.push(id);
+		$el.data('_animGuards', timers);
+	}
+
+	_cancelAnim($el, opts = { stopSounds: false }) {
+		const timers = $el.data('_animGuards') || [];
+		timers.forEach(clearTimeout);
+		$el.removeData('_animGuards');
+
+		// bump token so any late completions are ignored
+		const active = ($el.data('_animActive') || 0) + 1;
+		$el.data('_animActive', active);
+
+		if (opts.stopSounds && typeof course?.stopSound === 'function') {
+			const beginSound = $el.attr('data-beginSound');
+			if (beginSound) {
+				try { course.stopSound(beginSound); } catch (e) {}
+			}
+		}
+	}
+
+	_shouldStillPlay($el, startToken) {
+		// token changed => stale
+		if (($el.data('_animActive') || 0) !== startToken) return false;
+		// element detached or missing
+		const el = $el[0];
+		if (!el || !el.isConnected || !document.body.contains(el)) return false;
+		// page hidden/unloading (common during navigation)
+		if (document.visibilityState === 'hidden') return false;
+		return true;
 	}
 }

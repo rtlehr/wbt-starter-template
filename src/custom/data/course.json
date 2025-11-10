@@ -68,7 +68,8 @@
           "title": "Page 02",
           "url": "content/mod02/page02.html",
           "preloadAssets": []
-        }
+        },
+        {}
       ]
     }
   ]

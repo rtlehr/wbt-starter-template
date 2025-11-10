@@ -173,12 +173,23 @@ class Course {
 
   playSound(soundName)
   {
+
     sound.playsound(soundName);
+
   }
 
   stopSound(soundName)
   {
+
     sound.stop(soundName);
+
+  }
+
+  stopAllSounds()
+  {
+  
+    sound.stopAll();
+  
   }
 
   checkViewedCount()

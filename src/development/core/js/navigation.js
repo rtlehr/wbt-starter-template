@@ -6,7 +6,7 @@ class Navigation {
     this.modules = modules;
     this.pageName = "";
     
-    this.lmsManagement = new lmsManagement();
+    this.lmsManagement = new lmsManagement();  
     
     // Dependencies
     this.modalWindow = new modalWindow();
@@ -56,6 +56,9 @@ class Navigation {
   }
 
   loadPage(mod, page, direction = 1) {
+
+    this.course.stopAllSounds();
+    
     var $targetPane = this._paneForDirection(direction);
     var url = this.modules[mod].pages[page].getPageURL();
 
