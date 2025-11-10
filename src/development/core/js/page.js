@@ -28,6 +28,29 @@ class Page {
     return this.pageInfo.id;
   }
 
+  isQuiz()
+  {
+    return this.pageInfo.hasOwnProperty('quiz');
+  }
+
+  forQuizCredit()
+  {
+    if(this.isQuiz())
+    {
+      return this.pageInfo.quiz.credit || false;
+    }
+    return false;
+  }
+
+  quizAnswers()
+  {
+    if(this.isQuiz())
+    {
+      return this.pageInfo.quiz.answer || [];
+    }
+    return [];
+  }
+
 }
 
 

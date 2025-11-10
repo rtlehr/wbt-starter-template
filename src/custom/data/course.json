@@ -58,6 +58,7 @@
           "id": "p-1",
           "title": "Page 01",
           "url": "content/mod02/page01.html",
+          "quiz": {"credit": true, "answer": [0]},
           "preloadAssets": [
             "assets/img/intro-hero.jpg",
             "assets/audio/intro.mp3"
@@ -67,6 +68,7 @@
           "id": "p-2",
           "title": "Page 02",
           "url": "content/mod02/page02.html",
+          "quiz": {"credit": false, "answer": [0,1,2]},
           "preloadAssets": []
         },
         {}

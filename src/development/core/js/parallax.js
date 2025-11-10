@@ -4,8 +4,6 @@ class Parallax {
 
     this.opts = $.extend(true, { parent: null }, opts);
 
-    console.log("Parallax Called:", this.opts.parent);
-
       /*let eWidth = $(this).width();   
       let eHeight = $(this).height();
       let eTop = $(this).offset().top; 
@@ -18,7 +16,6 @@ class Parallax {
       this.wHeight = $(this.opts.parent).height();
       this.wWidth = $(this.opts.parent).width();
 
-      console.log("*** wWidth: " + this.wWidth);
       /*let wTop = $(this.opts.parent).offset().top;
       let wLeft = $(this.opts.parent).offset().left;*/
 
@@ -45,10 +42,6 @@ class Parallax {
 
     let durMs = Math.max(0, ((self.opts.duration || 0.4) * 1000));
 
-    console.log("Layer ID: " + $el.attr("id"));
-
-    console.log("duration: " + durMs);
-
     // Width to use: provided imageWidths[i] → else rendered width → else DOM rect
     let widthForThis =
       (imageWidths && imageWidths[i] != null) ? Number(imageWidths[i]) : $el.outerWidth();
@@ -62,8 +55,6 @@ class Parallax {
     const eLeft = $el.position() ? ($el.position().left || 0) : 0;
 
     const moveLeft = ((eLeft + self.wWidth) - widthForThis) * self.opts.distance[i];
-
-    console.log("moveLeft: " + moveLeft);
 
     // Set transition
     $el.css({

@@ -229,7 +229,6 @@ class Animation {
 	}
 
 	playAnimation(target) {
-		console.log("Play Animation: " + target);
 
 		if (mqPhone.matches) {
 			return;

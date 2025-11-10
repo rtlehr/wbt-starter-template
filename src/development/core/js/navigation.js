@@ -4,6 +4,7 @@ class Navigation {
     this.course  = course;
     this.animation = animation;
     this.modules = modules;
+    this.quizManager = new QuizManager(this.course);
     this.pageName = "";
     
     this.lmsManagement = new lmsManagement();  
@@ -58,7 +59,7 @@ class Navigation {
   loadPage(mod, page, direction = 1) {
 
     this.course.stopAllSounds();
-    
+
     var $targetPane = this._paneForDirection(direction);
     var url = this.modules[mod].pages[page].getPageURL();
 
@@ -150,10 +151,14 @@ class Navigation {
   addPageFunctionality() {
 
     this.modalWindow.addModal();
+
     this.toolTip.addToolTip();
+
     this.animation.setUpAnimation();
 
     this.checkViewedCount();
+
+    this.checkQuiz();
 
   }
 
@@ -172,6 +177,18 @@ class Navigation {
 
     this.animation.playAnimation(element);
 
+  }
+
+  checkQuiz()
+  {
+
+    console.log("Has Quiz: " + this.modules[curMod].pages[curPage].isQuiz());
+
+    if(this.modules[curMod].pages[curPage].isQuiz())
+    {
+      this.quizManager.init(this.modules[curMod].pages[curPage].quizAnswers());
+    }
+  
   }
 
 
