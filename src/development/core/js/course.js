@@ -39,7 +39,6 @@ $(function () {
   course.addSound("wow", "content/audio/wow.mp3");
   course.addSound("typewriterkeys", "content/audio/typewriter-keys.mp3");
   course.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");
-  course.addSound("wow", "content/audio/wow.mp3");
 
   if(devMode)
   {

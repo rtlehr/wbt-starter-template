@@ -212,13 +212,42 @@ class QuizManager {
 
       console.log("Total Correct Answers: " + this.countCorrect);
 
+      this._showFeedback(true, feedbackCorrect);
+
     } else {
       $quiz.addClass('quiz-incorrect');
       console.log(
         'Question "' + questionId + '": INCORRECT' +
         (feedbackIncorrect ? ' — ' + feedbackIncorrect : '')
       );
+
+      this._showFeedback(false, feedbackIncorrect);
     }
+  }
+
+  _showFeedback(isCorrect, feedbackText) 
+  {
+      console.log("Showing Feedback: " + isCorrect);
+
+      let $d = $("#courseFeedback");
+
+      console.log("ATTR: " + $d.attr('title'));
+
+      if(isCorrect)
+      {
+        $d.attr("title", "Correct!");
+      }
+      else
+      {
+        $d.attr("title", "Incorrect");
+      }
+
+      $d.find(".tip-body").html(feedbackText);
+
+      $d.dialog();
+
+      $d.dialog('open');
+    
   }
 
 }
