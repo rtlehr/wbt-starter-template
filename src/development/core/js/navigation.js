@@ -1,10 +1,10 @@
 class Navigation {
-  constructor(course, animation, modules) {
+  constructor(course, animation, modules, quizManager) {
 
     this.course  = course;
     this.animation = animation;
     this.modules = modules;
-    this.quizManager = new QuizManager(this.course);
+    this.quizManager = quizManager;
     this.pageName = "";
     
     this.lmsManagement = new lmsManagement();  

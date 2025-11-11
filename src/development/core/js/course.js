@@ -6,6 +6,7 @@ let creditMode = false;
 let course;
 let developmentMenu;
 let sound;
+let wbtQuiz;
 
 // define your queries once
 const mqPhone   = window.matchMedia('(max-width: 575.98px)');
@@ -89,10 +90,12 @@ class Course {
   }
 
   async init() {
+
     console.log('Course Initialized');
 
     // Load course data first (so Navigation can use it immediately)
     const res = await fetch('custom/data/course.json');   // or your JsonLoader
+
     if (!res.ok) throw new Error('Failed to load course.json');
     this.courseContent = await res.json(); 
 
@@ -105,8 +108,11 @@ class Course {
 
     this.animation = new Animation();
 
+   
+    this.quizManager = new QuizManager(this, this.courseContent.quizSettings);
+
     // Now safe to init navigation
-    this.navigation = new Navigation(this, this.animation, this.modules);
+    this.navigation = new Navigation(this, this.animation, this.modules, this.quizManager);  
     this.navigation.init();
 
     $('#currentPage').load('content/introScreen.html'); 
@@ -194,7 +200,6 @@ class Course {
 
   checkViewedCount()
   {
-    console.log("checkViewedCount() " + $(".notViewed").length);
     this.navigation.checkViewedCount();
   }
  

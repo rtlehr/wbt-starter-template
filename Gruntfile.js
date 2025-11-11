@@ -114,8 +114,7 @@ module.exports = function (grunt) {
           port: 8081,
           base: ".",
           hostname: "127.0.0.1",
-          open: "http://127.0.0.1:8081/src/index.html",
-          livereload: 35729
+          open: "http://127.0.0.1:8081/src/index.html"
         }
       },
       prod: {
@@ -133,7 +132,7 @@ module.exports = function (grunt) {
      * WATCH only authoring sources (never watch build/, src/core/, src/custom/, or dist/)
      */
     watch: {
-      options: { livereload: true, debounceDelay: 300 },
+      options: { debounceDelay: 300 },
       js: {
         files: ["src/development/core/js/**/*.js", "src/development/custom/js/**/*.js"],
         tasks: ["concat:dev"]

@@ -46,7 +46,7 @@ class Page {
   {
     if(this.isQuiz())
     {
-      return this.pageInfo.quiz.answer || [];
+      return this.pageInfo.quiz || [];
     }
     return [];
   }

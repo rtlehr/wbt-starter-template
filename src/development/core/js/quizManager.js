@@ -1,8 +1,19 @@
 class QuizManager {
 
-  constructor(course) {
+  constructor(course, settings) {
+
     this.course = course || null;
-    this.answerConfig = null;   // set in init()
+
+    this.settings = settings || {};
+
+    this.totalQuestions = this.settings.totalQuestions;
+
+    this.passingScore = this.settings.passingScore;
+
+    this.countCorrect = 0;
+
+    this.answerConfig = null;
+
   }
 
   /**
@@ -27,10 +38,13 @@ class QuizManager {
    *   // NO config: fall back to data-correct="true" in HTML
    *   quizMgr.init();
    */
+
   init(answersConfig) {
-    console.log('QuizManager init called with:', answersConfig);
+
     this.answerConfig = answersConfig;   // may be undefined/null
+
     this._setupQuizzes();
+
   }
 
   /* ---------------- internal setup ---------------- */
@@ -61,8 +75,8 @@ class QuizManager {
     const inputType = multiple ? 'checkbox' : 'radio';
 
     // Optional feedback (kept hidden via CSS)
-    const fbCorrect   = $.trim($quiz.find('.quiz-feedback-correct').text() || '');
-    const fbIncorrect = $.trim($quiz.find('.quiz-feedback-incorrect').text() || '');
+    const fbCorrect   = this.answerConfig.correctFeedback || '';
+    const fbIncorrect = this.answerConfig.incorrectFeedback || '';
 
     // Store meta
     $quiz.data('multiple', multiple);
@@ -190,6 +204,14 @@ class QuizManager {
         'Question "' + questionId + '": CORRECT' +
         (feedbackCorrect ? ' — ' + feedbackCorrect : '')
       );
+
+      if(this.answerConfig.credit)
+      {
+        this.countCorrect++;
+      }
+
+      console.log("Total Correct Answers: " + this.countCorrect);
+
     } else {
       $quiz.addClass('quiz-incorrect');
       console.log(
