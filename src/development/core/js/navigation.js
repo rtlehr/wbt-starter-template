@@ -117,6 +117,7 @@ class Navigation {
         this.interface.setInterface();
         this.interface.setPageNumber(this.modules[curMod].getTotalPages());
         this.cleanCourse();
+        this._callHookIfExists('finishedMovingInCourseFunction');
         this._callHookIfExists('finishedMovingIn');
       }, dur);
   }
@@ -153,7 +154,7 @@ class Navigation {
    cleanCourse()
   {
     //remove uneeded DIVS
-    $(".ui-widget-content").each(function(){
+    $(".ui-widget-content").each(function(){   
 
       if(!$(this).hasClass("modalKeepMe"))
       {
@@ -243,6 +244,7 @@ class Navigation {
   }
 
   _callPageLoadedHook() {
+    this._callHookIfExists('pageLoadedCourseFunction');
     this._callHookIfExists('pageLoadedFunction');
   }
 
