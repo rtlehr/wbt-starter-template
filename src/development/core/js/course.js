@@ -2,6 +2,7 @@ let curMod = 0;
 let curPage = 0;
 let devMode = true;
 let creditMode = false;
+let nextDirection = 0;
 
 let course;
 let developmentMenu;
@@ -130,10 +131,12 @@ class Course {
   }
 
   gotoNextPage() {
+    nextDirection = 1;
     this.navigation.calcNextPage(1);
   }
 
   gotoPreviousPage() {
+    nextDirection = -1;
     this.navigation.calcNextPage(-1);
   }
 
