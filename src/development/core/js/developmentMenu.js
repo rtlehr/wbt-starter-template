@@ -50,8 +50,8 @@ class DevelopmentMenu {
 
   goToPage()
   {
-      const mod  = $('#dev-mod').val().trim();
-      const page = $('#dev-page').val().trim();
+      const mod  =Math.max(1, parseInt($('#dev-mod').val(), 10) || 1);
+      const page = Math.max(1, parseInt($('#dev-page').val(), 10) || 1);
 
       this.course.gotoPage((mod-1), (page-1));
   }

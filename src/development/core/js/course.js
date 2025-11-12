@@ -107,16 +107,12 @@ class Course {
 
     this.animation = new Animation();
 
-   
     this.quizManager = new QuizManager(this, this.courseContent.quizSettings);
 
-    // Now safe to init navigation
     this.navigation = new Navigation(this, this.animation, this.modules, this.quizManager);  
     this.navigation.init();
 
     $('#currentPage').load('content/introScreen.html'); 
-
-    //this.gotoPage(0, 0);
 
   }
 

@@ -34,7 +34,9 @@ class Navigation {
 
     this._updateMeasurements();
 
-    $(window).on('resize.navigation', () => this._updateMeasurements());
+    //$(window).on('resize.navigation', () => this._updateMeasurements());
+
+    this._initResizeHandler();
 
   }
 
@@ -80,30 +82,45 @@ class Navigation {
     });
   }
 
-  animatePage(direction) {
-    this.checkFooterVisibility();
+    animatePage(direction) {
+      this.checkFooterVisibility();
+      const $loadDiv = this._paneForDirection(direction);
 
-    var newPos   = this.animateLeft + (-direction * this.animateWidth);
-    var $loadDiv = this._paneForDirection(direction);
-    var origLeft = this.animateLeft;
+      const width = this.animateWidth;
+      const offset = -direction * width;
 
-    this.$row.stop(true).animate({ left: newPos }, 800, () => {
-      // swap + reset position
-      this.$row.css('left', origLeft);
-      this.$currentPage.html($loadDiv.html());
-      this._buildPageName(curMod, curPage);
-      this.$currentPage.find(".pageContent").attr("id", this.pageName);
-      $loadDiv.empty();
+      // position row at 0 with next panel preloaded off-screen
+      this.$row.css({ transform: 'translate3d(0,0,0)' });
+      $loadDiv.css({ transform: `translate3d(${offset}px,0,0)` });
 
-      // update UI/state
-      this.interface.setInterface();
-      this.interface.setPageNumber(this.modules[curMod].getTotalPages());
-      this.cleanCourse();
+      // Animate both with CSS classes or inline transition
+      const dur = 800;
+      this.$row.add($loadDiv).css({
+        transition: `transform ${dur}ms ease`
+      });
 
-      this._callHookIfExists('finishedMovingIn');
+      // Force reflow
+      void this.$row[0].offsetWidth;
 
-    });
+      // Slide row by width
+      this.$row.css({ transform: `translate3d(${offset}px,0,0)` });
+      $loadDiv.css({ transform: `translate3d(0,0,0)` });
+
+      setTimeout(() => {
+        // cleanup + swap content
+        this.$row.add($loadDiv).css({ transition: '', transform: '' });
+        this.$currentPage.html($loadDiv.html());
+        this._buildPageName(curMod, curPage);
+        this.$currentPage.find(".pageContent").attr("id", this.pageName);
+        $loadDiv.empty();
+
+        this.interface.setInterface();
+        this.interface.setPageNumber(this.modules[curMod].getTotalPages());
+        this.cleanCourse();
+        this._callHookIfExists('finishedMovingIn');
+      }, dur);
   }
+
 
   checkFooterVisibility() {
     // Show footer on desktop if currently at top:0
@@ -117,20 +134,21 @@ class Navigation {
   }
 
   adjustContentVisibility() {
+  const leftStr = this.$row.css('left'); // e.g. "-1200px"
+  const left = parseFloat(leftStr) || 0;
 
-    var leftStr = this.$row.css('left'); // e.g. "-1200px"
-
-    if (leftStr < '0px' && this._isPhone()) {
-      if (this.contentRowDesktopPos == null) {
-        this.contentRowDesktopPos = leftStr;
-      }
-      this.$row.css('left', '0px');
+  if (left < 0 && this._isPhone()) {
+    if (this.contentRowDesktopPos == null) {
+      this.contentRowDesktopPos = leftStr;
     }
-
-    if (this._isDesktop() && this.contentRowDesktopPos != null) {
-      this.$row.css('left', this.contentRowDesktopPos);
-    }
+    this.$row.css('left', '0px');
   }
+
+  if (this._isDesktop() && this.contentRowDesktopPos != null) {
+    this.$row.css('left', this.contentRowDesktopPos);
+  }
+}
+
 
    cleanCourse()
   {
@@ -242,6 +260,18 @@ class Navigation {
     this.pageName = this.modules[mod].getId() + "-" + this.modules[mod].pages[page].getId();
 
   }
+
+  _initResizeHandler() {
+  let rafId = 0;
+  const onResize = () => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      this._updateMeasurements();
+    });
+  };
+  $(window).on('resize.navigation', onResize);
+}
 
   destroy() {
     $(window).off('resize.navigation');

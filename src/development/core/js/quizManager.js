@@ -43,6 +43,8 @@ class QuizManager {
 
     this.answerConfig = answersConfig;   // may be undefined/null
 
+    this.addCourseFeedback();
+    
     this._setupQuizzes();
 
   }
@@ -227,20 +229,10 @@ class QuizManager {
 
   _showFeedback(isCorrect, feedbackText) 
   {
-      console.log("Showing Feedback: " + isCorrect);
 
       let $d = $("#courseFeedback");
 
-      console.log("ATTR: " + $d.attr('title'));
-
-      if(isCorrect)
-      {
-        $d.attr("title", "Correct!");
-      }
-      else
-      {
-        $d.attr("title", "Incorrect");
-      }
+      $d.attr("title", isCorrect ? 'Correct!' : 'Incorrect');
 
       $d.find(".tip-body").html(feedbackText);
 
@@ -249,5 +241,24 @@ class QuizManager {
       $d.dialog('open');
     
   }
+
+  addCourseFeedback() {
+
+    const feedbackHTML = `
+      <div id="courseFeedback" title="Info" style="display:none;">
+        <div class="tip-body"></div>
+      </div>
+    `;
+
+    // Append to body if it doesn't already exist
+    if (!$('#courseFeedback').length) {
+      $('body').append(feedbackHTML);
+      console.log('Course feedback dialog added.');
+    } else {
+      console.log('Course feedback dialog already exists.');
+    }
+
+  }
+
 
 }
