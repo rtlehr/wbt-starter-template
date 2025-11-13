@@ -2,6 +2,10 @@
 //  Variables
 // ------------------------------------------
 
+//courseWindow Dimensions
+$courseWindow-width: 1120px;
+$courseWindow-height: 800px;
+
 $brand-color: green;
 $brand-color-dark: color.adjust($brand-color, $lightness: -10%);
 $font-stack: system-ui, "Segoe UI", Arial, sans-serif;
@@ -51,11 +55,6 @@ $gray-500: #e0e0e0; // Change gray color
 $gray-200: #e9ecef; // Change gray color
 $headertextcolor: black; // Change header text color
 $font-family-sans-serif: 'Roboto', sans-serif; // Change default font 
-
-//courseWindow Dimensions
-$courseWindow-width: 1400px;
-$courseWindow-height: 1000px;
-
 
 // Device sizes
 $break-desktop: 992px;   // Bootstrap's lg
