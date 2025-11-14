@@ -83,188 +83,276 @@ class Animation {
 	setUpAnimation() {
 		const self = this;
 
-		if (mqPhone.matches) {
+		if (mqPhone && mqPhone.matches) {
 			return;
 		}
 
 		$(".animateMe").each(function () {
-			let eWidth = $(this).width();
-			let eHeight = $(this).height();
-			let eTop = $(this).offset().top;
-			let eLeft = $(this).offset().left;
+			const $el = $(this);
 
-			let cW = $(this).attr("data-animationPane") || "#courseWindow";
+			// Reset per-element animation index on setup
+			$el.data('_animIndex', 0);
+			$el.attr('data-currentIndex', '0');
 
-			let wHeight = $(cW).height();
-			let wWidth = $(cW).width();
-			let wTop = $(cW).offset().top;
-			let wLeft = $(cW).offset().left;
+			// Which pane are we using for geometry?
+			const cW = $el.attr("data-animationPane") || "#courseWindow";
+			const $pane = $(cW);
 
-			let newTop = 0;
-			let newLeft = 0;
+			const eWidth = $el.width();
+			const eHeight = $el.height();
+			const eTop = $el.offset().top;
+			const eLeft = $el.offset().left;
 
-			let goToTop = 0;
-			let goToLeft = 0;
-			let goToOpacity = 1;
+			const wHeight = $pane.height();
+			const wWidth = $pane.width();
+			const wTop = $pane.offset().top;
+			const wLeft = $pane.offset().left;
 
-			// slideInBottom
-			if ($(this).hasClass("slideInBottom")) {
-				newTop = (wHeight - (eTop - wTop));
-			}
-			// slideInRight
-			if ($(this).hasClass("slideInRight")) {
-				newLeft = (wWidth - (eLeft - wLeft));
-			}
-			// slideInTop
-			if ($(this).hasClass("slideInTop")) {
-				newTop = 0 - ((eTop - wTop) + eHeight);
-			}
-			// slideInLeft
-			if ($(this).hasClass("slideInLeft")) {
-				newLeft = 0 - ((eLeft - wLeft) + eWidth);
+			const anchor = self._readAnchor($el);
+			$el.css('transform-origin', anchor);
+
+			// Read any existing JSON configs (new format)
+			let configs = self.parseAnimationJSONList($el);
+			const hasArrayConfig = configs.length > 0;
+
+			// If no JSON supplied, build a single config from legacy classes
+			if (!hasArrayConfig) {
+				configs = [{}];
 			}
 
-			// slideRight
-			if ($(this).hasClass("slideRight")) {
-				goToLeft = wWidth - eWidth;
-			}
-			// slideLeft
-			if ($(this).hasClass("slideLeft")) {
-				goToLeft = 0 - (wWidth - eWidth);
-			}
-			// slideBottom
-			if ($(this).hasClass("slideBottom")) {
-				goToTop = wHeight - eHeight;
-			}
-			// slideTop
-			if ($(this).hasClass("slideTop")) {
-				goToTop = 0 - (wHeight - eHeight);
-			}
-
-			// slideOutLeft
-			if ($(this).hasClass("slideOutLeft")) {
-				newLeft = 0;
-				goToLeft = 0 - ((eLeft - wLeft) + eWidth);
-			}
-			// slideOutRight
-			if ($(this).hasClass("slideOutRight")) {
-				newLeft = 0;
-				goToLeft = (wWidth - (eLeft - wLeft));
-			}
-			// slideOutTop
-			if ($(this).hasClass("slideOutTop")) {
-				newTop = 0;
-				goToTop = 0 - ((eTop - wTop) + eHeight);
-			}
-			// slideOutBottom
-			if ($(this).hasClass("slideOutBottom")) {
-				newTop = 0;
-				goToTop = (wHeight - (eTop - wTop));
+			// For legacy, infer style from CSS classes if missing on the first step
+			if (!configs[0].style) {
+				if ($el.hasClass("slideInBottom")) configs[0].style = "slideInBottom";
+				else if ($el.hasClass("slideInRight")) configs[0].style = "slideInRight";
+				else if ($el.hasClass("slideInTop")) configs[0].style = "slideInTop";
+				else if ($el.hasClass("slideInLeft")) configs[0].style = "slideInLeft";
+				else if ($el.hasClass("slideRight")) configs[0].style = "slideRight";
+				else if ($el.hasClass("slideLeft")) configs[0].style = "slideLeft";
+				else if ($el.hasClass("slideBottom")) configs[0].style = "slideBottom";
+				else if ($el.hasClass("slideTop")) configs[0].style = "slideTop";
+				else if ($el.hasClass("slideOutLeft")) configs[0].style = "slideOutLeft";
+				else if ($el.hasClass("slideOutRight")) configs[0].style = "slideOutRight";
+				else if ($el.hasClass("slideOutTop")) configs[0].style = "slideOutTop";
+				else if ($el.hasClass("slideOutBottom")) configs[0].style = "slideOutBottom";
+				else if ($el.hasClass("fadeIn")) configs[0].style = "fadeIn";
+				else if ($el.hasClass("fadeOut")) configs[0].style = "fadeOut";
+				else if ($el.hasClass("typewriter")) configs[0].style = "typewriter";
 			}
 
-			// fadeIn
-			if ($(this).hasClass("fadeIn")) {
-				$(this).css("opacity", 0);
-			}
-			// fadeOut
-			if ($(this).hasClass("fadeOut")) {
-				goToOpacity = 0;
-			}
-
-			if (newTop != 0) {
-				$(this).css("top", newTop);
-				if (newTop < 0) {
-					goToTop = Math.abs(newTop);
-				} else {
-					goToTop = 0 - newTop;
-				}
-			}
-
-			if (newLeft != 0) {
-				$(this).css("left", newLeft);
-				if (newLeft < 0) {
-					goToLeft = Math.abs(newLeft);
-				} else {
-					goToLeft = 0 - newLeft;
-				}
-			}
-
-			const rawZoom = $(this).data('zoom');
-			const hasZoomClass = $(this).hasClass('zoom');
-			const scaleTarget = Number.isFinite(rawZoom) ? Number(rawZoom) : null;
-
-			// Use new per-axis attributes (with legacy fallback)
-			const anchor = self._readAnchor($(this));
-			$(this).css('transform-origin', anchor);
-
-			const cfg = {
-				left: goToLeft,
-				top: goToTop,
-				opacity: goToOpacity,
-				duration: $(this).data('duration') ?? 1,
-				delay: $(this).data('delay') ?? 0
-			};
-
-			if (hasZoomClass || scaleTarget != null) {
-				cfg.scale = (scaleTarget != null) ? scaleTarget : 1;
-				cfg.anchor = anchor; // store for playAnimation()
-			}
-
-			// TYPEWRITER: prep the node (store full text; create visual span)
-			if ($(this).hasClass('typewriter')) {
-				const full = $(this).text();
-				$(this)
+			// TYPEWRITER prep: if any config uses style "typewriter" OR element has the class
+			const hasTypewriterStyle = configs.some(c => {
+				const styleStr = String(c.style || '').toLowerCase();
+				const styleTokens = styleStr.split(/\s+/).filter(Boolean);
+				return styleTokens.includes('typewriter');
+			});
+			if (hasTypewriterStyle || $el.hasClass('typewriter')) {
+				const full = $el.text();
+				$el
 					.attr('aria-label', full)
-					.attr('aria-live', 'off') // avoid SR spam during typing
+					.attr('aria-live', 'off')
 					.empty()
 					.append('<span class="tw-txt" aria-hidden="true"></span>')
 					.attr('data-tw-full', full);
 			}
 
-			$(this).attr('data-animation', JSON.stringify(cfg));
+			// Normalize every step config
+			const normConfigs = configs.map(raw => {
+				const cfg = Object.assign({}, raw); // shallow copy
+				const styleStr = String(cfg.style || '').toLowerCase();
+				const styles = styleStr.split(/\s+/).filter(Boolean);
+
+				let newTop = 0;
+				let newLeft = 0;
+				let goToTop = 0;
+				let goToLeft = 0;
+				let goToOpacity = 1;
+
+				// --- slide-in from container edges --------------------------------
+				if (styles.includes('slideinbottom')) {
+					newTop = (wHeight - (eTop - wTop));
+				}
+				if (styles.includes('slideinright')) {
+					newLeft = (wWidth - (eLeft - wLeft));
+				}
+				if (styles.includes('slideintop')) {
+					newTop = 0 - ((eTop - wTop) + eHeight);
+				}
+				if (styles.includes('slideinleft')) {
+					newLeft = 0 - ((eLeft - wLeft) + eWidth);
+				}
+
+				// --- slide within pane --------------------------------------------
+				if (styles.includes('slideright')) {
+					goToLeft = wWidth - eWidth;
+				}
+				if (styles.includes('slideleft')) {
+					goToLeft = 0 - (wWidth - eWidth);
+				}
+				if (styles.includes('slidebottom')) {
+					goToTop = wHeight - eHeight;
+				}
+				if (styles.includes('slidetop')) {
+					goToTop = 0 - (wHeight - eHeight);
+				}
+
+				// --- slide out of pane (legacy precompute; playAnimation overrides) ---
+				if (styles.includes('slideoutleft')) {
+					newLeft = 0;
+					goToLeft = 0 - ((eLeft - wLeft) + eWidth);
+				}
+				if (styles.includes('slideoutright')) {
+					newLeft = 0;
+					goToLeft = (wWidth - (eLeft - wLeft));
+				}
+				if (styles.includes('slideouttop')) {
+					newTop = 0;
+					goToTop = 0 - ((eTop - wTop) + eHeight);
+				}
+				if (styles.includes('slideoutbottom')) {
+					newTop = 0;
+					goToTop = (wHeight - (eTop - wTop));
+				}
+
+				// --- fades --------------------------------------------------------
+				if (styles.includes('fadein')) {
+					$el.css("opacity", 0);
+					goToOpacity = 1;
+				}
+				if (styles.includes('fadeout')) {
+					goToOpacity = 0;
+				}
+
+				// Position element if needed
+				if (newTop !== 0) {
+					$el.css("top", newTop);
+					if (newTop < 0) {
+						goToTop = Math.abs(newTop);
+					} else {
+						goToTop = 0 - newTop;
+					}
+				}
+				if (newLeft !== 0) {
+					$el.css("left", newLeft);
+					if (newLeft < 0) {
+						goToLeft = Math.abs(newLeft);
+					} else {
+						goToLeft = 0 - newLeft;
+					}
+				}
+
+				// Fill in left/top/opacity if not explicitly provided
+				if (cfg.left == null) cfg.left = goToLeft;
+				if (cfg.top == null) cfg.top = goToTop;
+				if (cfg.opacity == null) cfg.opacity = goToOpacity;
+
+				// Duration / delay defaults
+				const dataDuration = $el.data('duration');
+				const dataDelay = $el.data('delay');
+				cfg.duration = (cfg.duration != null)
+					? cfg.duration
+					: (dataDuration != null ? dataDuration : 1);
+				cfg.delay = (cfg.delay != null)
+					? cfg.delay
+					: (dataDelay != null ? dataDelay : 0);
+
+				// Zoom support (style "zoom", element class "zoom", or cfg.scale/data-zoom)
+				const rawZoom = (cfg.scale != null) ? cfg.scale : $el.data('zoom');
+				const hasZoom = styles.includes('zoom') || $el.hasClass('zoom') || (rawZoom != null);
+				if (hasZoom) {
+					cfg.scale = Number.isFinite(Number(rawZoom)) ? Number(rawZoom) : 1;
+					cfg.anchor = cfg.anchor || anchor;
+				}
+
+				// Anchor default
+				if (!cfg.anchor) {
+					cfg.anchor = anchor;
+				}
+
+				return cfg;
+			});
+
+			// Store back normalized JSON (single object or array)
+			const toStore = (normConfigs.length === 1) ? normConfigs[0] : normConfigs;
+			$el.attr('data-animation', JSON.stringify(toStore));
 
 			// Always last line
-			$(this).css("visibility", "visible");
+			$el.css("visibility", "visible");
 		});
 	}
 
-	playAnimation(target) {
+	// -------------------------------------------------------------------------
+	// Main play method: target (selector or jQuery), optional step index
+	// -------------------------------------------------------------------------
+	playAnimation(target, index) {
 
-		if (mqPhone.matches) {
+		if (mqPhone && mqPhone.matches) {
 			return;
 		}
 
 		const $el = (typeof target === 'string') ? $(target).first() : $(target);
 		if (!$el || !$el.length) return;
 
-		const cfg = this.parseAnimationJSON($el);
+		// Pick the correct step from data-animation
+		const cfgList = this.parseAnimationJSONList($el);
+		if (!cfgList.length) return;
 
-		// Defaults
-		const left = Number(cfg.left || 0);
-		const top = Number(cfg.top || 0);
+		// --- Per-element index tracking ------------------------------------
+		const len = cfgList.length;
+
+		let stepIndex;
+		if (typeof index === 'number' && !Number.isNaN(index)) {
+			// Explicit index override (clamped)
+			stepIndex = Math.max(0, Math.min(index, len - 1));
+		} else {
+			// Auto-advance index per element
+			let prev = $el.data('_animIndex');
+			if (!Number.isInteger(prev) || prev < 0 || prev >= len) {
+				prev = 0;
+			}
+			stepIndex = prev;
+		}
+
+		// Compute and store next index for this element only
+		let nextIndex = stepIndex;
+		if (stepIndex < len - 1) {
+			nextIndex = stepIndex + 1;
+		}
+		$el.data('_animIndex', nextIndex);
+		$el.attr('data-currentIndex', String(nextIndex)); // debug / visibility
+
+		const cfg = cfgList[stepIndex];
+		const styleStr = String(cfg.style || '').toLowerCase();
+		const styles = styleStr.split(/\s+/).filter(Boolean);
+
+		// Defaults (may be overridden for slideOut*)
+		let left = Number(cfg.left || 0);
+		let top = Number(cfg.top || 0);
 		const opacity = (cfg.opacity == null) ? null : Number(cfg.opacity);
 		const duration = Number(cfg.duration || 0.6);
 		const delay = Number(cfg.delay || 0);
 		const easing = cfg.easing || 'linear';
-		const isTypewriter = $el.hasClass('typewriter');
 
-		// NEW: Zoom parameters
+		// Typewriter if element has class OR style includes "typewriter"
+		const isTypewriter = $el.hasClass('typewriter') || styles.includes('typewriter');
+
+		// Zoom parameters
 		const hasZoom = (cfg.scale != null);
 		const scaleTarget = hasZoom ? Number(cfg.scale) : 1;
 		const transformOrigin = cfg.anchor || this._readAnchor($el); // fallback if needed
 		$el.css('transform-origin', transformOrigin);
 
-		// Callbacks & chaining
-		const startFnName = $el.attr('data-startFunction');
-		const endFnName = $el.attr('data-endFunction');
-		const chain = $el.attr('data-chain') || null;
-		const startFn = (startFnName && window[startFnName]) || null;
-		const endFn = (endFnName && window[endFnName]) || null;
+		// Callbacks & chaining (JSON step overrides data- attributes)
+		const startFnName = cfg.startFunction || $el.attr('data-startFunction');
+		const endFnName = cfg.endFunction || $el.attr('data-endFunction');
+		const chain = cfg.chain || $el.attr('data-chain') || null;
+		const startFn = this._resolveFn(startFnName);
+		const endFn = this._resolveFn(endFnName);
 
-		const beginSound = $el.attr('data-beginSound');
-		const endSound = $el.attr('data-endSound');
+		// Sounds (JSON overrides data- attributes)
+		const beginSound = cfg.beginSound || $el.attr('data-beginSound');
+		const endSound = cfg.endSound || $el.attr('data-endSound');
 
-		// ACCESSIBILITY: if we’re going to show (opacity > 0), make it visible and restore focusability
+		// ACCESSIBILITY: if we’re going to show (opacity > 0), make visible & focusable
 		if (opacity == null || opacity > 0) {
 			$el.css('visibility', 'visible');
 			this._setHiddenForA11y($el, false);
@@ -273,9 +361,9 @@ class Animation {
 		// mark this run as the active animation instance for this element
 		const startToken = this._markAnimStart($el);
 
-		// Begin sound (no adapter here—uses your course API)
-		if (beginSound != undefined) {
-			try { course.playSound(beginSound); } catch (e) {}
+		// Begin sound
+		if (beginSound != undefined && this.course && typeof this.course.playSound === 'function') {
+			try { this.course.playSound(beginSound); } catch (e) { }
 		}
 
 		// Respect reduce motion: jump to end state, still honor callbacks/chain
@@ -305,16 +393,25 @@ class Animation {
 			if (typeof endFn === 'function') endFn($el[0]);
 
 			// Only play endSound if still valid
-			if (this._shouldStillPlay($el, startToken) && endSound != undefined) {
+			if (this._shouldStillPlay($el, startToken) &&
+				endSound != undefined &&
+				this.course &&
+				typeof this.course.playSound === 'function') {
 				try {
-					if (beginSound != undefined) course.stopSound(beginSound);
-				} catch (e) {}
-				try { course.playSound(endSound); } catch (e) {}
+					if (beginSound != undefined &&
+						this.course &&
+						typeof this.course.stopSound === 'function') {
+						this.course.stopSound(beginSound);
+					}
+				} catch (e) { }
+				try { this.course.playSound(endSound); } catch (e) { }
 			}
 
-			if (chain && this._shouldStillPlay($el, startToken)) this.playAnimation(chain);
+			if (chain && this._shouldStillPlay($el, startToken)) {
+				this.playAnimation(chain);
+			}
 
-			// clear any guards for safety (none set in reduced motion, but keeps state clean)
+			// clear any guards for safety
 			this._cancelAnim($el);
 			return;
 		}
@@ -360,14 +457,22 @@ class Animation {
 
 				if (typeof endFn === 'function') endFn($el[0]);
 
-				if (endSound != undefined) {
+				if (endSound != undefined &&
+					this.course &&
+					typeof this.course.playSound === 'function') {
 					try {
-						if (beginSound != undefined) course.stopSound(beginSound);
-					} catch (e) {}
-					try { course.playSound(endSound); } catch (e) {}
+						if (beginSound != undefined &&
+							this.course &&
+							typeof this.course.stopSound === 'function') {
+							this.course.stopSound(beginSound);
+						}
+					} catch (e) { }
+					try { this.course.playSound(endSound); } catch (e) { }
 				}
 
-				if (chain) this.playAnimation(chain);
+				if (chain) {
+					this.playAnimation(chain);
+				}
 
 				this._cancelAnim($el);
 			});
@@ -394,8 +499,51 @@ class Animation {
 		// Force reflow
 		void $el[0].offsetWidth;
 
+		// ---- slideOut* should be from *current* position straight off-screen ----
+		let tx = left;
+		let ty = top;
+
+		if (
+			styles.includes('slideoutleft') ||
+			styles.includes('slideoutright') ||
+			styles.includes('slideouttop') ||
+			styles.includes('slideoutbottom')
+		) {
+			const cur = this._getCurrentTranslate($el);
+
+			// Pane geometry for off-screen distance
+			const cW = $el.attr("data-animationPane") || "#courseWindow";
+			const $pane = $(cW);
+			const paneW = $pane.width() || 0;
+			const paneH = $pane.height() || 0;
+
+			const eW = $el.outerWidth() || 0;
+			const eH = $el.outerHeight() || 0;
+
+			if (styles.includes('slideoutleft')) {
+				// move straight left horizontally; keep Y
+				tx = cur.x - (paneW + eW);
+				ty = cur.y;
+			}
+			if (styles.includes('slideoutright')) {
+				// move straight right horizontally; keep Y
+				tx = cur.x + (paneW + eW);
+				ty = cur.y;
+			}
+			if (styles.includes('slideouttop')) {
+				// move straight up vertically; keep X
+				tx = cur.x;
+				ty = cur.y - (paneH + eH);
+			}
+			if (styles.includes('slideoutbottom')) {
+				// move straight down vertically; keep X
+				tx = cur.x;
+				ty = cur.y + (paneH + eH);
+			}
+		}
+
 		// Apply final state (translate + optional scale)
-		const transformFinal = this._composeTransform(left, top, scaleTarget);
+		const transformFinal = this._composeTransform(tx, ty, scaleTarget);
 		$el.css('transform', transformFinal);
 		if (opacity != null) $el.css('opacity', String(opacity));
 
@@ -439,11 +587,17 @@ class Animation {
 
 			if (typeof endFn === 'function') endFn($el[0]);
 
-			if (endSound != undefined) {
+			if (endSound != undefined &&
+				this.course &&
+				typeof this.course.playSound === 'function') {
 				try {
-					if (beginSound != undefined) course.stopSound(beginSound);
-				} catch (e) {}
-				try { course.playSound(endSound); } catch (e) {}
+					if (beginSound != undefined &&
+						this.course &&
+						typeof this.course.stopSound === 'function') {
+						this.course.stopSound(beginSound);
+					}
+				} catch (e) { }
+				try { this.course.playSound(endSound); } catch (e) { }
 			}
 
 			if (chain) {
@@ -456,9 +610,12 @@ class Animation {
 		$el.one('transitionend.anim', onEnd);
 	}
 
-	parseAnimationJSON($el) {
+	// -------------------------------------------------------------------------
+	// Parse data-animation as an array (or single object)
+	// -------------------------------------------------------------------------
+	parseAnimationJSONList($el) {
 		let raw = $el.attr('data-animation');
-		if (!raw) return {};
+		if (!raw) return [];
 
 		raw = raw
 			.replace(/&quot;/g, '"')
@@ -466,15 +623,19 @@ class Animation {
 			.replace(/[‘’]/g, "'")
 			.trim();
 
+		// Normalize semicolon-separated JSON objects to commas
 		if (raw.indexOf(';') !== -1) {
-			raw = raw.replace(/;\s*(?=")/g, ',');
+			raw = raw.replace(/;\s*(?=[{\["])/g, ',');
 		}
 
 		try {
-			return JSON.parse(raw);
+			const parsed = JSON.parse(raw);
+			if (Array.isArray(parsed)) return parsed;
+			if (parsed && typeof parsed === 'object') return [parsed];
+			return [];
 		} catch (e) {
 			console.error('Invalid data-animation JSON after normalization:', raw, e);
-			return {};
+			return [];
 		}
 	}
 
@@ -482,7 +643,9 @@ class Animation {
 	_resolveFn(path) {
 		if (!path) return null;
 		let ctx = window;
-		for (const part of String(path).split('.')) {
+		const parts = String(path).split('.');
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
 			ctx = (ctx && ctx[part]) || null;
 			if (ctx == null) return null;
 		}
@@ -554,6 +717,38 @@ class Animation {
 		return `scale(${s}) translate(${x}px, ${y}px)`;
 	}
 
+	// Read current translateX / translateY from computed transform
+	_getCurrentTranslate($el) {
+		const el = $el[0];
+		if (!el) return { x: 0, y: 0 };
+
+		const style = window.getComputedStyle(el);
+		const t = style.transform || style.webkitTransform || style.mozTransform;
+		if (!t || t === 'none') {
+			return { x: 0, y: 0 };
+		}
+
+		const match = t.match(/matrix(3d)?\((.+)\)/);
+		if (!match) return { x: 0, y: 0 };
+
+		const is3d = !!match[1];
+		const vals = match[2].split(',').map(v => parseFloat(v.trim()) || 0);
+
+		if (is3d) {
+			// matrix3d: translation in indices 12, 13
+			return {
+				x: vals[12] || 0,
+				y: vals[13] || 0
+			};
+		} else {
+			// matrix: translation in indices 4, 5
+			return {
+				x: vals[4] || 0,
+				y: vals[5] || 0
+			};
+		}
+	}
+
 	// Map per-axis anchors to a CSS transform-origin string.
 	// Accepts data-horizontalAnchor: left|center|right
 	// and data-verticleAnchor / data-verticalAnchor: top|center|bottom
@@ -563,7 +758,7 @@ class Animation {
 
 		// Per-axis (preferred)
 		let hx = String($el.data('horizontalanchor') ?? '').toLowerCase().trim();
-		// Support both "verticle" (as requested) and "vertical" (common spelling)
+		// Support both "verticle" and "vertical"
 		let vy = String(
 			($el.data('verticleanchor') ?? $el.data('verticalanchor') ?? '')
 		).toLowerCase().trim();
@@ -617,10 +812,12 @@ class Animation {
 		const active = ($el.data('_animActive') || 0) + 1;
 		$el.data('_animActive', active);
 
-		if (opts.stopSounds && typeof course?.stopSound === 'function') {
+		if (opts.stopSounds) {
 			const beginSound = $el.attr('data-beginSound');
-			if (beginSound) {
-				try { course.stopSound(beginSound); } catch (e) {}
+			if (beginSound &&
+				this.course &&
+				typeof this.course.stopSound === 'function') {
+				try { this.course.stopSound(beginSound); } catch (e) { }
 			}
 		}
 	}
