@@ -90,6 +90,9 @@ class Animation {
 		$(".animateMe").each(function () {
 			const $el = $(this);
 
+			// Reset transform so we start from a known state
+    		$el.css('transform', '');
+
 			// Reset per-element animation index on setup
 			$el.data('_animIndex', 0);
 			$el.attr('data-currentIndex', '0');
@@ -713,9 +716,9 @@ class Animation {
 		const s = Number.isFinite(scaleVal) ? scaleVal : 1;
 		const x = Number.isFinite(leftPx) ? leftPx : 0;
 		const y = Number.isFinite(topPx) ? topPx : 0;
-		// scale then translate (translate applied after scale)
-		return `scale(${s}) translate(${x}px, ${y}px)`;
-	}
+		// CSS applies right-to-left, so this means: scale, then translate
+		return `translate(${x}px, ${y}px) scale(${s})`;
+		}
 
 	// Read current translateX / translateY from computed transform
 	_getCurrentTranslate($el) {
