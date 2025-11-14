@@ -145,9 +145,9 @@ class Course {
     this.navigation.loadPage(mod, page, d);
   }
 
-  playAnimation(element)
+  playAnimation(element, index)
   {
-    this.navigation.playAnimation(element);
+    this.navigation.playAnimation(element, index);
   }
 
   getTotalMods()

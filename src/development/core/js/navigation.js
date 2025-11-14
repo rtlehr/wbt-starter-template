@@ -191,10 +191,10 @@ class Navigation {
     this.toolTip.adjustForScreenSize();
   }
 
-  playAnimation(element)
+  playAnimation(element, index)
   {
 
-    this.animation.playAnimation(element);
+    this.animation.playAnimation(element, index);
 
   }
 

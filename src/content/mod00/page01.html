@@ -32,7 +32,8 @@
       <div id="animatedTwo" class="animateMe"
       data-animation='[
             {"style": "slideInRight", "duration": 1, "delay": 0},
-            {"style": "slideOutTop", "duration": 1, "delay": 0}
+            {"style": "slideOutTop", "duration": 1, "delay": 0},
+            {"style": "slideOutRight", "duration": 1, "delay": 0}
           ]'
         style="background-color: yellowgreen;">ANIMATION Two</div>
     </div>
@@ -85,7 +86,9 @@
 
         course.playAnimation("#animated");
 
+        console.log("--------------");
         course.playAnimation("#animatedTwo");
+        console.log("--------------");
 
         course.playAnimation("#mybox");
 
@@ -108,7 +111,7 @@
   {
     console.log("onInEnd() called");
 
-    course.playAnimation("#animatedTwo");
+    course.playAnimation("#animatedTwo", 2);
 
     course.playAnimation("#animated");
 

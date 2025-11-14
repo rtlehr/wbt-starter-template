@@ -285,6 +285,9 @@ class Animation {
 	// -------------------------------------------------------------------------
 	playAnimation(target, index) {
 
+		console.log("TARGET: " + target);
+		console.log("INDEX: " + index);
+
 		if (mqPhone && mqPhone.matches) {
 			return;
 		}
@@ -312,6 +315,8 @@ class Animation {
 			stepIndex = prev;
 		}
 
+		console.log("stepIndex: " + stepIndex);
+		
 		// Compute and store next index for this element only
 		let nextIndex = stepIndex;
 		if (stepIndex < len - 1) {
