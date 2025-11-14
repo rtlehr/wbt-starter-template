@@ -20,8 +20,8 @@
       <!--<div id="animated" class="animateMe slideInTop" style="background-color: aqua;" data-beginSound="waitAMinute">ANIMATION</div>-->
       <div id="animated" class="animateMe"
           data-animation='[
-            {"style": "slideInLeft fadein", "duration": 1, "delay": 0, "endFunction": "onInEnd"},
-            {"style": "slideOutBottom", "duration": 1, "delay": 0}]'
+            {"style": "slideInLeft", "duration": 1, "delay": 0, "endFunction": "onInEnd"},
+            {"style": "slideOutLeft", "duration": 1, "delay": 0, "endFunction": "onInEnd"}]'
           data-animationPane="#animationPane"
           style="background-color: aqua;">
         ANIMATION
@@ -32,7 +32,6 @@
       <div id="animatedTwo" class="animateMe"
       data-animation='[
             {"style": "slideInRight", "duration": 1, "delay": 0},
-            {"style": "slideOutTop", "duration": 1, "delay": 0},
             {"style": "slideOutRight", "duration": 1, "delay": 0}
           ]'
         style="background-color: yellowgreen;">ANIMATION Two</div>
@@ -107,15 +106,17 @@
     console.log("onInStart() called");
   }
 
-  function onInEnd()
+  function onInEnd(el)
   {
-    console.log("onInEnd() called");
+    console.log("onInEnd called for:", el.id, 
+              "currentIndex=", el.getAttribute('data-currentIndex'));
 
-    course.playAnimation("#animatedTwo", 2);
+    course.playAnimation("#animatedTwo");
 
     course.playAnimation("#animated");
 
   }
+
 
 </script>
 
