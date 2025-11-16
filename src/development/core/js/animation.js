@@ -11,19 +11,12 @@ class Animation {
      */
     playAnimation(target, options = {}) {
 
-        // Normalize target: accept jQuery object, selector, or element
-        if (target instanceof jQuery) {
-            this.target = target[0];
-        } else if (typeof target === "string") {
-            this.target = document.querySelector(target);
-        } else {
-            this.target = target;
-        }
+        this.$target = target instanceof jQuery ? target : $(target);
+        
+        // Read and parse animation list
+        this.steps = this._readAnimationSteps(this.$target);
 
-        if (!this.target) {
-            console.warn("Animation: target not found:", target);
-            return;
-        }
+        //this.runSteps();
 
         this.setAnimation(options);
     }
@@ -64,6 +57,35 @@ class Animation {
         this.animate();
     }
 
+    animate() {
+
+        const transformOrigin = this._getTransformOrigin(this.anchor);
+
+        gsap.to(this.target, {
+            x: this.x,
+            y: this.y,
+            opacity: this.opacity,
+            scale: this.scale,
+            transformOrigin: transformOrigin,
+            duration: this.duration,
+            delay: this.delay,
+            onStart: this.onStart || undefined,
+            onComplete: this.onComplete || undefined
+        });
+    }
+
+    _readAnimationSteps($el) {
+        const json = $el.attr("data-animation");
+        if (!json) return [];
+
+        try {
+            return JSON.parse(json);   // ← YES—this is the correct line, inside try/catch
+        } catch (err) {
+            console.warn("Animation JSON parse error:", err, json);
+            return [];
+        }
+    }
+
     _getTransformOrigin(anchor) {
         if (!anchor) return "50% 50%";
 
@@ -85,20 +107,5 @@ class Animation {
         }
     }
 
-    animate() {
 
-        const transformOrigin = this._getTransformOrigin(this.anchor);
-
-        gsap.to(this.target, {
-            x: this.x,
-            y: this.y,
-            opacity: this.opacity,
-            scale: this.scale,
-            transformOrigin: transformOrigin,
-            duration: this.duration,
-            delay: this.delay,
-            onStart: this.onStart || undefined,
-            onComplete: this.onComplete || undefined
-        });
-    }
 }
