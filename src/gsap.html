@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>GSAP Generic Animation Demo</title>
+  <title>GSAP Animation Class Demo</title>
 
-  <!-- GSAP (GreenSock) CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/TextPlugin.min.js"></script>
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <style>
     body {
@@ -25,7 +25,7 @@
       align-items: center;
       justify-content: center;
       border-radius: 8px;
-      position: relative; /* so transforms are easy to see */
+      position: relative;
     }
 
     .controls {
@@ -40,43 +40,61 @@
 </head>
 <body>
 
-  <h1>GSAP Generic Animation Demo</h1>
+  <h1>Animation Class + GSAP + jQuery</h1>
 
   <div id="box">Animate me</div>
 
   <div class="controls">
-    <button id="animateBtn">Run Animation</button>
+    <button id="playBtn">Play Animation</button>
   </div>
 
-  <!-- Generic helper -->
   <script>
-    function animateWithGsap({
-      target,
-      x = 0,
-      y = 0,
-      opacity = 1,
-      scale = 1,
-      anchor = "center",
-      duration = 1,
-      delay = 0,
-      onStart = null,
-      onComplete = null
-    }) {
-      if (!target) {
-        console.warn("animateWithGsap: 'target' is required.");
-        return;
+    class Animation {
+
+      constructor(course, pageInfo) {
+        this.course = course;
+        this.pageInfo = pageInfo;
       }
 
-      const elem = (typeof target === "string") ? document.querySelector(target) : target;
-      if (!elem) {
-        console.warn("animateWithGsap: target element not found:", target);
-        return;
+      playAnimation(target, options = {}) {
+
+        if (target instanceof jQuery) {
+          this.target = target[0];
+        } else if (typeof target === "string") {
+          this.target = document.querySelector(target);
+        } else {
+          this.target = target;
+        }
+
+        if (!this.target) {
+          console.warn("Animation: target not found:", target);
+          return;
+        }
+
+        this.setAnimation(options);
       }
 
-      function getTransformOrigin(anchor) {
+      setAnimation(options) {
+        this.x          = options.x          !== undefined ? options.x          : 0;
+        this.y          = options.y          !== undefined ? options.y          : 0;
+        this.opacity    = options.opacity    !== undefined ? options.opacity    : 1;
+        this.scale      = options.scale      !== undefined ? options.scale      : 1;
+        this.anchor     = options.anchor     || "center";
+        this.duration   = options.duration   || 1;
+        this.delay      = options.delay      || 0;
+        this.onStart    = options.onStart    || null;
+        this.onComplete = options.onComplete || null;
+
+        this.animate();
+      }
+
+      _getTransformOrigin(anchor) {
+        if (!anchor) return "50% 50%";
+
         switch (anchor.toLowerCase()) {
           case "top-left":     return "0% 0%";
-          case "top-center":   return "50% 0%";
+          case "top-center":
+          case "top":          return "50% 0%";
           case "top-right":    return "100% 0%";
           case "center-left":
           case "left":         return "0% 50%";
@@ -86,58 +104,64 @@
           case "bottom-center":
           case "bottom":       return "50% 100%";
           case "bottom-right": return "100% 100%";
-          case "top":          return "50% 0%";
           case "center":
           default:             return "50% 50%";
         }
       }
 
-      const transformOrigin = getTransformOrigin(anchor);
+      animate() {
+        const transformOrigin = this._getTransformOrigin(this.anchor);
 
-      gsap.to(elem, {
-        x: x,
-        y: y,
-        opacity: opacity,
-        scale: scale,
-        transformOrigin: transformOrigin,
-        duration: duration,
-        delay: delay,
-        onStart: onStart || undefined,
-        onComplete: onComplete || undefined
-      });
+        gsap.to(this.target, {
+          x: this.x,
+          y: this.y,
+          opacity: this.opacity,
+          scale: this.scale,
+          transformOrigin: transformOrigin,
+          duration: this.duration,
+          delay: this.delay,
+          onStart: this.onStart || undefined,
+          onComplete: this.onComplete || undefined
+        });
+      }
     }
 
-    // Example usage
-    document.getElementById("animateBtn").addEventListener("click", function () {
-      // Move 200px right, 80px down, fade to 0.5, scale up, anchor at bottom-right
-      animateWithGsap({
-        target: "#box",
-        x: 200,
-        y: 80,
-        opacity: 0.5,
-        scale: 1.5,
-        anchor: "bottom-right",
-        duration: 1.2,
-        delay: 0.2,
-        onStart: function () {
-          console.log("Animation started");
-        },
-        onComplete: function () {
-          console.log("Animation completed");
+    // jQuery wiring
+    $(function () {
+      const animation = new Animation(null, null);
 
-          // Example: animate back to original state
-          animateWithGsap({
-            target: "#box",
-            x: 0,
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            anchor: "center",
-            duration: 0.8
-          });
-        }
+      $("#playBtn").on("click", function () {
+
+        // Example: move, fade, scale from bottom-right anchor
+        animation.playAnimation("#box", {
+          x: 200,
+          y: 80,
+          opacity: 0.5,
+          scale: 1.5,
+          anchor: "bottom-right",
+          duration: 1.2,
+          delay: 0.2,
+          onStart: function () {
+            console.log("Animation started");
+          },
+          onComplete: function () {
+            console.log("Animation completed, returning to original state");
+
+            // Animate back to original state
+            animation.playAnimation("#box", {
+              x: 0,
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              anchor: "center",
+              duration: 0.8
+            });
+          }
+        });
+
       });
     });
   </script>
+
 </body>
 </html>
