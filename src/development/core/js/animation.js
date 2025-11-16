@@ -29,8 +29,29 @@ class Animation {
     }
 
     setAnimation(options) {
+
+        const $el = $("#box");
+        const $pane = $("#animParent");
+
+        const eWidth = $el.outerWidth() || 0;
+        const eHeight = $el.outerHeight() || 0;
+        const eTop = $el.offset().top;
+        const eLeft = $el.offset().left;
+
+        const wHeight = $pane.height() || 0;
+        const wWidth = $pane.width() || 0;
+        const wTop = $pane.offset().top;
+        const wLeft = $pane.offset().left;
+
         // Defaults
-        this.x          = options.x          !== undefined ? options.x          : 0;
+        this.x = (wWidth - (eLeft - wLeft));
+
+        console.log("wWidth:", wWidth);
+        console.log("eLeft:", eLeft);
+        console.log("wLeft:", wLeft);
+        console.log("this.x:", this.x);
+
+        //this.x          = options.x          !== undefined ? options.x          : 0;
         this.y          = options.y          !== undefined ? options.y          : 0;
         this.opacity    = options.opacity    !== undefined ? options.opacity    : 1;
         this.scale      = options.scale      !== undefined ? options.scale      : 1;
