@@ -41,12 +41,17 @@
 
 <div id="mainRow" style="position: relative; height: 200px; width: 950px; border: red solid 1px;">
   <div id="mybox"
-      data-animationPane="#mainRow"
-      style="position: absolute; width:120px; height:80px; background-color:brown; color:#fff; border-radius:8px; float: left; bottom: 0;"
-      class="animateMe"data-animation='[
-            {"style": "slideRight", "duration": 1, "delay": 0}]'>
-    Hello
-  </div>
+     data-animationPane="#mainRow"
+     style="position:absolute;width:120px;height:80px;background-color:brown;color:#fff;border-radius:8px;float:left;bottom:0;"
+     data-horizontalAnchor="left"
+     data-verticleAnchor="bottom"
+     class="animateMe"
+     data-animation='[
+       {"style":"zoom", "scale":2, "duration":1, "delay":0},
+       {"style":"zoom", "scale":1, "duration":1, "delay":0}
+     ]'>
+  Hello
+</div>
 </div>
 
 </section>
@@ -114,6 +119,8 @@
     course.playAnimation("#animatedTwo");
 
     course.playAnimation("#animated");
+
+    course.playAnimation("#mybox");
 
   }
 

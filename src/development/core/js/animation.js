@@ -112,7 +112,7 @@ class Animation {
       const anchor = self._readAnchor($el);
       $el.css('transform-origin', anchor);
 
-      // Read JSON configs (new-only)
+      // Read JSON configs
       const configs = self.parseAnimationJSONList($el);
       if (!configs.length) {
         console.warn('Animation: no valid data-animation for', $el[0]);
@@ -135,7 +135,15 @@ class Animation {
           .attr('data-tw-full', full);
       }
 
-      // Normalize configs
+      // If FIRST step has fadeIn, start fully transparent
+      const firstCfg = configs[0] || {};
+      const firstStyleStr = String(firstCfg.style || '').toLowerCase();
+      const firstStyles = firstStyleStr.split(/\s+/).filter(Boolean);
+      if (firstStyles.includes('fadein')) {
+        $el.css('opacity', 0);
+      }
+
+      // Normalize configs: slides + zoom (no fade handling here)
       const normConfigs = configs.map(raw => {
         const cfg = Object.assign({}, raw); // shallow copy
         const styleStr = String(cfg.style || '').toLowerCase();
@@ -149,7 +157,6 @@ class Animation {
         let newLeft = 0;
         let goToTop = (cfg.top != null) ? cfg.top : 0;
         let goToLeft = (cfg.left != null) ? cfg.left : 0;
-        let goToOpacity = (cfg.opacity != null) ? cfg.opacity : 1;
 
         // --- slide-in from container edges --------------------------------
         if (styles.includes('slideinbottom')) {
@@ -179,18 +186,7 @@ class Animation {
           goToTop = 0 - (wHeight - eHeight);
         }
 
-        // NOTE: slideOut* is handled at play time based on current transform
-
-        // --- fades --------------------------------------------------------
-        if (styles.includes('fadein')) {
-          $el.css("opacity", 0);
-          if (cfg.opacity == null) {
-            goToOpacity = 1;
-          }
-        }
-        if (styles.includes('fadeout') && cfg.opacity == null) {
-          goToOpacity = 0;
-        }
+        // NOTE: slideOut* handled at play time based on current transform
 
         // Position element if needed for slideIn* and slide* cases
         if (newTop !== 0) {
@@ -213,7 +209,6 @@ class Animation {
         // Defaults if not explicitly provided
         if (cfg.left == null) cfg.left = goToLeft;
         if (cfg.top == null) cfg.top = goToTop;
-        if (cfg.opacity == null) cfg.opacity = goToOpacity;
 
         cfg.duration = (cfg.duration != null) ? cfg.duration : 1;
         cfg.delay = (cfg.delay != null) ? cfg.delay : 0;
@@ -227,6 +222,7 @@ class Animation {
           cfg.anchor = anchor;
         }
 
+        // NOTE: we do NOT set cfg.opacity here; fades handled at play
         return cfg;
       });
 
@@ -278,10 +274,27 @@ class Animation {
     const styleStr = String(cfg.style || '').toLowerCase();
     const styles = styleStr.split(/\s+/).filter(Boolean);
 
-    // Defaults (may be overridden for slideOut*)
+    // Base transform target values (may be changed for slideOut*)
     let left = Number(cfg.left || 0);
     let top = Number(cfg.top || 0);
-    const opacity = (cfg.opacity == null) ? null : Number(cfg.opacity);
+
+    // Fades: compute target opacity from cfg + style tokens
+    let targetOpacity = (cfg.opacity == null) ? null : Number(cfg.opacity);
+
+    const hasFadeIn = styles.includes('fadein');
+    const hasFadeOut = styles.includes('fadeout');
+
+    // fadeIn: ensure final opacity > 0, start from 0
+    if (hasFadeIn) {
+      if (targetOpacity == null) targetOpacity = 1;
+      $el.css('opacity', 0);
+    }
+
+    // fadeOut: final opacity 0 if not explicitly overridden
+    if (hasFadeOut && targetOpacity == null) {
+      targetOpacity = 0;
+    }
+
     const duration = Number(cfg.duration || 0.6);
     const delay = Number(cfg.delay || 0);
     const easing = cfg.easing || 'linear';
@@ -295,17 +308,17 @@ class Animation {
     const transformOrigin = cfg.anchor || this._readAnchor($el);
     $el.css('transform-origin', transformOrigin);
 
-    // Callbacks & chaining (JSON ONLY now)
+    // Callbacks & chaining
     const startFn = this._resolveFn(cfg.startFunction);
     const endFn = this._resolveFn(cfg.endFunction);
     const chain = cfg.chain || null;
 
-    // Sounds (JSON ONLY)
+    // Sounds
     const beginSound = cfg.beginSound;
     const endSound = cfg.endSound;
 
     // ACCESSIBILITY: if we’re going to show (opacity > 0), make visible & focusable
-    if (opacity == null || opacity > 0) {
+    if (targetOpacity == null || targetOpacity > 0) {
       $el.css('visibility', 'visible');
       this._setHiddenForA11y($el, false);
     }
@@ -335,16 +348,15 @@ class Animation {
       const transformFinal = this._composeTransform(left, top, scaleTarget);
       $el.css('transform-origin', transformOrigin);
       $el.css('transform', transformFinal);
-      if (opacity != null) $el.css('opacity', String(opacity));
+      if (targetOpacity != null) $el.css('opacity', String(targetOpacity));
 
-      if (opacity === 0) {
+      if (targetOpacity === 0) {
         $el.css('visibility', 'hidden');
         this._setHiddenForA11y($el, true);
       }
 
       const stillValid = this._shouldStillPlay($el, startToken);
 
-      // Always call endFn once per animation
       if (typeof endFn === 'function') endFn($el[0]);
 
       if (stillValid &&
@@ -374,7 +386,7 @@ class Animation {
       if (typeof startFn === 'function') startFn($el[0]);
 
       // Optional opacity tween in parallel (no transform for typewriter)
-      if (opacity != null) {
+      if (targetOpacity != null) {
         $el.css({
           transitionProperty: 'opacity',
           transitionDuration: duration + 's',
@@ -384,7 +396,7 @@ class Animation {
         });
         // Force reflow then apply target opacity
         void $el[0].offsetWidth;
-        $el.css('opacity', String(opacity));
+        $el.css('opacity', String(targetOpacity));
       }
 
       const cps = (cfg.cps != null) ? Number(cfg.cps) : null;
@@ -398,7 +410,7 @@ class Animation {
           willChange: ''
         });
 
-        if (opacity === 0) {
+        if (targetOpacity === 0) {
           $el.css('visibility', 'hidden');
           this._setHiddenForA11y($el, true);
         }
@@ -432,34 +444,20 @@ class Animation {
     }
     // -------------------------------------------------------------------
 
-    // Build transition CSS (non-typewriter path)
-    const props = (opacity == null) ? 'transform' : 'transform, opacity';
-    $el.css({
-      transitionProperty: props,
-      transitionDuration: duration + 's',
-      transitionTimingFunction: easing,
-      transitionDelay: delay + 's',
-      willChange: 'transform, opacity'
-    });
+    // NON-TYPEWRITER BRANCH
 
-    $el.css('transform-origin', transformOrigin);
-
-    if (typeof startFn === 'function') startFn($el[0]);
-
-    // Force reflow
-    void $el[0].offsetWidth;
-
-    // ---- slideOut* from current position straight off-screen -----------
+    // Get current transform (translate + scale)
+    const cur = this._getCurrentTransformParts($el); // {x,y,scaleX,scaleY}
     let tx = left;
     let ty = top;
 
+    // ---- slideOut* from current position straight off-screen -----------
     if (
       styles.includes('slideoutleft') ||
       styles.includes('slideoutright') ||
       styles.includes('slideouttop') ||
       styles.includes('slideoutbottom')
     ) {
-      const cur = this._getCurrentTranslate($el);
       const paneSel = $el.attr("data-animationPane") || "#courseWindow";
       const $pane = $(paneSel);
       const paneW = $pane.width() || 0;
@@ -485,10 +483,31 @@ class Animation {
       }
     }
 
-    // Apply final state (translate + optional scale)
+    // 1) Set transform-origin and starting opacity for fadeIn
+    $el.css('transform-origin', transformOrigin);
+    if (hasFadeIn && targetOpacity != null) {
+      $el.css('opacity', 0);
+    }
+
+    // 2) Enable transitions
+    const props = (targetOpacity == null) ? 'transform' : 'transform, opacity';
+    $el.css({
+      transitionProperty: props,
+      transitionDuration: duration + 's',
+      transitionTimingFunction: easing,
+      transitionDelay: delay + 's',
+      willChange: 'transform, opacity'
+    });
+
+    if (typeof startFn === 'function') startFn($el[0]);
+
+    // 3) Force reflow so the browser captures the CURRENT transform as the start
+    void $el[0].offsetWidth;
+
+    // 4) Apply FINAL state (translate + optional scale)
     const transformFinal = this._composeTransform(tx, ty, scaleTarget);
     $el.css('transform', transformFinal);
-    if (opacity != null) $el.css('opacity', String(opacity));
+    if (targetOpacity != null) $el.css('opacity', String(targetOpacity));
 
     // Fallback guard if transitionend never fires
     const total = (delay + duration) * 1000 + 50;
@@ -514,14 +533,13 @@ class Animation {
         willChange: ''
       });
 
-      if (opacity === 0) {
+      if (targetOpacity === 0) {
         $el.css('visibility', 'hidden');
         this._setHiddenForA11y($el, true);
       }
 
       const stillValid = this._shouldStillPlay($el, startToken);
 
-      // Always fire endFn for this transition
       if (typeof endFn === 'function') endFn($el[0]);
 
       if (stillValid &&
@@ -636,28 +654,27 @@ class Animation {
 
   // === Transform helpers ====================================================
 
-  // Apply translate AFTER scale so the final movement is not scaled
+  // Compose transform: translate then scale
   _composeTransform(leftPx, topPx, scaleVal) {
     const s = Number.isFinite(scaleVal) ? scaleVal : 1;
     const x = Number.isFinite(leftPx) ? leftPx : 0;
     const y = Number.isFinite(topPx) ? topPx : 0;
-    // CSS transforms: right-to-left, so this is: scale, then translate
     return `translate(${x}px, ${y}px) scale(${s})`;
   }
 
-  // Read current translateX / translateY from computed transform
-  _getCurrentTranslate($el) {
+  // Read current transform (translate + scale)
+  _getCurrentTransformParts($el) {
     const el = $el[0];
-    if (!el) return { x: 0, y: 0 };
+    if (!el) return { x: 0, y: 0, scaleX: 1, scaleY: 1 };
 
     const style = window.getComputedStyle(el);
     const t = style.transform || style.webkitTransform || style.mozTransform;
     if (!t || t === 'none') {
-      return { x: 0, y: 0 };
+      return { x: 0, y: 0, scaleX: 1, scaleY: 1 };
     }
 
     const match = t.match(/matrix(3d)?\((.+)\)/);
-    if (!match) return { x: 0, y: 0 };
+    if (!match) return { x: 0, y: 0, scaleX: 1, scaleY: 1 };
 
     const is3d = !!match[1];
     const vals = match[2].split(',').map(v => parseFloat(v.trim()) || 0);
@@ -665,12 +682,16 @@ class Animation {
     if (is3d) {
       return {
         x: vals[12] || 0,
-        y: vals[13] || 0
+        y: vals[13] || 0,
+        scaleX: vals[0] || 1,
+        scaleY: vals[5] || 1
       };
     } else {
       return {
         x: vals[4] || 0,
-        y: vals[5] || 0
+        y: vals[5] || 0,
+        scaleX: vals[0] || 1,
+        scaleY: vals[3] || 1
       };
     }
   }
