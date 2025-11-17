@@ -40,6 +40,10 @@ class Animation {
                 this.x = paneInfo.w - (elInfo.x - paneInfo.x);
             }
 
+            if (firstStep.type.includes("slideInLeft")) {
+                this.x = paneInfo.x - (elInfo.x + elInfo.w);
+            }
+
             // Example: pre-position slideInRight elements off-screen to the right
             if (firstStep.type.includes("fadeIn")) {
                 this.opacity = 0;
@@ -108,7 +112,7 @@ class Animation {
         console.log("duration: " + this.duration);
 
         // --- POSITION LOGIC ---
-        if (type.includes("slideInRight")) {
+        if (type.includes("slideInRight") || type.includes("slideInLeft")) {
             // Move back to normal position
             this.x = 0;
         }
