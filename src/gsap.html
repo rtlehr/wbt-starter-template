@@ -46,7 +46,7 @@
 
     <div id="animParent" style="position: relative; height: 100px; width: 800px; border: 1px solid red;">
         <div id="box"
-        data-animation='[{"type": "slideInRight fadeIn", "duration": 5}, {"type": "slideOutRight fadeOut", "delay": 2}]'
+        data-animation='[{"type": "slideInRight fadeIn", "duration": 1}, {"type": "slideOutRight fadeOut", "delay": 2}, {"type": "fadeOut", "delay": 0}]'
         class="animateMe"
         >Animate me</div>
     </div>
@@ -64,34 +64,21 @@
 
       animation.initAnimations();
 
+      let count = 0;
+
       $("#playBtn").on("click", function () {
 
         // Example: move, fade, scale from bottom-right anchor
-        animation.playAnimation("#box", {
-          x: 500,
-          y: 0,
-          //opacity: 0.5,
-          //scale: 1.5,
-          anchor: "bottom-right",
-          duration: 1.2,
-          delay: 0.2,
-          onStart: function () {
-            console.log("Animation started");
-          },
-          onComplete: function () {
-            console.log("Animation completed, returning to original state");
 
-            // Animate back to original state
-            /*animation.playAnimation("#box", {
-              x: 0,
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              anchor: "center",
-              duration: 0.8
-            });*/
-          }
-        });
+        if(count == 0)
+        {
+          animation.playAnimation("#box");
+          count++;
+        }
+        else
+        {
+          animation.playAnimation("#box", 2);
+        }
 
       });
     });

@@ -55,7 +55,7 @@ class Animation {
     ==========================================*/
     // target: selector, DOM element, or jQuery object
     // options: overrides like { y, scale, anchor, duration, delay, onStart, onComplete }
-    playAnimation(target, options = {}) {
+    playAnimation(target, stepIndex = null) {    
 
         this._setDefaults();
 
@@ -68,7 +68,12 @@ class Animation {
         }
 
         // Read current step from data-nextstep (default to 0)
-        this.currStep = Number(this.target.attr("data-nextstep")) || 0;
+        if (stepIndex !== null && !isNaN(stepIndex)) {
+            this.currStep = stepIndex;
+        } else {
+            this.currStep = Number(this.target.attr("data-nextstep")) || 0;
+        }
+
         console.log("playAnimation currStep:", this.currStep);
 
         // Load the animation step from JSON and update next step
@@ -79,13 +84,13 @@ class Animation {
             return;
         }
 
-        this._createAnimationFromStep(options);
+        this._createAnimationFromStep();
     }
 
     /* =========================================
        3. BUILD ANIMATION VALUES FROM STEP
     ==========================================*/
-    _createAnimationFromStep(options) {
+    _createAnimationFromStep() {
 
         const $pane = $("#animParent");
         const elInfo = this._getElementInfo();
