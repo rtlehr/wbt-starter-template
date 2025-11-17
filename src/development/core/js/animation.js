@@ -11,6 +11,10 @@ class Animation {
     initAnimations() {
         console.log("--- initAnimations ---");
 
+        this._setDefaults();
+
+        this.duration = 0;
+
         const $pane = $("#animParent");
         const paneInfo = this._getWindowInfo($pane);
 
@@ -32,19 +36,17 @@ class Animation {
             if (!firstStep) return; // no animation defined, skip
 
             // Example: pre-position slideInRight elements off-screen to the right
-            if (firstStep.type && firstStep.type.includes("slideInRight")) {
+            if (firstStep.type.includes("slideInRight")) {
                 this.x = paneInfo.w - (elInfo.x - paneInfo.x);
-                this.y = 0;
-                this.opacity = 1;
-                this.scale = 1;
-                this.anchor = "center";
-                this.duration = 0; // instant (no visible animation on init)
-                this.delay = 0;
-                this.onStart = null;
-                this.onComplete = null;
-
-                this.animate();
             }
+
+            // Example: pre-position slideInRight elements off-screen to the right
+            if (firstStep.type.includes("fadeIn")) {
+                this.opacity = 0;
+            }
+
+            this.animate();
+
         });
     }
 
@@ -54,6 +56,8 @@ class Animation {
     // target: selector, DOM element, or jQuery object
     // options: overrides like { y, scale, anchor, duration, delay, onStart, onComplete }
     playAnimation(target, options = {}) {
+
+        this._setDefaults();
 
         // Normalize to jQuery object
         this.target = target instanceof jQuery ? target : $(target);
@@ -93,6 +97,10 @@ class Animation {
         this.y = 0;
         this.opacity = 1;
         this.scale = 1;
+        this.duration = this.currAnimation.duration || 1;
+        this.delay = this.currAnimation.delay || 0;
+
+        console.log("duration: " + this.duration);
 
         // --- POSITION LOGIC ---
         if (type.includes("slideInRight")) {
@@ -115,19 +123,6 @@ class Animation {
             this.target.css("opacity", 0);
             this.opacity = 1;
         }
-
-        // --- OPTIONS / STEP OVERRIDES ---
-        // If step has its own duration/delay, you could use them like:
-        // const stepDuration = this.currAnimation.duration;
-        // const stepDelay = this.currAnimation.delay;
-
-        this.y          = options.y          ?? 0;
-        this.scale      = options.scale      ?? 1;
-        this.anchor     = options.anchor     || "center";
-        this.duration   = options.duration   || this.currAnimation.duration || 1;
-        this.delay      = options.delay      || this.currAnimation.delay    || 0;
-        this.onStart    = options.onStart    || null;
-        this.onComplete = options.onComplete || null;
 
         this.animate();
     }
@@ -239,5 +234,17 @@ class Animation {
 
         const key = anchor.toLowerCase();
         return map[key] || "50% 50%";
+    }
+
+    _setDefaults()
+    {
+        this.x          = 0;
+        this.y          = 0;
+        this.scale      = 1;
+        this.anchor     = "center";
+        this.duration   = 1;
+        this.delay      = 0;
+        this.onStart    = null;
+        this.onComplete = null;
     }
 }
