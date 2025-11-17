@@ -36,7 +36,7 @@ class Animation {
         const wTop = $pane.offset().top;
         const wLeft = $pane.offset().left;
 
-        // Defaults
+        // slideOutRight
         this.x = (wWidth - (eLeft - wLeft));
 
         console.log("wWidth:", wWidth);
@@ -79,7 +79,7 @@ class Animation {
         if (!json) return [];
 
         try {
-            return JSON.parse(json);   // ← YES—this is the correct line, inside try/catch
+            return JSON.parse(json);
         } catch (err) {
             console.warn("Animation JSON parse error:", err, json);
             return [];
