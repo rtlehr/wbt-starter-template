@@ -5,58 +5,136 @@ class Animation {
         this.pageInfo = pageInfo;
     }
 
-    /**
-     * target: selector string, DOM element, or jQuery object
-     * options: { x, y, opacity, scale, anchor, duration, delay, onStart, onComplete }
-     */
-    playAnimation(target, options = {}) {
+    /* =========================================
+       1. INITIALIZE ALL .animateMe ELEMENTS
+    ==========================================*/
+    initAnimations() {
+        console.log("--- initAnimations ---");
 
-        this.$target = target instanceof jQuery ? target : $(target);
-        
-        // Read and parse animation list
-        this.steps = this._readAnimationSteps(this.$target);
+        const $pane = $("#animParent");
+        const paneInfo = this._getWindowInfo($pane);
 
-        //this.runSteps();
+        // Loop through every element that can be animated
+        $(".animateMe").each((i, el) => {
 
-        this.setAnimation(options);
+            const $el = $(el);
+
+            // Start at step 0
+            $el.attr("data-nextstep", 0);
+
+            // Temporarily set this.target so helpers work
+            this.target = $el;
+
+            const elInfo = this._getElementInfo();
+            const steps = this._getAnimationStepsFromAttr();
+            const firstStep = steps[0];
+
+            if (!firstStep) return; // no animation defined, skip
+
+            // Example: pre-position slideInRight elements off-screen to the right
+            if (firstStep.type && firstStep.type.includes("slideInRight")) {
+                this.x = paneInfo.w - (elInfo.x - paneInfo.x);
+                this.y = 0;
+                this.opacity = 1;
+                this.scale = 1;
+                this.anchor = "center";
+                this.duration = 0; // instant (no visible animation on init)
+                this.delay = 0;
+                this.onStart = null;
+                this.onComplete = null;
+
+                this.animate();
+            }
+        });
     }
 
-    setAnimation(options) {
+    /* =========================================
+       2. PLAY ANIMATION FOR A GIVEN TARGET
+    ==========================================*/
+    // target: selector, DOM element, or jQuery object
+    // options: overrides like { y, scale, anchor, duration, delay, onStart, onComplete }
+    playAnimation(target, options = {}) {
 
-        const $el = $("#box");
+        // Normalize to jQuery object
+        this.target = target instanceof jQuery ? target : $(target);
+
+        if (!this.target.length) {
+            console.warn("Animation target not found:", target);
+            return;
+        }
+
+        // Read current step from data-nextstep (default to 0)
+        this.currStep = Number(this.target.attr("data-nextstep")) || 0;
+        console.log("playAnimation currStep:", this.currStep);
+
+        // Load the animation step from JSON and update next step
+        this.currAnimation = this._readAnimationStep(this.currStep);
+
+        if (!this.currAnimation) {
+            console.warn("No animation step found for step", this.currStep);
+            return;
+        }
+
+        this._createAnimationFromStep(options);
+    }
+
+    /* =========================================
+       3. BUILD ANIMATION VALUES FROM STEP
+    ==========================================*/
+    _createAnimationFromStep(options) {
+
         const $pane = $("#animParent");
+        const elInfo = this._getElementInfo();
+        const paneInfo = this._getWindowInfo($pane);
+        const type = this.currAnimation.type || "";
 
-        const eWidth = $el.outerWidth() || 0;
-        const eHeight = $el.outerHeight() || 0;
-        const eTop = $el.offset().top;
-        const eLeft = $el.offset().left;
+        // --- Defaults each time so nothing "sticks" accidentally ---
+        this.x = 0;
+        this.y = 0;
+        this.opacity = 1;
+        this.scale = 1;
 
-        const wHeight = $pane.height() || 0;
-        const wWidth = $pane.width() || 0;
-        const wTop = $pane.offset().top;
-        const wLeft = $pane.offset().left;
+        // --- POSITION LOGIC ---
+        if (type.includes("slideInRight")) {
+            // Move back to normal position
+            this.x = 0;
+        }
 
-        // slideOutRight
-        this.x = (wWidth - (eLeft - wLeft));
+        if (type.includes("slideOutRight")) {
+            // Move out to the right, based on pane and element position
+            this.x = paneInfo.w - (elInfo.x - paneInfo.x);
+        }
 
-        console.log("wWidth:", wWidth);
-        console.log("eLeft:", eLeft);
-        console.log("wLeft:", wLeft);
-        console.log("this.x:", this.x);
+        // --- OPACITY LOGIC ---
+        if (type.includes("fadeOut")) {
+            this.opacity = 0;
+        }
 
-        //this.x          = options.x          !== undefined ? options.x          : 0;
-        this.y          = options.y          !== undefined ? options.y          : 0;
-        this.opacity    = options.opacity    !== undefined ? options.opacity    : 1;
-        this.scale      = options.scale      !== undefined ? options.scale      : 1;
+        if (type.includes("fadeIn")) {
+            // Start invisible, fade to 1
+            this.target.css("opacity", 0);
+            this.opacity = 1;
+        }
+
+        // --- OPTIONS / STEP OVERRIDES ---
+        // If step has its own duration/delay, you could use them like:
+        // const stepDuration = this.currAnimation.duration;
+        // const stepDelay = this.currAnimation.delay;
+
+        this.y          = options.y          ?? 0;
+        this.scale      = options.scale      ?? 1;
         this.anchor     = options.anchor     || "center";
-        this.duration   = options.duration   || 1;
-        this.delay      = options.delay      || 0;
+        this.duration   = options.duration   || this.currAnimation.duration || 1;
+        this.delay      = options.delay      || this.currAnimation.delay    || 0;
         this.onStart    = options.onStart    || null;
         this.onComplete = options.onComplete || null;
 
         this.animate();
     }
 
+    /* =========================================
+       4. RUN GSAP ANIMATION
+    ==========================================*/
     animate() {
 
         const transformOrigin = this._getTransformOrigin(this.anchor);
@@ -74,38 +152,92 @@ class Animation {
         });
     }
 
-    _readAnimationSteps($el) {
-        const json = $el.attr("data-animation");
+    /* =========================================
+       5. HELPERS: ELEMENT & WINDOW INFO
+    ==========================================*/
+    _getElementInfo() {
+        return {
+            w: this.target.outerWidth() || 0,
+            h: this.target.outerHeight() || 0,
+            x: this.target.offset().left,
+            y: this.target.offset().top
+        };
+    }
+
+    _getWindowInfo($pane) {
+        return {
+            w: $pane.width() || 0,
+            h: $pane.height() || 0,
+            x: $pane.offset().left,
+            y: $pane.offset().top
+        };
+    }
+
+    /* =========================================
+       6. HELPERS: JSON STEPS & STEP INDEX
+    ==========================================*/
+    // Get a single step by index, and update data-nextstep for the next call
+    _readAnimationStep(stepIndex) {
+
+        const steps = this._getAnimationStepsFromAttr();
+
+        if (!Array.isArray(steps) || steps.length === 0) {
+            return null;
+        }
+
+        // Set next step for the next time this element is animated
+        this._setNextStep(stepIndex, steps.length);
+
+        return steps[stepIndex] || null;
+    }
+
+    // Parse the JSON array in data-animation
+    _getAnimationStepsFromAttr() {
+
+        const json = this.target.attr("data-animation");
         if (!json) return [];
 
         try {
-            return JSON.parse(json);
-        } catch (err) {
-            console.warn("Animation JSON parse error:", err, json);
+            return JSON.parse(json);  // e.g. [ { "type": "slideOutRight" }, ... ]
+        } catch (e) {
+            console.warn("Invalid animation JSON:", e, json);
             return [];
         }
     }
 
-    _getTransformOrigin(anchor) {
-        if (!anchor) return "50% 50%";
-
-        switch (anchor.toLowerCase()) {
-            case "top-left":     return "0% 0%";
-            case "top-center":
-            case "top":          return "50% 0%";
-            case "top-right":    return "100% 0%";
-            case "center-left":
-            case "left":         return "0% 50%";
-            case "center-right":
-            case "right":        return "100% 50%";
-            case "bottom-left":  return "0% 100%";
-            case "bottom-center":
-            case "bottom":       return "50% 100%";
-            case "bottom-right": return "100% 100%";
-            case "center":
-            default:             return "50% 50%";
+    // Store the next step index in data-nextstep (loops back to 0 at end)
+    _setNextStep(currentStep, totalSteps) {
+        let next = currentStep + 1;
+        if (next >= totalSteps) {
+            next = 0; // loop to start
         }
+        this.target.attr("data-nextstep", next);
     }
 
+    /* =========================================
+       7. TRANSFORM ORIGIN HELPER
+    ==========================================*/
+    _getTransformOrigin(anchor) {
 
+        if (!anchor) return "50% 50%";
+
+        const map = {
+            "top-left":      "0% 0%",
+            "top-center":    "50% 0%",
+            "top":           "50% 0%",
+            "top-right":     "100% 0%",
+            "center-left":   "0% 50%",
+            "left":          "0% 50%",
+            "center-right":  "100% 50%",
+            "right":         "100% 50%",
+            "bottom-left":   "0% 100%",
+            "bottom-center": "50% 100%",
+            "bottom":        "50% 100%",
+            "bottom-right":  "100% 100%",
+            "center":        "50% 50%"
+        };
+
+        const key = anchor.toLowerCase();
+        return map[key] || "50% 50%";
+    }
 }
