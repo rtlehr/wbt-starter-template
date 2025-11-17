@@ -18,6 +18,8 @@ class Animation {
         const $pane = $("#animParent");
         const paneInfo = this._getWindowInfo($pane);
 
+        //this.paneSel = $el.attr("data-animationPane") || "#courseWindow";
+        
         // Loop through every element that can be animated
         $(".animateMe").each((i, el) => {
 
