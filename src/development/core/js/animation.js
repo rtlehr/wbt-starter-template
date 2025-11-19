@@ -16,14 +16,17 @@ class Animation {
         this.duration = 0;
 
         const $pane = $("#animParent");
-        const paneInfo = this._getWindowInfo($pane);
+        //const paneInfo = this._getWindowInfo($pane);
 
-        //this.paneSel = $el.attr("data-animationPane") || "#courseWindow";
+        //this.paneSel = $el.attr("data-animationPane") || "#courseWindow";   
         
         // Loop through every element that can be animated
         $(".animateMe").each((i, el) => {
 
             const $el = $(el);
+
+            const $pane = $el.attr("data-animationpane") || "#courseWindow"; 
+            const paneInfo = this._getWindowInfo($($pane));
 
             // Start at step 0
             $el.attr("data-nextstep", 0);
@@ -38,18 +41,44 @@ class Animation {
             if (!firstStep) return; // no animation defined, skip
 
             // Example: pre-position slideInRight elements off-screen to the right
-            if (firstStep.type.includes("slideInRight")) {
+            if (firstStep.type.includes("slideInLeft")) {
                 this.x = paneInfo.w - (elInfo.x - paneInfo.x);
             }
 
-            if (firstStep.type.includes("slideInLeft")) {
+            if (firstStep.type.includes("slideInRight")) {
                 this.x = paneInfo.x - (elInfo.x + elInfo.w);
+            }
+
+            if (firstStep.type.includes("slideOutRight") || 
+                firstStep.type.includes("slideOutLeft") || 
+                firstStep.type.includes("slideLeft") || 
+                firstStep.type.includes("slideRight")) 
+            {
+                this.x = 0;
+            }
+            
+            if (firstStep.type.includes("slideOutUp") || 
+                firstStep.type.includes("slideOutDown") || 
+                firstStep.type.includes("slideUp") || 
+                firstStep.type.includes("slideDown")) 
+            {
+                this.y = 0;
+            }
+
+            if (firstStep.type.includes("slideInUp")) {
+                this.y = paneInfo.h;
+            }
+
+            if (firstStep.type.includes("slideInDown")) {
+                this.y = paneInfo.y - (elInfo.y + elInfo.h);
             }
 
             // Example: pre-position slideInRight elements off-screen to the right
             if (firstStep.type.includes("fadeIn")) {
                 this.opacity = 0;
             }
+
+            $el.attr("data-origposition", '{"x":' + (elInfo.x - paneInfo.x) + ', "y":' + (elInfo.y - paneInfo.y) + ', "scale": 1}');
 
             this.animate();
 
@@ -80,8 +109,6 @@ class Animation {
             this.currStep = Number(this.target.attr("data-nextstep")) || 0;
         }
 
-        console.log("playAnimation currStep:", this.currStep);
-
         // Load the animation step from JSON and update next step
         this.currAnimation = this._readAnimationStep(this.currStep);
 
@@ -98,8 +125,23 @@ class Animation {
     ==========================================*/
     _createAnimationFromStep() {
 
+        const orgPos = JSON.parse(this.target.attr("data-origposition"));
+
+        const scaleFactor = 1 / Number(orgPos.scale);
+
+        console.log("scaleFactor: " + scaleFactor);
+
+        const transOrgin = this.target.attr("data-transformorigin") || "center";
+
+        this.transform = this._getTransformOrigin(transOrgin);
+
+        console.log("orgPos: " + orgPos.x);
+
         const $pane = $("#animParent");
         const elInfo = this._getElementInfo();
+
+        console.log("elInfo.w: " + elInfo.w);
+
         const paneInfo = this._getWindowInfo($pane);
         const type = this.currAnimation.type || "";
 
@@ -107,13 +149,23 @@ class Animation {
         this.x = 0;
         this.y = 0;
         this.opacity = 1;
-        this.scale = 1;
+        this.scale = orgPos.scale;
         this.duration = this.currAnimation.duration || 1;
         this.delay = this.currAnimation.delay || 0;
 
-        console.log("duration: " + this.duration);
+        let p = this._getCurrentXY();
+        this.y = p.y;
+        this.x = p.x;
 
         // --- POSITION LOGIC ---
+        if (type.includes("scale")) {
+
+            this.scale = this.currAnimation.sAmount || 1;
+
+            this.target.attr("data-origposition", '{"x":' + orgPos.x + ', "y":' + orgPos.y + ', "scale": ' + this.scale + '}');
+
+        }
+
         if (type.includes("slideInRight") || type.includes("slideInLeft")) {
             // Move back to normal position
             this.x = 0;
@@ -121,7 +173,68 @@ class Animation {
 
         if (type.includes("slideOutRight")) {
             // Move out to the right, based on pane and element position
-            this.x = paneInfo.w - (elInfo.x - paneInfo.x);
+            this.x = paneInfo.w - (orgPos.x);
+        }
+
+        if (type.includes("slideOutLeft")) 
+        {
+           this.x = 0 - (orgPos.x + elInfo.w);
+        }
+
+        if (type.includes("slideRight")) {
+
+            const sF = (elInfo.w * this.scale) - elInfo.w;
+
+            console.log("sF: " + sF);
+            this.x = (paneInfo.w - ((elInfo.x - paneInfo.x) + elInfo.w)) - sF;
+
+        }
+
+        if (type.includes("slideLeft")) 
+        {
+
+            this.x = 0 - orgPos.x;
+
+        }
+
+        if (type.includes("slideInUp")|| type.includes("slideInDown")) {
+            
+            this.y = 0;
+
+        }
+
+        if (type.includes("slideOutUp")) 
+        {
+           this.y = orgPos.y - elInfo.h;
+        }
+
+        if (type.includes("slideOutDown")) 
+        {
+           this.y = paneInfo.h - orgPos.y;
+        }
+
+        if (type.includes("slideUp")) 
+        {
+
+           this.y = 0;
+
+        }
+
+        if (type.includes("slideDown")) 
+        {
+
+            const sF = (elInfo.h * this.scale) - elInfo.h;
+
+            console.log("sF: " + sF);
+
+            //this.y = (paneInfo.h - (elInfo.y - paneInfo.x)) - sF;
+
+            this.y = (paneInfo.h - elInfo.h) - sF;
+
+            console.log("orgPos.y: " + orgPos.y);
+            console.log("elInfo.y: " + elInfo.y);
+            console.log("slideDown y: " + this.y);
+
         }
 
         // --- OPACITY LOGIC ---
@@ -134,6 +247,8 @@ class Animation {
             this.target.css("opacity", 0);
             this.opacity = 1;
         }
+
+        
 
         this.animate();
     }
@@ -150,7 +265,7 @@ class Animation {
             y: this.y,
             opacity: this.opacity,
             scale: this.scale,
-            transformOrigin: transformOrigin,
+            transformOrigin: this.transform,
             duration: this.duration,
             delay: this.delay,
             onStart: this.onStart || undefined,
@@ -213,10 +328,13 @@ class Animation {
 
     // Store the next step index in data-nextstep (loops back to 0 at end)
     _setNextStep(currentStep, totalSteps) {
+        
         let next = currentStep + 1;
+        
         if (next >= totalSteps) {
             next = 0; // loop to start
         }
+
         this.target.attr("data-nextstep", next);
     }
 
@@ -258,4 +376,13 @@ class Animation {
         this.onStart    = null;
         this.onComplete = null;
     }
+
+    _getCurrentXY() {
+        const el = this.target[0]; // you’ve been normalizing to jQuery
+        return {
+            x: gsap.getProperty(el, "x") || 0,
+            y: gsap.getProperty(el, "y") || 0
+        };
+        }
+
 }
