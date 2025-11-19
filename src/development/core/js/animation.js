@@ -1,79 +1,44 @@
 class Animation {
 
     constructor(course, pageInfo) {
+        // Store references passed into the class (not used much yet)
         this.course = course;
         this.pageInfo = pageInfo;
     }
 
     /* =========================================
        1. INITIALIZE ALL .animateMe ELEMENTS
+       This runs ONCE when the page loads.
+       It prepares each element for animations later.
     ==========================================*/
     initAnimations() {
 
         this._setDefaults();
-        this.duration = 0; // initialization animations are instant
+        this.duration = 0; // Run setup instantly with no animation
 
-        // Loop through every element that can be animated
+        // Go through every element that has class "animateMe"
         $(".animateMe").each((i, el) => {
 
             const $el = $(el);
 
-            // Which container are we using as the animation pane?
+            // The container the element will animate inside
             const paneSel = $el.attr("data-animationpane") || "#courseWindow";
             const paneInfo = this._getWindowInfo($(paneSel));
 
-            // Start at step 0
+            // This element will start at animation step 0
             $el.attr("data-nextstep", 0);
 
-            // Temporarily set this.target so helpers work
+            // Make this element the active target for helper methods
             this.target = $el;
 
-            const elInfo = this._getElementInfo();
-            const steps = this._getAnimationStepsFromAttr();
+            const elInfo   = this._getElementInfo();
+            const steps    = this._getAnimationStepsFromAttr();
             const firstStep = steps[0];
 
-            if (!firstStep) return; // no animation defined, skip
+            // If no animation steps are defined, skip it
+            if (!firstStep) return;
 
-            // Pre-position based on first step type
-            if (firstStep.type.includes("slideInLeft")) {
-                this.x = paneInfo.w - (elInfo.x - paneInfo.x);
-            }
-
-            if (firstStep.type.includes("slideInRight")) {
-                this.x = paneInfo.x - (elInfo.x + elInfo.w);
-            }
-
-            if (
-                firstStep.type.includes("slideOutRight") ||
-                firstStep.type.includes("slideOutLeft") ||
-                firstStep.type.includes("slideLeft") ||
-                firstStep.type.includes("slideRight")
-            ) {
-                this.x = 0;
-            }
-
-            if (
-                firstStep.type.includes("slideOutUp") ||
-                firstStep.type.includes("slideOutDown") ||
-                firstStep.type.includes("slideUp") ||
-                firstStep.type.includes("slideDown")
-            ) {
-                this.y = 0;
-            }
-
-            if (firstStep.type.includes("slideInUp")) {
-                this.y = paneInfo.h;
-            }
-
-            if (firstStep.type.includes("slideInDown")) {
-                this.y = paneInfo.y - (elInfo.y + elInfo.h);
-            }
-
-            if (firstStep.type.includes("fadeIn")) {
-                this.opacity = 0;
-            }
-
-            // Save original position and scale in data-origposition as JSON
+            // Save original position (relative to pane) and scale
             const origPos = {
                 x: elInfo.x - paneInfo.x,
                 y: elInfo.y - paneInfo.y,
@@ -81,19 +46,35 @@ class Animation {
             };
             $el.attr("data-origposition", JSON.stringify(origPos));
 
-            this.animate();
+            // Normalize: let GSAP control position from now on
+
+            // 1) Clear any manual top/left offsets so CSS doesn't fight GSAP
+            $el.css({ left: 0, top: 0 });
+
+            // 2) Set GSAP x/y to match the original visual position
+            //    Respect the element's transform origin if provided
+            const transOriginAttr = $el.attr("data-transformorigin") || "center";
+            this.transform = this._getTransformOrigin(transOriginAttr);
+
+            gsap.set($el, {
+                x: origPos.x,
+                y: origPos.y,
+                scale: 1,
+                opacity: 1,
+                transformOrigin: this.transform
+            });
         });
     }
 
     /* =========================================
-       2. PLAY ANIMATION FOR A GIVEN TARGET
+       2. PLAY ANIMATION FOR A GIVEN TARGET ELEMENT
+       This is called when you want something to animate.
     ==========================================*/
-    // target: selector, DOM element, or jQuery object
     playAnimation(target, stepIndex = null) {
 
         this._setDefaults();
 
-        // Normalize to jQuery object
+        // Make sure the target is a jQuery object
         this.target = target instanceof jQuery ? target : $(target);
 
         if (!this.target.length) {
@@ -101,42 +82,45 @@ class Animation {
             return;
         }
 
-        // Read current step from data-nextstep (default to 0)
+        // Determine which step to play next
         if (stepIndex !== null && !isNaN(stepIndex)) {
             this.currStep = stepIndex;
         } else {
             this.currStep = Number(this.target.attr("data-nextstep")) || 0;
         }
 
-        // Load the animation step from JSON and update next step
+        // Load the animation step from the element's JSON list
         this.currAnimation = this._readAnimationStep(this.currStep);
 
         if (!this.currAnimation) {
-            console.warn("No animation step found for step", this.currStep);
+            console.warn("No animation step found:", this.currStep);
             return;
         }
 
+        // Build the animation settings and run it
         this._createAnimationFromStep();
     }
 
     /* =========================================
-       3. BUILD ANIMATION VALUES FROM STEP
+       3. BUILD ANIMATION VALUES FOR THE CURRENT STEP
+       This sets up X, Y, opacity, scale, etc.
     ==========================================*/
     _createAnimationFromStep() {
 
         const orgPos = JSON.parse(this.target.attr("data-origposition"));
 
+        // Where the element should scale from (center, top-left, etc.)
         const transOriginAttr = this.target.attr("data-transformorigin") || "center";
         this.transform = this._getTransformOrigin(transOriginAttr);
 
-        // Use the same pane logic as init: per-element or default
+        // Figure out which container this element animates inside
         const paneSel = this.target.attr("data-animationpane") || "#courseWindow";
         const paneInfo = this._getWindowInfo($(paneSel));
 
         const elInfo = this._getElementInfo();
-        const type = this.currAnimation.type || "";
+        const type   = this.currAnimation.type || "";
 
-        // --- Defaults each time so nothing "sticks" accidentally ---
+        // Reset basic animation settings so nothing carries over
         this.x        = 0;
         this.y        = 0;
         this.opacity  = 1;
@@ -144,24 +128,33 @@ class Animation {
         this.duration = this.currAnimation.duration || 1;
         this.delay    = this.currAnimation.delay    || 0;
 
-        // Optional hooks & chaining
+        // User-defined functions and chaining (optional)
         this.sFunction = this.currAnimation.sFunction || null;
         this.eFunction = this.currAnimation.eFunction || null;
         this.chain     = this.currAnimation.chain     || null;
 
+        // How much of the movement to apply (1 = full, 0.5 = half)
         this.moveFactor = this.currAnimation.moveFactor || 1;
 
-        // Start from current GSAP translate position
+        // GSAP easing to use
+        this.ease = this.currAnimation.ease || "power1.out";
+
+        // Start from wherever GSAP last placed the element
         const p = this._getCurrentXY();
         this.x = p.x;
         this.y = p.y;
 
-        // --- POSITION LOGIC ---
+        /* -----------------------------
+           MOVEMENT TYPE LOGIC
+           Each "slide" or "fade" effect
+           adjusts X/Y or opacity differently.
+        ------------------------------*/
 
-        // Scale
+        // 1) Scale
         if (type.includes("scale")) {
             this.scale = this.currAnimation.sAmount || 1;
 
+            // Save new scale as the "home" scale for future animations
             const newOrigPos = {
                 x: orgPos.x,
                 y: orgPos.y,
@@ -170,55 +163,105 @@ class Animation {
             this.target.attr("data-origposition", JSON.stringify(newOrigPos));
         }
 
-        // Horizontal movement
+        // Short names for readability
+        const homeX = orgPos.x; // "home" GSAP x
+        const homeY = orgPos.y; // "home" GSAP y
+        const elemW = elInfo.w;
+        const elemH = elInfo.h;
+
+        // Get transform-origin as fractions (0..1)
+        const { ox, oy } = this._getOriginFractions();
+
+        // Scaled size
+        const scaledW = elemW * this.scale;
+        const scaledH = elemH * this.scale;
+
+        // Extra size added by scaling
+        const extraW = scaledW - elemW;
+        const extraH = scaledH - elemH;
+
+        // Visual home left/top with current scale + origin
+        // The origin sits inside the element, so scaling shifts the edges.
+        const homeLeft = homeX - extraW * ox;
+        const homeTop  = homeY - extraH * oy;
+
+        // ------------------------
+        // 2) "Slide in" back to home
+        // ------------------------
         if (type.includes("slideInRight") || type.includes("slideInLeft")) {
-            this.x = 0;
+            this.x = homeX;  // back to home origin
         }
 
-        if (type.includes("slideOutRight")) {
-            this.x = paneInfo.w - orgPos.x;
-        }
-
-        if (type.includes("slideOutLeft")) {
-            this.x = 0 - (orgPos.x + elInfo.w);
-        }
-
-        if (type.includes("slideRight")) {
-            const sF = (elInfo.w * this.scale) - elInfo.w;
-            this.x = ((paneInfo.w - ((elInfo.x - paneInfo.x) + elInfo.w)) - sF) * this.moveFactor;
-        }
-
-        if (type.includes("slideLeft")) {
-            this.x = (0 - orgPos.x) * this.moveFactor;
-        }
-
-        // Vertical movement
         if (type.includes("slideInUp") || type.includes("slideInDown")) {
-            this.y = 0;
+            this.y = homeY;  // back to home origin
         }
 
+        // ------------------------
+        // 3) "Slide out" completely off-pane
+        // ------------------------
+
+        // Off to the right (right edge just past pane right)
+        if (type.includes("slideOutRight")) {
+            const targetLeft = paneInfo.w;     // left just at pane right edge
+            const delta = targetLeft - homeLeft;
+            this.x = homeX + delta;
+        }
+
+        // Off to the left (left edge fully off-screen)
+        if (type.includes("slideOutLeft")) {
+            const targetLeft = -scaledW;       // fully off the left side
+            const delta = targetLeft - homeLeft;
+            this.x = homeX + delta;
+        }
+
+        // Off the top
         if (type.includes("slideOutUp")) {
-            this.y = orgPos.y - elInfo.h;
+            const targetTop = -scaledH;
+            const delta = targetTop - homeTop;
+            this.y = homeY + delta;
         }
 
+        // Off the bottom
         if (type.includes("slideOutDown")) {
-            this.y = paneInfo.h - orgPos.y;
+            const targetTop = paneInfo.h;
+            const delta = targetTop - homeTop;
+            this.y = homeY + delta;
         }
 
-        if (type.includes("slideUp")) {
+        // ------------------------
+        // 4) Partial slides using moveFactor (0..1)
+        //     - Slide *towards* pane edges but stay inside
+        // ------------------------
 
-            const p = this._getCurrentXY();
-
-            this.y = (p.y - ((paneInfo.h - elInfo.h) * this.moveFactor));
-            
+        // Slide right: move from home towards far-right inside pane
+        if (type.includes("slideRight")) {
+            const maxLeft   = paneInfo.w - scaledW;    // rightmost left where fully visible
+            const remaining = maxLeft - homeLeft;      // how far from home to max
+            this.x = homeX + remaining * this.moveFactor;
         }
 
+        // Slide left: move from home towards left edge (0)
+        if (type.includes("slideLeft")) {
+            const minLeft   = 0;
+            const remaining = homeLeft - minLeft;
+            this.x = homeX - remaining * this.moveFactor;
+        }
+
+        // Slide down: home towards bottom inside pane
         if (type.includes("slideDown")) {
-            const sF = (elInfo.h * this.scale) - elInfo.h;
-            this.y = ((paneInfo.h - elInfo.h) - sF) * this.moveFactor;
+            const maxTop    = paneInfo.h - scaledH;
+            const remaining = maxTop - homeTop;
+            this.y = homeY + remaining * this.moveFactor;
         }
 
-        // --- OPACITY LOGIC ---
+        // Slide up: home towards top (0)
+        if (type.includes("slideUp")) {
+            const minTop    = 0;
+            const remaining = homeTop - minTop;
+            this.y = homeY - remaining * this.moveFactor;
+        }
+
+        // Fading
         if (type.includes("fadeOut")) {
             this.opacity = 0;
         }
@@ -228,11 +271,13 @@ class Animation {
             this.opacity = 1;
         }
 
+        // Now run the GSAP animation
         this.animate();
     }
 
     /* =========================================
        4. RUN GSAP ANIMATION
+       This actually moves/scales/fades the element.
     ==========================================*/
     animate() {
 
@@ -244,17 +289,18 @@ class Animation {
             transformOrigin: this.transform,
             duration: this.duration,
             delay: this.delay,
+            ease: this.ease,
             onStart: () => {
-                this.onStart();
+                this.onStart();  // Run start hooks
             },
             onComplete: () => {
-                this.onComplete();
+                this.onComplete(); // Run end hooks
             }
         });
     }
 
     onStart() {
-
+        // If developer wants a custom function to run here, call it
         if (this.sFunction) {
             this._callHookIfExists(this.sFunction);
         }
@@ -262,16 +308,58 @@ class Animation {
 
     onComplete() {
 
+        // Run custom "after animation" logic if provided
         if (this.eFunction) {
             this._callHookIfExists(this.eFunction);
         }
 
+        // Automatically run the next animation if "chain" is set
         if (this.chain) {
             this.playAnimation(this.chain);
         }
-
     }
 
+    /* Simple pause/resume helpers */
+    pauseAll() {
+        gsap.globalTimeline.pause();
+    }
+
+    resumeAll() {
+        gsap.globalTimeline.resume();
+    }
+
+    /* Reset element back to the original saved location */
+    resetToOrigin(target) {
+
+        this.target = target instanceof jQuery ? target : $(target);
+        if (!this.target.length) return;
+
+        const orgPosStr = this.target.attr("data-origposition");
+        if (!orgPosStr) return;
+
+        const orgPos = JSON.parse(orgPosStr);
+
+        this._setDefaults();
+
+        this.x       = orgPos.x;
+        this.y       = orgPos.y;
+        this.scale   = orgPos.scale;
+        this.opacity = 1;
+
+        // Respect the element's transform origin here as well
+        const transOriginAttr = this.target.attr("data-transformorigin") || "center";
+        this.transform = this._getTransformOrigin(transOriginAttr);
+
+        // Instantly set the element back to its original values
+        gsap.set(this.target, {
+            x: this.x,
+            y: this.y,
+            scale: this.scale,
+            opacity: this.opacity,
+            transformOrigin: this.transform
+        });
+    }
+    
     /* =========================================
        5. HELPERS: ELEMENT & WINDOW INFO
     ==========================================*/
@@ -286,7 +374,7 @@ class Animation {
 
     _getWindowInfo($pane) {
         return {
-            w: $pane.width() || 0,
+            w: $pane.width()  || 0,
             h: $pane.height() || 0,
             x: $pane.offset().left,
             y: $pane.offset().top
@@ -304,6 +392,7 @@ class Animation {
             return null;
         }
 
+        // Update the element so next time it runs stepIndex+1
         this._setNextStep(stepIndex, steps.length);
 
         return steps[stepIndex] || null;
@@ -326,6 +415,7 @@ class Animation {
 
         let next = currentStep + 1;
 
+        // Loop back to 0 after the last animation step
         if (next >= totalSteps) {
             next = 0;
         }
@@ -360,6 +450,7 @@ class Animation {
         return map[key] || "50% 50%";
     }
 
+    /* Reset default values before building each animation */
     _setDefaults() {
         this.x        = 0;
         this.y        = 0;
@@ -375,6 +466,7 @@ class Animation {
         this.moveFactor = 1;
     }
 
+    /* Get current GSAP x/y transform values */
     _getCurrentXY() {
         const el = this.target && this.target[0];
         if (!el) return { x: 0, y: 0 };
@@ -385,6 +477,7 @@ class Animation {
         };
     }
 
+    /* Try to call a named function on window[] safely */
     _callHookIfExists(fnName) {
         const fn = (typeof window !== 'undefined') ? window[fnName] : undefined;
         if (typeof fn === 'function') {
@@ -394,5 +487,35 @@ class Animation {
                 console.error('Error in ' + fnName + '()', e);
             }
         }
+    }
+
+    /* Convert transformOrigin ("50% 50%") into fractions (0..1, 0..1) */
+    _getOriginFractions() {
+        // this.transform is like "50% 50%" or "0% 0%"
+        const t = (this.transform || "50% 50%").split(" ");
+
+        const parse = (val, fallback) => {
+            if (!val) return fallback;
+
+            // Handle percentages like "50%"
+            if (val.indexOf("%") !== -1) {
+                const n = parseFloat(val);
+                return isNaN(n) ? fallback : n / 100;
+            }
+
+            // Fallback keywords (should not occur because we map them already)
+            const v = val.toLowerCase();
+            if (v === "left" || v === "top") return 0;
+            if (v === "center") return 0.5;
+            if (v === "right" || v === "bottom") return 1;
+
+            const n = parseFloat(val);
+            return isNaN(n) ? fallback : n / 100;
+        };
+
+        const ox = parse(t[0], 0.5); // horizontal origin (0..1)
+        const oy = parse(t[1], 0.5); // vertical origin (0..1)
+
+        return { ox, oy };
     }
 }
