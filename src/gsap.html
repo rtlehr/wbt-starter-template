@@ -47,12 +47,16 @@
     <div id="animParent" style="position: relative; height: 500px; width: 800px; border: 1px solid red;">
         <div id="box"
         data-animationpane="#animParent"
-        data-transformorigin="top-left"
+        data-transformorigin="center"
         data-animation='[{"type": "scale", 
-                          "sAmount": 2,
+                          "sAmount": 1,
                           "sFunction": "pageStartFunction",
                           "eFunction": "pageEndFunction",
-                          "chain": "#box"},{"type": "slideDown"},{"type": "slideRight slideDown scale", "sAmount": 1},{"type": "slideUp"},{"type": "slideLeft"}]'
+                          "chain": "#box"},
+                          {"type": "slideDown",
+                          "moveFactor": 0.5},
+                          {"type": "slideRight slideDown scale", "sAmount": 1},
+                          {"type": "slideUp", "moveFactor": 0.5},{"type": "slideLeft"}]'
         class="animateMe"
         >Animate me</div>
     </div>

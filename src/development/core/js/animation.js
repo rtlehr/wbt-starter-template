@@ -149,6 +149,8 @@ class Animation {
         this.eFunction = this.currAnimation.eFunction || null;
         this.chain     = this.currAnimation.chain     || null;
 
+        this.moveFactor = this.currAnimation.moveFactor || 1;
+
         // Start from current GSAP translate position
         const p = this._getCurrentXY();
         this.x = p.x;
@@ -183,11 +185,11 @@ class Animation {
 
         if (type.includes("slideRight")) {
             const sF = (elInfo.w * this.scale) - elInfo.w;
-            this.x = (paneInfo.w - ((elInfo.x - paneInfo.x) + elInfo.w)) - sF;
+            this.x = ((paneInfo.w - ((elInfo.x - paneInfo.x) + elInfo.w)) - sF) * this.moveFactor;
         }
 
         if (type.includes("slideLeft")) {
-            this.x = 0 - orgPos.x;
+            this.x = (0 - orgPos.x) * this.moveFactor;
         }
 
         // Vertical movement
@@ -204,12 +206,16 @@ class Animation {
         }
 
         if (type.includes("slideUp")) {
-            this.y = 0;
+
+            const p = this._getCurrentXY();
+
+            this.y = (p.y - ((paneInfo.h - elInfo.h) * this.moveFactor));
+            
         }
 
         if (type.includes("slideDown")) {
             const sF = (elInfo.h * this.scale) - elInfo.h;
-            this.y = (paneInfo.h - elInfo.h) - sF;
+            this.y = ((paneInfo.h - elInfo.h) - sF) * this.moveFactor;
         }
 
         // --- OPACITY LOGIC ---
@@ -239,18 +245,15 @@ class Animation {
             duration: this.duration,
             delay: this.delay,
             onStart: () => {
-                console.log("Animation started");
                 this.onStart();
             },
             onComplete: () => {
-                console.log("Animation ended");
                 this.onComplete();
             }
         });
     }
 
     onStart() {
-        console.log("--- onStart Called");
 
         if (this.sFunction) {
             this._callHookIfExists(this.sFunction);
@@ -258,7 +261,6 @@ class Animation {
     }
 
     onComplete() {
-        console.log("--- onEnd Called");
 
         if (this.eFunction) {
             this._callHookIfExists(this.eFunction);
@@ -267,6 +269,7 @@ class Animation {
         if (this.chain) {
             this.playAnimation(this.chain);
         }
+
     }
 
     /* =========================================
@@ -369,6 +372,7 @@ class Animation {
         this.chain     = null;
         this.opacity   = 1;
         this.transform = this._getTransformOrigin(this.anchor);
+        this.moveFactor = 1;
     }
 
     _getCurrentXY() {
