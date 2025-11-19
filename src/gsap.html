@@ -28,8 +28,22 @@
       justify-content: center;
       border-radius: 8px;
       position: relative;
-      left: 100px;
-      top: 100px;
+      left: 72px;
+      top: 129px;
+    }
+
+    #box2 {
+      width: 120px;
+      height: 80px;
+      background: greenyellow;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      position: absolute;
+      right: 50px;
+      bottom: 63px;
     }
 
 
@@ -52,17 +66,14 @@
         data-animationpane="#animParent"
         data-transformorigin="bottom-right"
         data-animation='[
-                          { "type": "scale",
-                            "sAmount": 2
-                          },
                           {
                             "type": "slideDown", 
                             "sFunction": "pageStartFunction",
                             "eFunction": "pageEndFunction"                          
                           },
                           {
-                            "type": "slideRight scale",
-                            "sAmount": 1                          
+                            "type": "slideRight",
+                            "moveFactor": 0.5                       
                           },
                           {
                             "type": "slideUp"                          
@@ -74,7 +85,28 @@
         class="animateMe"
         >Animate me</div>
 
-      
+        <div id="box2"
+        data-animationpane="#animParent"
+        data-transformorigin="bottom-right"
+        data-animation='[
+                          { "type": "slideUp",
+                            "sAmount": 2
+                          },
+                          {
+                            "type": "slideLeft", 
+                            "sFunction": "pageStartFunction",
+                            "eFunction": "pageEndFunction"                          
+                          },
+                          {
+                            "type": "slideDown",
+                            "sAmount": 1                          
+                          },
+                          {
+                            "type": "slideRight"                          
+                          }
+                        ]'
+        class="animateMe"
+        >Animate me</div>
 
     </div>
 
@@ -96,6 +128,8 @@
       $("#playBtn").on("click", function () {
 
           animation.playAnimation("#box");
+
+          animation.playAnimation("#box2");
 
 
       });
