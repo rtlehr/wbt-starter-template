@@ -14,7 +14,7 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif;    
       padding: 20px;
     }
 
@@ -48,7 +48,11 @@
         <div id="box"
         data-animationpane="#animParent"
         data-transformorigin="top-left"
-        data-animation='[{"type": "scale", "sAmount": 2},{"type": "slideDown"},{"type": "slideRight slideDown scale", "sAmount": 1},{"type": "slideUp"},{"type": "slideLeft"}]'
+        data-animation='[{"type": "scale", 
+                          "sAmount": 2,
+                          "sFunction": "pageStartFunction",
+                          "eFunction": "pageEndFunction",
+                          "chain": "#box"},{"type": "slideDown"},{"type": "slideRight slideDown scale", "sAmount": 1},{"type": "slideUp"},{"type": "slideLeft"}]'
         class="animateMe"
         >Animate me</div>
     </div>
@@ -74,6 +78,17 @@
 
       });
     });
+
+    function pageStartFunction()
+    {
+      console.log("pageStartFunction called");
+    }
+
+    function pageEndFunction()
+    {
+      console.log("pageEndFunction called");
+    }
+
   </script>
 
 </body>

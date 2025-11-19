@@ -9,7 +9,6 @@ class Animation {
        1. INITIALIZE ALL .animateMe ELEMENTS
     ==========================================*/
     initAnimations() {
-        console.log("--- initAnimations ---");
 
         this._setDefaults();
 
@@ -129,18 +128,12 @@ class Animation {
 
         const scaleFactor = 1 / Number(orgPos.scale);
 
-        console.log("scaleFactor: " + scaleFactor);
-
         const transOrgin = this.target.attr("data-transformorigin") || "center";
 
         this.transform = this._getTransformOrigin(transOrgin);
 
-        console.log("orgPos: " + orgPos.x);
-
         const $pane = $("#animParent");
         const elInfo = this._getElementInfo();
-
-        console.log("elInfo.w: " + elInfo.w);
 
         const paneInfo = this._getWindowInfo($pane);
         const type = this.currAnimation.type || "";
@@ -152,6 +145,9 @@ class Animation {
         this.scale = orgPos.scale;
         this.duration = this.currAnimation.duration || 1;
         this.delay = this.currAnimation.delay || 0;
+        this.sFunction = this.currAnimation.sFunction || null;
+        this.eFunction = this.currAnimation.eFunction || null;
+        this.chain = this.currAnimation.chain || null;
 
         let p = this._getCurrentXY();
         this.y = p.y;
@@ -185,7 +181,6 @@ class Animation {
 
             const sF = (elInfo.w * this.scale) - elInfo.w;
 
-            console.log("sF: " + sF);
             this.x = (paneInfo.w - ((elInfo.x - paneInfo.x) + elInfo.w)) - sF;
 
         }
@@ -225,15 +220,9 @@ class Animation {
 
             const sF = (elInfo.h * this.scale) - elInfo.h;
 
-            console.log("sF: " + sF);
-
             //this.y = (paneInfo.h - (elInfo.y - paneInfo.x)) - sF;
 
             this.y = (paneInfo.h - elInfo.h) - sF;
-
-            console.log("orgPos.y: " + orgPos.y);
-            console.log("elInfo.y: " + elInfo.y);
-            console.log("slideDown y: " + this.y);
 
         }
 
@@ -268,9 +257,42 @@ class Animation {
             transformOrigin: this.transform,
             duration: this.duration,
             delay: this.delay,
-            onStart: this.onStart || undefined,
-            onComplete: this.onComplete || undefined
+            onStart: () => {
+                console.log("Animation started");
+                this.onStart();       // calls the class method
+            },
+            onComplete: () => {
+                console.log("Animation ended");
+                this.onComplete();    // calls the class method
+            }
         });
+
+    }
+
+    onStart()
+    {
+        console.log("--- onStart Called");
+
+        if(this.sFunction)
+        {
+            this._callHookIfExists(this.sFunction);
+        }
+    }
+
+    onComplete()
+    {
+        console.log("--- onEnd Called");
+
+        if(this.eFunction)
+        {
+            this._callHookIfExists(this.eFunction);
+        }
+
+        if(this.chain)
+        {
+            this.playAnimation(this.chain);
+        }
+
     }
 
     /* =========================================
@@ -373,8 +395,9 @@ class Animation {
         this.anchor     = "center";
         this.duration   = 1;
         this.delay      = 0;
-        this.onStart    = null;
-        this.onComplete = null;
+        this.sFunction  = null;
+        this.eFunction  = null;
+        this.chain = null
     }
 
     _getCurrentXY() {
@@ -383,6 +406,16 @@ class Animation {
             x: gsap.getProperty(el, "x") || 0,
             y: gsap.getProperty(el, "y") || 0
         };
+    }
+
+    _callHookIfExists(fnName) {
+
+        var fn = (typeof window !== 'undefined') ? window[fnName] : undefined;
+        if (typeof fn === 'function') {
+            try { fn(); }
+            catch (e) { console.error('Error in ' + fnName + '()', e); }
         }
+
+    }
 
 }
