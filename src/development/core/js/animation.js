@@ -115,6 +115,9 @@ class Animation {
             opacity: firstType.includes("fadeIn") ? 0 : 1,
             transformOrigin: this.transform
         });
+
+        $el.css("visibility", "visible");
+        
     });
 }
 

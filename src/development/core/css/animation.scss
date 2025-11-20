@@ -3,59 +3,9 @@
 ------------------------------ */
 
 .animateMe
-{
-  position: relative;
-}
+{}
 
-.slideInBottom
-{
+.animateMe[data-animation*="slideIn"] {
   visibility: hidden;
 }
 
-.slideInRight
-{
-  visibility: hidden;
-}
-
-.slideInTop
-{
-  visibility: hidden;
-}
-
-.slideInLeft
-{
-  visibility: hidden;
-}
-
-.slideOutLeft{}
-
-.slideOutRight{}
-
-.slideOutTop{}
-
-.fadeOut{}
-
-.fadeIn
-{
-  visibility: hidden;
-}
-
-/* Put with your component CSS/SCSS */
-.typewriter {
-  white-space: pre-wrap;          /* keep line breaks */
-  position: relative;
-  visibility: hidden;
-}
-
-.typewriter::after {
-  content: '';
-  display: inline-block;
-  width: 1ch;
-  border-right: 1px solid currentColor;
-  animation: caret-blink 1s steps(1) infinite;
-  transform: translateY(0.15em);  /* aligns caret with baseline */
-}
-
-@keyframes caret-blink {
-  50% { border-color: transparent; }
-}

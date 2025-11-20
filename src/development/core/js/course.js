@@ -1,38 +1,54 @@
+// Tracks the current module index (0-based)
 let curMod = 0;
+
+// Tracks the current page index (0-based)
 let curPage = 0;
+
+// Enables/disables development features and tools
 let devMode = true;
+
+// Enables/disables credit mode (usage TBD elsewhere in code)
 let creditMode = false;
+
+// Tracks navigation direction: 1 = next, -1 = previous, 0 = none
 let nextDirection = 0;   
 
+// Global references to core course objects
 let course;
 let developmentMenu;
 let sound;
 let wbtQuiz;
 
-// define your queries once
+// Define responsive breakpoint queries
 const mqPhone   = window.matchMedia('(max-width: 575.98px)');
 const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 991.98px)');
 const mqDesktop = window.matchMedia('(min-width: 992px)');
 
-// a single function to run whenever the breakpoint might change
+// FUNCTION DESCRIPTION
+// Handles changes to screen size breakpoints and notifies the Course object.
 function handleBreakpointChange() {
 
   course.screenSizeChange();
 
 }
 
-// wire listeners (fires whenever match state flips)
+// Wire media query listeners (fires whenever match state flips)
 [mqPhone, mqTablet, mqDesktop].forEach(mq => {
   mq.addEventListener('change', handleBreakpointChange);
 });
 
+// FUNCTION DESCRIPTION
+// Initializes the course when the DOM is ready: sets up Course, sounds, dev tools, and button handlers.
 $(function () {
 
+  // Create and initialize the main Course instance
   course = new Course();
   course.init();
 
+  // Set up the Sound manager for the course
   sound = new Sound(course);
 
+  // Preload commonly used sound effects
   course.addSound("buttonClick", "content/audio/computer-mouse-click.mp3");
   course.addSound("holdMyBeer", "content/audio/hold-my-beerwatch-this.mp3");
   course.addSound("piano", "content/audio/piano_with_horror_me.mp3");
@@ -41,30 +57,31 @@ $(function () {
   course.addSound("typewriterkeys", "content/audio/typewriter-keys.mp3");
   course.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");
 
-  if(devMode)
-  {
+  // Show or hide development tools based on devMode
+  if (devMode) {
     developmentMenu = new DevelopmentMenu(course);
     developmentMenu.init();
     $("#dev-tools").css("visibility", "visible");
   }
-  else
-  {
+  else {
     $("#dev-tools").remove();
   }
 
-  // Use arrow functions so `this` = outer scope (but we don't need `this` anyway)
+  // Previous page button handler
   $('#previousButton').on('click', (e) => {
     e.preventDefault();
     course.playSound("buttonClick");
-    course.gotoPreviousPage();      // <- use captured variable
+    course.gotoPreviousPage();
   });
 
+  // Next page button handler
   $('#nextButton').on('click', (e) => {
     e.preventDefault();
     course.playSound("buttonClick");
-    course.gotoNextPage();          // <- use captured variable
+    course.gotoNextPage();
   });
 
+  // Module menu click handler (delegated)
   $('.moduleMenu').on('click', 'li.module', function (e) {
     // Don’t navigate the anchor
     if ($(e.target).closest('a').length) e.preventDefault();
@@ -75,20 +92,25 @@ $(function () {
     // Index of this <li> among its .module siblings (0-based)
     const $ul = $(this).closest('ul.moduleMenu');
     const index0 = $ul.children('li.module').index(this); // 0-based
-    const index1 = index0 + 1;                            // 1-based (if you prefer)
+    const index1 = index0 + 1;                            // 1-based (unused here but available)
 
-    course.handleModuleClick(index0); // <-- your function
+    // Inform the course that a module was clicked
+    course.handleModuleClick(index0);
   });
 
 });
 
 class Course {
   
+  // FUNCTION DESCRIPTION
+  // Constructs a new Course instance and initializes basic course properties.
   constructor() {
-    this.courseContent = null;
-    this.modules = [];
+    this.courseContent = null;  // Holds loaded course JSON data
+    this.modules = [];          // Holds Module instances
   }
 
+  // FUNCTION DESCRIPTION
+  // Asynchronously initializes the course: loads JSON data, creates modules, and initializes navigation and quizzes.
   async init() {
 
     console.log('Course Initialized');
@@ -99,68 +121,73 @@ class Course {
     if (!res.ok) throw new Error('Failed to load course.json');
     this.courseContent = await res.json(); 
 
-    //Load Modules and Pages
-    for(let count=0; count < this.courseContent.modules.length; count++) {
-      
+    // Load Modules and their pages from the course content
+    for (let count = 0; count < this.courseContent.modules.length; count++) {
       this.modules.push(new Module(this, this.courseContent.modules[count]));
-
     }
 
+    // Set up supporting managers/classes
     this.animation = new Animation();
 
     this.quizManager = new QuizManager(this, this.courseContent.quizSettings);
 
-    this.navigation = new Navigation(this, this.animation, this.modules, this.quizManager);  
+    this.navigation = new Navigation(this, this.modules, this.quizManager);  
     this.navigation.init();
 
+    // Load the initial intro screen
     $('#currentPage').load('content/introScreen.html'); 
 
   }
 
+  // FUNCTION DESCRIPTION
+  // Handles when a module is clicked in the UI and navigates to its first page in the appropriate direction.
   handleModuleClick(module) {
 
     let d = 1;
 
-    if(module < curMod)
-    {
+    // If the clicked module is before the current one, reverse direction
+    if (module < curMod) {
       d = -1;
     }
 
     this.gotoPage(module, 0, d);
-    // do stuff...
   }
 
+  // FUNCTION DESCRIPTION
+  // Navigates to the next page in the course using the Navigation object.
   gotoNextPage() {
     nextDirection = 1;
     this.navigation.calcNextPage(1);
   }
 
+  // FUNCTION DESCRIPTION
+  // Navigates to the previous page in the course using the Navigation object.
   gotoPreviousPage() {
     nextDirection = -1;
     this.navigation.calcNextPage(-1);
   }
 
-  gotoPage(mod, page, d = 1) 
-  {
+  // FUNCTION DESCRIPTION
+  // Navigates directly to a specific module and page, with an optional direction value.
+  gotoPage(mod, page, d = 1) {
     this.navigation.loadPage(mod, page, d);
   }
 
-  playAnimation(element, index)
-  {
-    console.log("course.playAnimation: " + element);
-    
-    this.navigation.playAnimation(element, index);
+  // FUNCTION DESCRIPTION
+  // Plays an animation on a given element using the Animation object.
+  playAnimation(element, index) {
+    this.animation.playAnimation(element, index);
   }
 
-  getTotalMods()
-  {
-
+  // FUNCTION DESCRIPTION
+  // Returns the total number of modules in the course.
+  getTotalMods() {
     return this.modules.length;
-
   }
 
-  screenSizeChange()
-  {
+  // FUNCTION DESCRIPTION
+  // Handles changes in screen size by adjusting navigation and content visibility.
+  screenSizeChange() {
 
     this.navigation.checkFooterVisibility();
 
@@ -170,38 +197,34 @@ class Course {
 
   }
 
-  addSound(soundName, soundURL)
-  {
-
+  // FUNCTION DESCRIPTION
+  // Registers a new sound with the global sound manager.
+  addSound(soundName, soundURL) {
     sound.add(soundName, soundURL);
-
   }
 
-  playSound(soundName)
-  {
-
+  // FUNCTION DESCRIPTION
+  // Plays a sound by name using the sound manager.
+  playSound(soundName) {
     sound.playsound(soundName);
-
   }
 
-  stopSound(soundName)
-  {
-
+  // FUNCTION DESCRIPTION
+  // Stops a specific sound by name using the sound manager.
+  stopSound(soundName) {
     sound.stop(soundName);
-
   }
 
-  stopAllSounds()
-  {
-  
+  // FUNCTION DESCRIPTION
+  // Stops all currently playing sounds.
+  stopAllSounds() {
     sound.stopAll();
-  
   }
 
-  checkViewedCount()
-  {
+  // FUNCTION DESCRIPTION
+  // Checks how many pages have been viewed via the Navigation object (e.g., for completion tracking).
+  checkViewedCount() {
     this.navigation.checkViewedCount();
   }
  
 }
-

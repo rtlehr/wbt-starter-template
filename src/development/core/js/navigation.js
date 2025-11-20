@@ -1,8 +1,7 @@
 class Navigation {
-  constructor(course, animation, modules, quizManager) {
+  constructor(course, modules, quizManager) {
 
     this.course  = course;
-    this.animation = animation;
     this.modules = modules;
     this.quizManager = quizManager;
     this.pageName = "";
@@ -173,7 +172,7 @@ class Navigation {
 
     this.toolTip.addToolTip();
 
-    this.animation.initAnimations();
+    this.course.animation.initAnimations();
 
     this.checkViewedCount();
 
@@ -191,14 +190,14 @@ class Navigation {
     this.toolTip.adjustForScreenSize();
   }
 
-  playAnimation(element, index)
+  /*playAnimation(element, index)
   {
 
     console.log("navigation.playAnimation: " + element);
 
     this.animation.playAnimation(element, index);
 
-  }
+  }*/
 
   checkQuiz()
   {
