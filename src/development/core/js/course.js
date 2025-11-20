@@ -24,7 +24,7 @@ const mqPhone   = window.matchMedia('(max-width: 575.98px)');
 const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 991.98px)');
 const mqDesktop = window.matchMedia('(min-width: 992px)');
 
-// FUNCTION DESCRIPTION
+
 // Handles changes to screen size breakpoints and notifies the Course object.
 function handleBreakpointChange() {
 
@@ -37,7 +37,7 @@ function handleBreakpointChange() {
   mq.addEventListener('change', handleBreakpointChange);
 });
 
-// FUNCTION DESCRIPTION
+
 // Initializes the course when the DOM is ready: sets up Course, sounds, dev tools, and button handlers.
 $(function () {
 
@@ -102,14 +102,14 @@ $(function () {
 
 class Course {
   
-  // FUNCTION DESCRIPTION
+  
   // Constructs a new Course instance and initializes basic course properties.
   constructor() {
     this.courseContent = null;  // Holds loaded course JSON data
     this.modules = [];          // Holds Module instances
   }
 
-  // FUNCTION DESCRIPTION
+  
   // Asynchronously initializes the course: loads JSON data, creates modules, and initializes navigation and quizzes.
   async init() {
 
@@ -139,7 +139,13 @@ class Course {
 
   }
 
-  // FUNCTION DESCRIPTION
+  /******************************* */
+  //
+  // NAVIGATION CONTROL
+  //
+  /******************************* */
+
+  
   // Handles when a module is clicked in the UI and navigates to its first page in the appropriate direction.
   handleModuleClick(module) {
 
@@ -153,39 +159,82 @@ class Course {
     this.gotoPage(module, 0, d);
   }
 
-  // FUNCTION DESCRIPTION
+  
   // Navigates to the next page in the course using the Navigation object.
   gotoNextPage() {
     nextDirection = 1;
     this.navigation.calcNextPage(1);
   }
 
-  // FUNCTION DESCRIPTION
+  
   // Navigates to the previous page in the course using the Navigation object.
   gotoPreviousPage() {
     nextDirection = -1;
     this.navigation.calcNextPage(-1);
   }
 
-  // FUNCTION DESCRIPTION
+  
   // Navigates directly to a specific module and page, with an optional direction value.
   gotoPage(mod, page, d = 1) {
     this.navigation.loadPage(mod, page, d);
   }
 
-  // FUNCTION DESCRIPTION
+  /******************************* */
+  //
+  // ANIMATION CONTROL
+  //
+  /******************************* */
+  
   // Plays an animation on a given element using the Animation object.
   playAnimation(element, index) {
     this.animation.playAnimation(element, index);
   }
+  
+  /******************************* */
+  //
+  // SOUND CONTROL
+  //
+  /******************************* */
+  
+  // Registers a new sound with the global sound manager.
+  addSound(soundName, soundURL) {
+    sound.add(soundName, soundURL);
+  }
 
-  // FUNCTION DESCRIPTION
+  
+  // Plays a sound by name using the sound manager.
+  playSound(soundName) {
+    sound.playsound(soundName);
+  }
+
+  
+  // Stops a specific sound by name using the sound manager.
+  stopSound(soundName) {
+    sound.stop(soundName);
+  }
+
+  
+  // Stops all currently playing sounds.
+  stopAllSounds() {
+    sound.stopAll();
+  }
+
+  /******************************* */
+  //
+  // HELPERS
+  //
+  /******************************* */
+  
+  // Checks how many pages have been viewed via the Navigation object (e.g., for completion tracking).
+  checkViewedCount() {
+    this.navigation.checkViewedCount();
+  }
+
   // Returns the total number of modules in the course.
   getTotalMods() {
     return this.modules.length;
   }
 
-  // FUNCTION DESCRIPTION
   // Handles changes in screen size by adjusting navigation and content visibility.
   screenSizeChange() {
 
@@ -195,36 +244,6 @@ class Course {
 
     this.navigation.adjustToolTip();
 
-  }
-
-  // FUNCTION DESCRIPTION
-  // Registers a new sound with the global sound manager.
-  addSound(soundName, soundURL) {
-    sound.add(soundName, soundURL);
-  }
-
-  // FUNCTION DESCRIPTION
-  // Plays a sound by name using the sound manager.
-  playSound(soundName) {
-    sound.playsound(soundName);
-  }
-
-  // FUNCTION DESCRIPTION
-  // Stops a specific sound by name using the sound manager.
-  stopSound(soundName) {
-    sound.stop(soundName);
-  }
-
-  // FUNCTION DESCRIPTION
-  // Stops all currently playing sounds.
-  stopAllSounds() {
-    sound.stopAll();
-  }
-
-  // FUNCTION DESCRIPTION
-  // Checks how many pages have been viewed via the Navigation object (e.g., for completion tracking).
-  checkViewedCount() {
-    this.navigation.checkViewedCount();
   }
  
 }
