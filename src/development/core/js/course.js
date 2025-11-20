@@ -45,7 +45,7 @@ $(function () {
   course = new Course();
   course.init();
 
-  // Set up the Sound manager for the course
+  // Set up the Sound manager for the course  
   sound = new Sound(course);
 
   // Preload commonly used sound effects
