@@ -1,73 +1,47 @@
 <!-- pages/lesson1.html -->
 <meta name="wbt-init" content="Lesson1Init">
 
-  <style>
-    #box, #animated {
-      transform: translateX(0);
-      transition: transform 300ms ease; /* smooth slide */
-    }
-  </style>
-
 <section class="pageContent" aria-labelledby="l1-title">
   <h1 id="l1-title">Mod 1 Page 1</h1>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ultrices ipsum eget nisi ultricies viverra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam maximus viverra feugiat. Vestibulum condimentum ullamcorper mauris, ac fringilla ligula varius eu. Ut tortor arcu, volutpat sit amet iaculis sed, euismod nec est. Suspendisse bibendum mattis ipsum sed viverra. Nulla at congue velit. Sed tempus eros sit amet tristique maximus. Cras lobortis, ipsum in laoreet commodo, quam leo placerat diam, ac elementum libero erat a mauris. Donec at pretium neque, non venenatis ligula. Nunc dictum augue id sem viverra, et hendrerit ipsum venenatis. Phasellus sed nisl augue.</p>
  
-
   <p>&nbsp;</p>
 
   <div class="row">
-    <div class="col-md-6" id="animationPane" style="overflow: hidden;">
-      <!--<div id="animated" class="animateMe slideInTop" style="background-color: aqua;" data-beginSound="waitAMinute">ANIMATION</div>-->
-      <div id="animated" class="animateMe"
-          data-animation='[
-            {"style": "slideInLeft", "duration": 1, "delay": 0, "endFunction": "onInEnd"},
-            {"style": "slideOutLeft", "duration": 1, "delay": 0, "endFunction": "onInEnd"}]'
-          data-animationPane="#animationPane"
-          style="background-color: aqua;">
+    <div class="col-md-6" id="animatedPane" style="overflow: hidden; border: solid blue 1px;padding-top: 25px; padding-bottom: 25px;">
+      <div id="animated" style="background-color: lightcoral;"
+      class="animateMe"
+      data-animationpane="#animatedPane"
+      data-animation='[
+       { "type": "slideInUp", "chain": "#animatedTwo"},
+       { "type": "slideOutDown", "chain": "#animatedTwo"}]'>
         ANIMATION
       </div>
     </div>
-    <div class="col-md-6">
-      <!--<div id="animatedTwo" class="animateMe slideInBottom" data-chain="#mybox" data-endSound="wow" data-delay="1" style="background-color: yellowgreen;">ANIMATION Two</div>-->
-      <div id="animatedTwo" class="animateMe"
+    <div class="col-md-6" id="animatedTwoPane" style="overflow: hidden; border: solid blue 1px;">
+      <div id="animatedTwo" style="background-color: yellowgreen;"
+      class="animateMe"
+      data-animationpane="#animatedTwoPane"
       data-animation='[
-            {"style": "slideInRight", "duration": 1, "delay": 0},
-            {"style": "slideOutRight", "duration": 1, "delay": 0}
-          ]'
-        style="background-color: yellowgreen;">ANIMATION Two</div>
+       { "type": "slideInLeft", "chain": "#mybox"},
+       { "type": "slideOutRight", "chain": "#mybox"}]'>ANIMATION TWO</div>
     </div>
   </div>
 <p>&nbsp;</p>
 
-<div id="mainRow" style="position: relative; height: 200px; width: 950px; border: red solid 1px;">
-  <div id="mybox"
-     data-animationPane="#mainRow"
-     style="position:absolute;width:120px;height:80px;background-color:brown;color:#fff;border-radius:8px;float:left;bottom:0;"
-     data-horizontalAnchor="left"
-     data-verticleAnchor="bottom"
-     class="animateMe"
-     data-animation='[
-       {"style":"zoom", "scale":2, "duration":1, "delay":0},
-       {"style":"zoom", "scale":1, "duration":1, "delay":0}
-     ]'>
+<div id="mainRow" style="position: relative; height: 200px; width: 1080px; border: red solid 1px;">
+  <div id="mybox" 
+    style="position:absolute;width:120px;height:80px;background-color:brown;color:#fff;border-radius:8px;float:left;bottom:0;"
+      class="animateMe"
+      data-animationpane="#mainRow"
+      data-animation='[
+       { "type": "slideRight", "chain": "#animated"},
+       { "type": "slideLeft", "chain": "#animated"}]'>
   Hello
-</div>
+  </div>
 </div>
 
 </section>
-
-<!-- MODAL WINDOW -->
-<div id="modalOne-dialog" title="modalOne dialog" style="display: none;">
-  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
-
-<div id="modalTwo-dialog" title="modalTwo dialog" style="display: none;">
-  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
-
-<div id="modalThree-dialog" title="modalThree dialog" style="display: none;">
-  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-</div>
 
 <!-- one reusable dialog -->
 <div id="tipDialog" title="Info" style="display:none;">
@@ -86,44 +60,14 @@
     
     console.log("finishedMovingIn function called");
 
-        //course.playAnimation("#mybox");
-
-        course.playAnimation("#animated");
-
-        console.log("--------------");
-        course.playAnimation("#animatedTwo");
-        console.log("--------------");
-
-        course.playAnimation("#mybox");
-
-  }
-
-</script>
-
-<script>
-
-  function startAnimateFunction(el){ console.log('START', el.id); }
-
-  function endAnimateFunction(el){ console.log('END', el.id); }
-
-  function onInStart()
-  {
-    console.log("onInStart() called");
-  }
-
-  function onInEnd(el)
-  {
-    console.log("onInEnd called for:", el.id, 
-              "currentIndex=", el.getAttribute('data-currentIndex'));
-
-    course.playAnimation("#animatedTwo");
-
     course.playAnimation("#animated");
 
-    course.playAnimation("#mybox");
+    //course.playAnimation("#animatedTwo");
+
+    //course.playAnimation("#mybox");
 
   }
 
-
 </script>
+
 

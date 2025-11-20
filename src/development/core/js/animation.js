@@ -6,71 +6,128 @@ class Animation {
         this.pageInfo = pageInfo;
     }
 
-    /* =========================================
+    /* =========================================   
        1. INITIALIZE ALL .animateMe ELEMENTS
        This runs ONCE when the page loads.
        It prepares each element for animations later.
     ==========================================*/
     initAnimations() {
 
-        this._setDefaults();
-        this.duration = 0; // Run setup instantly with no animation
+    this._setDefaults();
+    this.duration = 0; // setup is instant
 
-        // Go through every element that has class "animateMe"
-        $(".animateMe").each((i, el) => {
+    // Go through every element that has class "animateMe"
+    $(".animateMe").each((i, el) => {
 
-            const $el = $(el);
+        const $el = $(el);
 
-            // The container the element will animate inside
-            const paneSel = $el.attr("data-animationpane") || "#courseWindow";
-            const paneInfo = this._getWindowInfo($(paneSel));
+        // The container the element will animate inside
+        const paneSel  = $el.attr("data-animationpane") || "#courseWindow";
+        const $pane    = $(paneSel);
+        const paneInfo = this._getWindowInfo($pane);
 
-            // This element will start at animation step 0
-            $el.attr("data-nextstep", 0);
+        // This element will start at animation step 0
+        $el.attr("data-nextstep", 0);
 
-            // Make this element the active target for helper methods
-            this.target = $el;
+        // Make this element the active target for helper methods
+        this.target = $el;
 
-            const elInfo   = this._getElementInfo();
-            const steps    = this._getAnimationStepsFromAttr();
-            const firstStep = steps[0];
+        const elInfo    = this._getElementInfo();  // current rendered position
+        const steps     = this._getAnimationStepsFromAttr();
+        const firstStep = steps[0];
 
-            // If no animation steps are defined, skip it
-            if (!firstStep) return;
+        // If no animation steps are defined, skip it
+        if (!firstStep) return;
 
-            // Save original position (relative to pane) and scale
-            const origPos = {
-                x: elInfo.x - paneInfo.x,
-                y: elInfo.y - paneInfo.y,
-                scale: 1
-            };
-            $el.attr("data-origposition", JSON.stringify(origPos));
+        const firstType = firstStep.type || "";
 
-            // Normalize: let GSAP control position from now on
+        // 1) Save original "home" position (relative to inner pane area)
+        //    This is where the element should be when it's "at rest".
+        const origPos = {
+            x: elInfo.x - paneInfo.x,
+            y: elInfo.y - paneInfo.y,
+            scale: 1
+        };
+        $el.attr("data-origposition", JSON.stringify(origPos));
 
-            // 1) Clear any manual top/left offsets so CSS doesn't fight GSAP
-            $el.css({ left: 0, top: 0 });
+        // 2) Decide where the element should START
+        //    (off-screen for slideIn types, or at home for everything else)
+        let startX = origPos.x;
+        let startY = origPos.y;
 
-            // 2) Set GSAP x/y to match the original visual position
-            //    Respect the element's transform origin if provided
-            const transOriginAttr = $el.attr("data-transformorigin") || "center";
-            this.transform = this._getTransformOrigin(transOriginAttr);
+        // We are in a coordinate system where:
+        //   inner-left  = 0
+        //   inner-right = paneInfo.w
+        //   border-left = -paneInfo.padLeft
+        //   border-right= paneInfo.w + paneInfo.padRight
+        //   inner-top   = 0
+        //   inner-bottom= paneInfo.h
+        //   border-top  = -paneInfo.padTop
+        //   border-bot  = paneInfo.h + paneInfo.padBottom
 
-            gsap.set($el, {
-                x: origPos.x,
-                y: origPos.y,
-                scale: 1,
-                opacity: 1,
-                transformOrigin: this.transform
-            });
+        // slideInRight:
+        //   Start completely to the LEFT of the pane border,
+        //   so the element is not visible at all.
+        if (firstType.includes("slideInRight")) {
+            // right edge <= border-left
+            // x + elInfo.w <= -padLeft  =>  x <= -padLeft - elInfo.w
+            startX = -paneInfo.padLeft - elInfo.w;
+        }
+
+        // slideInLeft:
+        //   Start completely to the RIGHT of the pane border.
+        if (firstType.includes("slideInLeft")) {
+            // left edge >= border-right
+            // x >= paneInfo.w + padRight
+            startX = paneInfo.w + paneInfo.padRight;
+        }
+
+        // slideInUp:
+        //   Start completely BELOW the pane border.
+        if (firstType.includes("slideInUp")) {
+            // top >= border-bottom
+            // y >= paneInfo.h + padBottom
+            startY = paneInfo.h + paneInfo.padBottom;
+        }
+
+        // slideInDown:
+        //   Start completely ABOVE the pane border.
+        if (firstType.includes("slideInDown")) {
+            // bottom <= border-top
+            // y + elInfo.h <= -padTop  =>  y <= -padTop - elInfo.h
+            startY = -paneInfo.padTop - elInfo.h;
+        }
+
+        // 3) Normalize: let GSAP control position from now on
+
+        // Clear any manual top/left so CSS doesn't fight GSAP
+        $el.css({ left: 0, top: 0 });
+
+        // Respect the element's transform origin if provided
+        const transOriginAttr = $el.attr("data-transformorigin") || "center";
+        this.transform = this._getTransformOrigin(transOriginAttr);
+
+        // 4) Instantly put the element at its start position (no tween)
+        gsap.set($el, {
+            x: startX,
+            y: startY,
+            scale: 1,
+            opacity: firstType.includes("fadeIn") ? 0 : 1,
+            transformOrigin: this.transform
         });
-    }
+    });
+}
+
+
+
 
     /* =========================================
        2. PLAY ANIMATION FOR A GIVEN TARGET ELEMENT
        This is called when you want something to animate.
     ==========================================*/
     playAnimation(target, stepIndex = null) {
+
+        console.log("animation.playAnimation: " + target);
 
         this._setDefaults();
 
@@ -197,36 +254,43 @@ class Animation {
         }
 
         // ------------------------
-        // 3) "Slide out" completely off-pane
+        // 3) "Slide out" completely outside the pane border
         // ------------------------
 
-        // Off to the right (right edge just past pane right)
+        // slideOutRight: move so the element's LEFT edge is past the RIGHT border
         if (type.includes("slideOutRight")) {
-            const targetLeft = paneInfo.w;     // left just at pane right edge
+            // border-right = paneInfo.w + paneInfo.padRight
+            const targetLeft = paneInfo.w + paneInfo.padRight;
             const delta = targetLeft - homeLeft;
             this.x = homeX + delta;
         }
 
-        // Off to the left (left edge fully off-screen)
+        // slideOutLeft: move so the element's RIGHT edge is past the LEFT border
         if (type.includes("slideOutLeft")) {
-            const targetLeft = -scaledW;       // fully off the left side
+            // border-left = -paneInfo.padLeft
+            // right edge <= border-left → left <= -padLeft - scaledW
+            const targetLeft = -paneInfo.padLeft - scaledW;
             const delta = targetLeft - homeLeft;
             this.x = homeX + delta;
         }
 
-        // Off the top
+        // slideOutUp: move so the element's BOTTOM edge is past the TOP border
         if (type.includes("slideOutUp")) {
-            const targetTop = -scaledH;
+            // border-top = -paneInfo.padTop
+            // bottom <= border-top → top <= -padTop - scaledH
+            const targetTop = -paneInfo.padTop - scaledH;
             const delta = targetTop - homeTop;
             this.y = homeY + delta;
         }
 
-        // Off the bottom
+        // slideOutDown: move so the element's TOP edge is past the BOTTOM border
         if (type.includes("slideOutDown")) {
-            const targetTop = paneInfo.h;
+            // border-bottom = paneInfo.h + paneInfo.padBottom
+            const targetTop = paneInfo.h + paneInfo.padBottom;
             const delta = targetTop - homeTop;
             this.y = homeY + delta;
         }
+
 
         // ------------------------
         // 4) Partial slides using moveFactor (0..1)
@@ -373,13 +437,38 @@ class Animation {
     }
 
     _getWindowInfo($pane) {
-        return {
-            w: $pane.width()  || 0,
-            h: $pane.height() || 0,
-            x: $pane.offset().left,
-            y: $pane.offset().top
-        };
-    }
+    // Outer position of the pane (border box)
+    const off = $pane.offset() || { left: 0, top: 0 };
+
+    // Padding values
+    const padLeft   = parseFloat($pane.css("padding-left"))   || 0;
+    const padTop    = parseFloat($pane.css("padding-top"))    || 0;
+    const padRight  = parseFloat($pane.css("padding-right"))  || 0;
+    const padBottom = parseFloat($pane.css("padding-bottom")) || 0;
+
+    // Inner content area (inside padding)
+    const innerW = ($pane.innerWidth()  || 0) - padLeft - padRight;
+    const innerH = ($pane.innerHeight() || 0) - padTop  - padBottom;
+
+    return {
+        // Top-left corner of the *inner* content area
+        x: off.left + padLeft,
+        y: off.top  + padTop,
+
+        // Usable width/height (inside padding)
+        w: innerW,
+        h: innerH,
+
+        // Raw padding (for off-screen slideIn positions)
+        padLeft,
+        padRight,
+        padTop,
+        padBottom
+    };
+}
+
+
+
 
     /* =========================================
        6. HELPERS: JSON STEPS & STEP INDEX

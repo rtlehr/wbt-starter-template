@@ -2,7 +2,7 @@ let curMod = 0;
 let curPage = 0;
 let devMode = true;
 let creditMode = false;
-let nextDirection = 0;
+let nextDirection = 0;   
 
 let course;
 let developmentMenu;
@@ -147,6 +147,8 @@ class Course {
 
   playAnimation(element, index)
   {
+    console.log("course.playAnimation: " + element);
+    
     this.navigation.playAnimation(element, index);
   }
 

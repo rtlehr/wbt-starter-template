@@ -173,7 +173,7 @@ class Navigation {
 
     this.toolTip.addToolTip();
 
-    this.animation.setUpAnimation();
+    this.animation.initAnimations();
 
     this.checkViewedCount();
 
@@ -193,6 +193,8 @@ class Navigation {
 
   playAnimation(element, index)
   {
+
+    console.log("navigation.playAnimation: " + element);
 
     this.animation.playAnimation(element, index);
 

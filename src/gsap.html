@@ -28,8 +28,6 @@
       justify-content: center;
       border-radius: 8px;
       position: relative;
-      left: 72px;
-      top: 129px;
     }
 
     #box2 {
@@ -67,19 +65,18 @@
         data-transformorigin="bottom-right"
         data-animation='[
                           {
-                            "type": "slideDown", 
+                            "type": "slideInLeft", 
                             "sFunction": "pageStartFunction",
                             "eFunction": "pageEndFunction"                          
                           },
                           {
-                            "type": "slideRight",
-                            "moveFactor": 0.5                       
+                            "type": "slideOutRight"                      
                           },
                           {
-                            "type": "slideUp"                          
+                            "type": "slideOutLeft"                          
                           },
                           {
-                            "type": "slideLeft"                          
+                            "type": "slideInRight"                          
                           }
                         ]'
         class="animateMe"
