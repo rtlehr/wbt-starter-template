@@ -13,8 +13,14 @@
       class="animateMe"
       data-animationpane="#animatedPane"
       data-animation='[
-       { "type": "slideInUp", "chain": "#animatedTwo"},
-       { "type": "slideOutDown", "chain": "#animatedTwo"}]'>
+                        { "type": "slideInUp",
+                          "chain": "#animatedTwo"
+                        },
+                        {
+                          "type": "slideOutDown",
+                          "chain": "#animatedTwo"
+                        }
+                      ]'>
         ANIMATION
       </div>
     </div>
@@ -23,8 +29,15 @@
       class="animateMe"
       data-animationpane="#animatedTwoPane"
       data-animation='[
-       { "type": "slideInLeft", "chain": "#mybox"},
-       { "type": "slideOutRight", "chain": "#mybox"}]'>ANIMATION TWO</div>
+                        {
+                          "type": "slideInLeft", 
+                          "chain": "#mybox"
+                        },
+                        { 
+                          "type": "slideOutRight", 
+                          "chain": "#mybox"
+                        }
+                      ]'>ANIMATION TWO</div>
     </div>
   </div>
 <p>&nbsp;</p>
@@ -35,10 +48,25 @@
       class="animateMe"
       data-animationpane="#mainRow"
       data-animation='[
-       { "type": "slideRight", "chain": "#animated"},
-       { "type": "slideUp", "chain": "#animated"},
-       { "type": "slideLeft", "chain": "#animated"},
-       { "type": "slideDown", "chain": "#animated"}]'>
+                        { 
+                          "type": "slideRight", 
+                          "chain": "#animated"
+                        },
+                        { 
+                          "type": "slideUp", 
+                          "chain": "#animated"
+                        },
+                        { 
+                          "type": "slideLeft", 
+                          "chain": "#animated"
+                        },
+                        { 
+                          "type": "slideDown", 
+                          "chain": "#animated",
+                          "sFunction": "myStartFunction",
+                          "eFunction": "myEndFunction"
+                        }
+                      ]'>
   Hello
   </div>
 </div>
@@ -68,6 +96,16 @@
 
     //course.playAnimation("#mybox");
 
+  }
+
+  function myStartFunction()
+  {
+    console.log("--- We have started the last movement");
+  }
+
+  function myEndFunction()
+  {
+    console.log("--- We have ended the last movement");
   }
 
 </script>

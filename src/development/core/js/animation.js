@@ -117,7 +117,7 @@ class Animation {
         });
 
         $el.css("visibility", "visible");
-        
+
     });
 }
 
@@ -129,8 +129,6 @@ class Animation {
        This is called when you want something to animate.
     ==========================================*/
     playAnimation(target, stepIndex = null) {
-
-        console.log("animation.playAnimation: " + target);
 
         this._setDefaults();
 
