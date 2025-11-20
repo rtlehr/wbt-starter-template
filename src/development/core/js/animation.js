@@ -118,6 +118,15 @@ class Animation {
 
         $el.css("visibility", "visible");
 
+        // After gsap.set(...)
+        const buttonSel = $el.attr("data-playbutton");
+        if (buttonSel) {
+            // Use a closure so each button triggers its own element
+            $(buttonSel).on("click", () => {
+                this.playAnimation($el);
+            });
+        }
+
     });
 }
 
