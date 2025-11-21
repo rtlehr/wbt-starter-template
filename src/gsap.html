@@ -60,53 +60,30 @@
   <h1>Animation Class + GSAP + jQuery</h1>
 
     <div id="animParent" style="position: relative; height: 500px; width: 800px; border: 1px solid red;">
+        <div id="gotoTarget" style="position: absolute; top:350px; left: 575px; width: 25px; height: 25px; background-color: aqua;"></div>
+        <div id="gotoTargetToo" style="position: absolute; top:50px; left: 175px; width: 25px; height: 25px; background-color:bisque;"></div>
         <div id="box"
         data-animationpane="#animParent"
         data-transformorigin="bottom-right"
         data-playbutton="#playBtn"
         data-animation='[
+                          { "type": "scale slideUp slideLeft", "sAmount": 2 },
                           {
-                            "type": "slideInLeft", 
+                            "type": "goto", 
+                            "gotoTarget": "#gotoTarget",
                             "sFunction": "pageStartFunction",
                             "eFunction": "pageEndFunction"                          
                           },
                           {
-                            "type": "slideOutRight"                      
+                            "type": "slideRight"
                           },
                           {
-                            "type": "slideOutLeft"                          
-                          },
-                          {
-                            "type": "slideInRight"                          
+                            "type": "goto", 
+                            "gotoTarget": "#gotoTargetToo"
                           }
                         ]'
         class="animateMe"
         >Animate me</div>
-
-        <div id="box2"
-        data-animationpane="#animParent"
-        data-transformorigin="bottom-right"
-        data-playbutton="#playBtn"
-        data-animation='[
-                          { "type": "slideUp",
-                            "sAmount": 2
-                          },
-                          {
-                            "type": "slideLeft", 
-                            "sFunction": "pageStartFunction",
-                            "eFunction": "pageEndFunction"                          
-                          },
-                          {
-                            "type": "slideDown",
-                            "sAmount": 1                          
-                          },
-                          {
-                            "type": "slideRight"                          
-                          }
-                        ]'
-        class="animateMe"
-        >Animate me</div>
-
     </div>
 
 
@@ -124,14 +101,14 @@
 
       let count = 0;
 
-      $("#playBtn").on("click", function () {
+      //$("#playBtn").on("click", function () {
 
           //animation.playAnimation("#box");
 
           //animation.playAnimation("#box2");
 
 
-      });
+     // });
     });
 
     function pageStartFunction()
