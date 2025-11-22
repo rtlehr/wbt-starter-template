@@ -43,6 +43,7 @@ class Animation {
                 x: elInfo.x - paneInfo.x,
                 y: elInfo.y - paneInfo.y,
                 scale: 1
+                // rotation: 0  // if you ever want to store rotation too
             };
             $el.attr("data-origposition", JSON.stringify(origPos));
 
@@ -74,7 +75,7 @@ class Animation {
             // 3) Clear any manual CSS offsets so GSAP fully controls x/y
             $el.css({ left: 0, top: 0 });
 
-            // Transform origin (for scale)
+            // Transform origin (for scale/rotate)
             const transOriginAttr = $el.attr("data-transformorigin") || "center";
             this.transform = this._getTransformOrigin(transOriginAttr);
 
@@ -83,6 +84,7 @@ class Animation {
                 x: startX,
                 y: startY,
                 scale: 1,
+                rotation: 0,
                 opacity: firstType.includes("fadeIn") ? 0 : 1,
                 transformOrigin: this.transform
             });
@@ -96,12 +98,9 @@ class Animation {
                 $el.data("playBound", true);
             }
 
+            // Make sure element is visible after setup
             $el.css("visibility", "visible");
-
         });
-
-        
-        
     }
 
     /* =========================================
@@ -163,12 +162,13 @@ class Animation {
         const type   = this.currAnimation.type || "";
 
         // Reset core animation values
-        this.x        = 0;
-        this.y        = 0;
-        this.opacity  = 1;
-        this.scale    = orgPos.scale;
-        this.duration = this.currAnimation.duration || 1;
-        this.delay    = this.currAnimation.delay    || 0;
+        this.x         = 0;
+        this.y         = 0;
+        this.opacity   = 1;
+        this.scale     = orgPos.scale;
+        this.rotation  = 0;
+        this.duration  = this.currAnimation.duration || 1;
+        this.delay     = this.currAnimation.delay    || 0;
 
         // Hooks and chaining
         this.sFunction = this.currAnimation.sFunction || null;
@@ -184,6 +184,10 @@ class Animation {
         this.x = curPos.x;
         this.y = curPos.y;
 
+        // Also get current rotation (for relative rotate)
+        const el = this.target[0];
+        const curRotation = gsap.getProperty(el, "rotation") || 0;
+
         // ----- SCALE -----
         if (type.includes("scale")) {
             this.scale = this.currAnimation.sAmount || 1;
@@ -195,6 +199,16 @@ class Animation {
                 scale: this.scale
             };
             this.target.attr("data-origposition", JSON.stringify(newOrigPos));
+        }
+
+        // ----- ROTATE -----
+        if (type.includes("rotate")) {
+            const rAmount = Number(this.currAnimation.rAmount) || 0;
+            // Relative rotation from current
+            this.rotation = curRotation + rAmount;
+        } else {
+            // Keep whatever rotation is currently applied if we're not rotating
+            this.rotation = curRotation;
         }
 
         // Common values for slide/scale math
@@ -225,26 +239,20 @@ class Animation {
                 const $goto = $(gotoSel);
 
                 if ($goto.length) {
-
-                    // Get the pane info again (same pane as the moving element)
                     const paneSelForGoto  = this.target.attr("data-animationpane") || "#courseWindow";
                     const paneInfoForGoto = this._getWindowInfo($(paneSelForGoto));
 
-                    // Get the target element's DOM position
                     const gotoOffset = $goto.offset() || { left: 0, top: 0 };
 
-                    // Convert to pane–relative coordinates (same space GSAP uses for x/y)
                     const gotoX = gotoOffset.left - paneInfoForGoto.x;
                     const gotoY = gotoOffset.top  - paneInfoForGoto.y;
 
-                    // Our current GSAP position
                     const current = this._getCurrentXY();
-                    const factor  = this.moveFactor; // 1 = all the way, 0.5 = halfway, etc.
+                    const factor  = this.moveFactor;
 
                     // Interpolate between current and target
                     this.x = current.x + (gotoX - current.x) * factor;
                     this.y = current.y + (gotoY - current.y) * factor;
-
                 } else {
                     console.warn("Goto target not found:", gotoSel);
                 }
@@ -252,9 +260,8 @@ class Animation {
                 console.warn("gotoTarget not defined in animation step for", this.target);
             }
 
-            // NOTE: fade/scale logic below can still apply to "goto" if you want
+            // fade/scale/rotate can still apply to "goto"
         }
-
 
         // --------------------------------------
         // SLIDE IN / OUT / PARTIAL (if not goto)
@@ -345,6 +352,7 @@ class Animation {
             y: this.y,
             opacity: this.opacity,
             scale: this.scale,
+            rotation: this.rotation,
             transformOrigin: this.transform,
             duration: this.duration,
             delay: this.delay,
@@ -384,7 +392,7 @@ class Animation {
         gsap.globalTimeline.resume();
     }
 
-    /* Reset element back to original saved position/scale */
+    /* Reset element back to original saved position/scale/rotation */
     resetToOrigin(target) {
 
         this.target = target instanceof jQuery ? target : $(target);
@@ -397,10 +405,11 @@ class Animation {
 
         this._setDefaults();
 
-        this.x       = orgPos.x;
-        this.y       = orgPos.y;
-        this.scale   = orgPos.scale;
-        this.opacity = 1;
+        this.x        = orgPos.x;
+        this.y        = orgPos.y;
+        this.scale    = orgPos.scale;
+        this.opacity  = 1;
+        this.rotation = 0;
 
         const transOriginAttr = this.target.attr("data-transformorigin") || "center";
         this.transform = this._getTransformOrigin(transOriginAttr);
@@ -410,6 +419,7 @@ class Animation {
             y: this.y,
             scale: this.scale,
             opacity: this.opacity,
+            rotation: this.rotation,
             transformOrigin: this.transform
         });
     }
@@ -529,6 +539,7 @@ class Animation {
         this.transform = this._getTransformOrigin(this.anchor);
         this.moveFactor = 1;
         this.ease       = "power1.out";
+        this.rotation   = 0;
     }
 
     _getCurrentXY() {

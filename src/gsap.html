@@ -69,13 +69,16 @@
         data-animation='[
                           { "type": "scale slideUp slideLeft", "sAmount": 2 },
                           {
-                            "type": "goto", 
+                            "type": "goto rotate scale", 
+                            "rAmount": 45,
+                            "sAmount": 1,
                             "gotoTarget": "#gotoTarget",
                             "sFunction": "pageStartFunction",
                             "eFunction": "pageEndFunction"                          
                           },
                           {
-                            "type": "slideRight"
+                            "type": "slideRight rotate", 
+                            "rAmount": -45
                           },
                           {
                             "type": "goto", 
