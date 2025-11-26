@@ -1,5 +1,5 @@
 class Navigation {
-  constructor(course, modules, quizManager) {
+  constructor(course, modules, int, quizManager) {
 
     this.course  = course;
     this.modules = modules;
@@ -11,7 +11,7 @@ class Navigation {
     // Dependencies
     this.modalWindow = new modalWindow();
     this.toolTip     = new toolTip();
-    this.interface   = new Interface(this.course, this.modules);
+    this.interface = int;
 
     // DOM cache
     this.$row         = $('#wbtContentRow');

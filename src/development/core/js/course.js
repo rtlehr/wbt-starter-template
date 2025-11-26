@@ -131,8 +131,12 @@ class Course {
 
     this.quizManager = new QuizManager(this, this.courseContent.quizSettings);
 
-    this.navigation = new Navigation(this, this.modules, this.quizManager);  
+    this.interface   = new Interface(this, this.modules);
+
+    this.navigation = new Navigation(this, this.modules, this.interface, this.quizManager);  
     this.navigation.init();
+
+    
 
     // Load the initial intro screen
     $('#currentPage').load('content/introScreen.html'); 
