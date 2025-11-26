@@ -1,0 +1,12 @@
+/* Ordered but not yet allowed */
+.ic-locked {
+    pointer-events: none;
+    opacity: 0.4;
+    cursor: default;
+}
+
+/* Ordered and currently allowed */
+.ic-active {
+    pointer-events: auto;
+    cursor: pointer;
+}

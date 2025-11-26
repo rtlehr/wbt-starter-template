@@ -59,6 +59,13 @@ class Interface {
 
   }
 
+    turnOnNextButton()
+  {
+
+    $("#nextButton").removeClass("notAvailablePage");
+
+  }
+
   showFooter()
   {
     $("#courseFooter").stop(true).animate({ top: -50 }, 500, () => {});
@@ -67,19 +74,6 @@ class Interface {
   hideFooter()
   {
     $("#courseFooter").css({ top: 0 });
-  }
-
-  checkViewedCount()
-  {
-
-    this.setInterface();
-
-    if(($(".notViewed").length > 0) && creditMode)
-    {
-      this.turnOffPreviousButton();
-      this.turnOffNextButton();
-    }
-
   }
 
 }

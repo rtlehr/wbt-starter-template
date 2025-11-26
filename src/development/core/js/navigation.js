@@ -1,9 +1,10 @@
 class Navigation {
-  constructor(course, modules, int, quizManager) {
+  constructor(course, modules, int, quizManager, interactionCheck) {
 
     this.course  = course;
     this.modules = modules;
     this.quizManager = quizManager;
+    this.interactionCheck = interactionCheck;
     this.pageName = "";
     
     this.lmsManagement = new lmsManagement();  
@@ -174,30 +175,16 @@ class Navigation {
 
     this.course.animation.initAnimations();
 
-    this.checkViewedCount();
+    this.interactionCheck.checkForNotViewed()
 
     this.checkQuiz();
 
-  }
-
-  checkViewedCount()
-  {
-    this.interface.checkViewedCount();
   }
 
   adjustToolTip()
   {
     this.toolTip.adjustForScreenSize();
   }
-
-  /*playAnimation(element, index)
-  {
-
-    console.log("navigation.playAnimation: " + element);
-
-    this.animation.playAnimation(element, index);
-
-  }*/
 
   checkQuiz()
   {
@@ -210,7 +197,6 @@ class Navigation {
     }
   
   }
-
 
   /* ---------- Helpers ---------- */
 

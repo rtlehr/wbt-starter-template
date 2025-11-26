@@ -133,8 +133,12 @@ class Course {
 
     this.interface   = new Interface(this, this.modules);
 
-    this.navigation = new Navigation(this, this.modules, this.interface, this.quizManager);  
+    this.interactionCheck = new InteractionCheck(this, this.interface);
+
+    this.navigation = new Navigation(this, this.modules, this.interface, this.quizManager, this.interactionCheck);  
     this.navigation.init();
+
+    
 
     
 
@@ -228,11 +232,6 @@ class Course {
   // HELPERS
   //
   /******************************* */
-  
-  // Checks how many pages have been viewed via the Navigation object (e.g., for completion tracking).
-  checkViewedCount() {
-    this.navigation.checkViewedCount();
-  }
 
   // Returns the total number of modules in the course.
   getTotalMods() {

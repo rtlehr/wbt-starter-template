@@ -43,14 +43,6 @@ class modalWindow {
           return;
         }
 
-        console.log("has notViewed: " + $trigger.hasClass("notViewed"));
-
-        if($trigger.hasClass("notViewed"))
-        {
-          $trigger.removeClass('notViewed').addClass('viewed');
-          course.checkViewedCount();
-        }
-
         $dialog.dialog('open');
 
       });
