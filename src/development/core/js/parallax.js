@@ -1,26 +1,17 @@
 class Parallax {
 
   constructor(opts = {}) {
-
     this.opts = $.extend(true, { parent: null }, opts);
 
-      /*let eWidth = $(this).width();   
-      let eHeight = $(this).height();
-      let eTop = $(this).offset().top; 
-      let eLeft = $(this).offset().left;
+    this.reduceMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      console.log("animation Pane: " + $(this).attr("data-animationPane"));
+    this.wHeight = $(this.opts.parent).height();
+    this.wWidth  = $(this.opts.parent).width();
 
-      let cW = $(this).attr("data-animationPane") || "#courseWindow";*/
-
-      this.wHeight = $(this.opts.parent).height();
-      this.wWidth = $(this.opts.parent).width();
-
-      /*let wTop = $(this.opts.parent).offset().top;
-      let wLeft = $(this.opts.parent).offset().left;*/
-
+    if (!this.reduceMotion) {
       this.setAnimation();
-
+    }
   }
 
   init() {}
