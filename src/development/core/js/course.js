@@ -12,6 +12,10 @@ const mqPhone   = window.matchMedia('(max-width: 575.98px)');
 const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 991.98px)');
 const mqDesktop = window.matchMedia('(min-width: 992px)');
 
+const mqReduceMotion = window.matchMedia
+  ? window.matchMedia('(prefers-reduced-motion: reduce)')
+  : { matches: false };
+
 // Handles changes to screen size breakpoints and notifies the Course object.
 function handleBreakpointChange() {
 

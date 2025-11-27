@@ -65,45 +65,64 @@ class Navigation {
   }
 
     animatePage(direction) {
-      this.checkFooterVisibility();
-      const $loadDiv = this._paneForDirection(direction);
+  this.checkFooterVisibility();
+  const $loadDiv = this._paneForDirection(direction);
 
-      const width = this.animateWidth;
-      const offset = -direction * width;
+  // If user prefers reduced motion: DON'T slide, just swap instantly
+  if (mqReduceMotion.matches) {
 
-      // position row at 0 with next panel preloaded off-screen
-      this.$row.css({ transform: 'translate3d(0,0,0)' });
-      $loadDiv.css({ transform: `translate3d(${offset}px,0,0)` });
+    const modIndex  = this.course.curMod;
+    const pageIndex = this.course.curPage;
 
-      // Animate both with CSS classes or inline transition
-      const dur = 800;
-      this.$row.add($loadDiv).css({
-        transition: `transform ${dur}ms ease`
-      });
+    // No animation, just swap HTML
+    this.$currentPage.html($loadDiv.html());
+    this._buildPageName(modIndex, pageIndex);
+    this.$currentPage.find(".pageContent").attr("id", this.pageName);
+    $loadDiv.empty();
 
-      // Force reflow
-      void this.$row[0].offsetWidth;
+    this.interface.setInterface();
+    this.interface.setPageNumber(this.modules[modIndex].getTotalPages());
+    this.cleanCourse();
+    this._callHookIfExists('finishedMovingInCourseFunction');
+    this._callHookIfExists('finishedMovingIn');
 
-      // Slide row by width
-      this.$row.css({ transform: `translate3d(${offset}px,0,0)` });
-      $loadDiv.css({ transform: `translate3d(0,0,0)` });
-
-      setTimeout(() => {
-        // cleanup + swap content
-        this.$row.add($loadDiv).css({ transition: '', transform: '' });
-        this.$currentPage.html($loadDiv.html());
-        this._buildPageName(this.course.curMod, this.course.curPage);
-        this.$currentPage.find(".pageContent").attr("id", this.pageName);
-        $loadDiv.empty();
-
-        this.interface.setInterface();
-        this.interface.setPageNumber(this.modules[this.course.curMod].getTotalPages());
-        this.cleanCourse();
-        this._callHookIfExists('finishedMovingInCourseFunction');
-        this._callHookIfExists('finishedMovingIn');
-      }, dur);
+    return; // IMPORTANT: skip animated path below
   }
 
+  // Normal animated path
+  const width = this.animateWidth;
+  const offset = -direction * width;
+
+  this.$row.css({ transform: 'translate3d(0,0,0)' });
+  $loadDiv.css({ transform: `translate3d(${offset}px,0,0)` });
+
+  const dur = 800;
+  this.$row.add($loadDiv).css({
+    transition: `transform ${dur}ms ease`
+  });
+
+  void this.$row[0].offsetWidth;
+
+  this.$row.css({ transform: `translate3d(${offset}px,0,0)` });
+  $loadDiv.css({ transform: `translate3d(0,0,0)` });
+
+  setTimeout(() => {
+    this.$row.add($loadDiv).css({ transition: '', transform: '' });
+    const modIndex  = this.course.curMod;
+    const pageIndex = this.course.curPage;
+
+    this.$currentPage.html($loadDiv.html());
+    this._buildPageName(modIndex, pageIndex);
+    this.$currentPage.find(".pageContent").attr("id", this.pageName);
+    $loadDiv.empty();
+
+    this.interface.setInterface();
+    this.interface.setPageNumber(this.modules[modIndex].getTotalPages());
+    this.cleanCourse();
+    this._callHookIfExists('finishedMovingInCourseFunction');
+    this._callHookIfExists('finishedMovingIn');
+  }, dur);
+}
 
   checkFooterVisibility() {
     // Show footer on desktop if currently at top:0

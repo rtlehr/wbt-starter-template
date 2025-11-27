@@ -1,7 +1,19 @@
 class Animation {
 
     constructor(course) {
-        this.course = course;
+        this.course = course || null;
+
+        // ACCESSIBILITY: detect prefers-reduced-motion once
+        this.reduceMotion = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Keep media query in sync if user changes setting
+        if (window.matchMedia) {
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        mq.addEventListener('change', (e) => {
+            this.reduceMotion = !!e.matches;
+        });
+        }
     }
 
     /* =========================================
@@ -78,13 +90,14 @@ class Animation {
             const transOriginAttr = $el.attr("data-transformorigin") || "center";
             this.transform = this._getTransformOrigin(transOriginAttr);
 
-            // 4) Instantly place at start position (no transition)
+            const startsHidden = firstType.includes("fadeIn");
+
             gsap.set($el, {
                 x: startX,
                 y: startY,
                 scale: 1,
                 rotation: 0,
-                opacity: firstType.includes("fadeIn") ? 0 : 1,
+                opacity: startsHidden ? 0 : 1,
                 transformOrigin: this.transform
             });
 
@@ -97,9 +110,23 @@ class Animation {
                 $el.data("playBound", true);
             }
 
-            // Make sure element is visible after setup
+            // A11y: if we start fully hidden, mark as aria-hidden
+            A11yUtils.setHidden($el, startsHidden);
+
+            // Make sure element is visible in layout
             $el.css("visibility", "visible");
+
         });
+
+        if (!this._pagehideBound) {
+            this._pagehideBound = true;
+            window.addEventListener('pagehide', () => {
+            if (window.gsap) {
+                gsap.killTweensOf('.animateMe');
+            }
+            });
+        }
+        
     }
 
     /* =========================================
@@ -346,6 +373,35 @@ class Animation {
     ==========================================*/
     animate() {
 
+        const $target = this.target instanceof jQuery ? this.target : $(this.target);
+
+        // If user prefers reduced motion, jump straight to final state
+        if (this.reduceMotion) {
+
+            // A11y: if final opacity is 0, hide; else show
+            const isHidden = (this.opacity <= 0);
+            A11yUtils.setHidden($target, isHidden);
+
+            // START hook
+            this.onStart();
+
+            // Instantly set final transform & opacity
+            gsap.set(this.target, {
+            x: this.x,
+            y: this.y,
+            opacity: this.opacity,
+            scale: this.scale,
+            rotation: this.rotation,
+            transformOrigin: this.transform
+            });
+
+            // COMPLETE hook
+            this.onComplete();
+
+            return; // IMPORTANT: skip the animated tween below
+        }
+
+        // Normal animated path
         gsap.to(this.target, {
             x: this.x,
             y: this.y,
@@ -357,13 +413,16 @@ class Animation {
             delay: this.delay,
             ease: this.ease,
             onStart: () => {
-                this.onStart();
+            this.onStart();
             },
             onComplete: () => {
-                this.onComplete();
+            const isHidden = (this.opacity <= 0);
+            A11yUtils.setHidden($target, isHidden);
+            this.onComplete();
             }
         });
-    }
+        }
+
 
     onStart() {
         if (this.sFunction) {
