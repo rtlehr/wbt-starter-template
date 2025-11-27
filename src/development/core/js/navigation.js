@@ -7,11 +7,11 @@ class Navigation {
     this.interactionCheck = interactionCheck;
     this.pageName = "";
     
-    this.lmsManagement = new lmsManagement();  
+    this.lmsManagement = new lmsManagement(this.course);  
     
     // Dependencies
     this.modalWindow = new modalWindow();
-    this.toolTip     = new toolTip();
+    this.toolTip = new toolTip(this.interactionCheck);
     this.interface = int;
 
     // DOM cache

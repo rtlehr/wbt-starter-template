@@ -46,16 +46,16 @@ $(function () {
   course.init();
 
   // Set up the Sound manager for the course  
-  sound = new Sound(course);
+  //sound = new Sound(course);
 
   // Preload commonly used sound effects
-  course.addSound("buttonClick", "content/audio/computer-mouse-click.mp3");
+ /* course.addSound("buttonClick", "content/audio/computer-mouse-click.mp3");
   course.addSound("holdMyBeer", "content/audio/hold-my-beerwatch-this.mp3");
   course.addSound("piano", "content/audio/piano_with_horror_me.mp3");
   course.addSound("waitAMinute", "content/audio/wait-a-minute-who-are-you.mp3");
   course.addSound("wow", "content/audio/wow.mp3");
   course.addSound("typewriterkeys", "content/audio/typewriter-keys.mp3");
-  course.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");
+  course.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");*/
 
   // Show or hide development tools based on devMode
   if (course.devMode) {
@@ -69,14 +69,12 @@ $(function () {
   // Previous page button handler
   $('#previousButton').on('click', (e) => {
     e.preventDefault();
-    course.playSound("buttonClick");
     course.gotoPreviousPage();
   });
 
   // Next page button handler
   $('#nextButton').on('click', (e) => {
     e.preventDefault();
-    course.playSound("buttonClick");
     course.gotoNextPage();
   });
 
@@ -141,6 +139,16 @@ class Course {
     // Set up supporting managers/classes
     this.animation = new Animation();
 
+    this.sound = new Sound(this);
+
+    this.addSound("buttonClick", "content/audio/computer-mouse-click.mp3");
+    this.addSound("holdMyBeer", "content/audio/hold-my-beerwatch-this.mp3");
+    this.addSound("piano", "content/audio/piano_with_horror_me.mp3");
+    this.addSound("waitAMinute", "content/audio/wait-a-minute-who-are-you.mp3");
+    this.addSound("wow", "content/audio/wow.mp3");
+    this.addSound("typewriterkeys", "content/audio/typewriter-keys.mp3");
+    this.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");
+
     this.quizManager = new QuizManager(this, this.courseContent.quizSettings);
 
     this.interface   = new Interface(this, this.modules);
@@ -149,10 +157,6 @@ class Course {
 
     this.navigation = new Navigation(this, this.modules, this.interface, this.quizManager, this.interactionCheck);  
     this.navigation.init();
-
-    
-
-    
 
     // Load the initial intro screen
     $('#currentPage').load('content/introScreen.html'); 
@@ -239,27 +243,20 @@ class Course {
   //
   /******************************* */
   
-  // Registers a new sound with the global sound manager.
   addSound(soundName, soundURL) {
-    sound.add(soundName, soundURL);
+    this.sound.add(soundName, soundURL);
   }
 
-  
-  // Plays a sound by name using the sound manager.
   playSound(soundName) {
-    sound.playsound(soundName);
+    this.sound.playsound(soundName);
   }
 
-  
-  // Stops a specific sound by name using the sound manager.
   stopSound(soundName) {
-    sound.stop(soundName);
+    this.sound.stop(soundName);
   }
 
-  
-  // Stops all currently playing sounds.
   stopAllSounds() {
-    sound.stopAll();
+    this.sound.stopAll();
   }
 
   /******************************* */

@@ -1,6 +1,8 @@
 class toolTip {
 
-  constructor() {}
+  constructor(interactionCheck) {
+    this.interactionCheck = interactionCheck;
+  }
 
   addToolTip() {
 
@@ -65,10 +67,7 @@ class toolTip {
 
   // Called whenever a tooltip is "rolled over" / activated
   handleToolTipHover($target) {
-    // 🔹 Put whatever you want to run here
-
-    course.interactionCheck.elementViewed($target);
-
+    this.interactionCheck.elementViewed($target);
   }
 
   // Remove whichever mode is active (idempotent)
