@@ -1,8 +1,7 @@
 class Animation {
 
-    constructor(course, pageInfo) {
+    constructor(course) {
         this.course = course;
-        this.pageInfo = pageInfo;
     }
 
     /* =========================================

@@ -137,7 +137,7 @@ class Course {
     }
 
     // Set up supporting managers/classes
-    this.animation = new Animation();
+    this.animation = new Animation(this);
 
     this.sound = new Sound(this);
 
