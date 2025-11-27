@@ -39,9 +39,9 @@ class DevelopmentMenu {
   switchModes()
   {
 
-    creditMode = !creditMode;
+    this.course.creditMode = !this.course.creditMode;
 
-    if(creditMode)
+    if(this.course.creditMode)
     {
       $("#courseMode").html("Credit Mode");
     }

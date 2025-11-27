@@ -5,10 +5,10 @@
 //let curPage = 0;
 
 // Enables/disables development features and tools
-let devMode = true;
+//let devMode = true;
 
 // Enables/disables credit mode (usage TBD elsewhere in code)
-let creditMode = false;
+//let creditMode = false;
 
 // Tracks navigation direction: 1 = next, -1 = previous, 0 = none
 let nextDirection = 0;   
@@ -58,12 +58,11 @@ $(function () {
   course.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");
 
   // Show or hide development tools based on devMode
-  if (devMode) {
-    developmentMenu = new DevelopmentMenu(course);
+  if (course.devMode) {
+    const developmentMenu = new DevelopmentMenu(course);
     developmentMenu.init();
     $("#dev-tools").css("visibility", "visible");
-  }
-  else {
+  } else {
     $("#dev-tools").remove();
   }
 
@@ -113,6 +112,12 @@ class Course {
     this.curPage = 0;
 
     this.nextDirection = 0;
+
+    // Enables/disables development features and tools
+    this.devMode = true;
+
+    // Enables/disables credit mode (usage TBD elsewhere in code)
+    this.creditMode = false;
 
   }
 
