@@ -1,17 +1,19 @@
 class Parallax {
 
   constructor(opts = {}) {
-    this.opts = $.extend(true, { parent: null }, opts);
 
-    this.reduceMotion = window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.opts = $.extend(true, { parent: null }, opts);
 
     this.wHeight = $(this.opts.parent).height();
     this.wWidth  = $(this.opts.parent).width();
 
-    if (!this.reduceMotion) {
-      this.setAnimation();
+    // Respect reduced motion
+    if (MotionPrefs.isReduced()) {
+      // Optionally: ensure elements are in their "resting" position
+      return;
     }
+
+    this.setAnimation();
   }
 
   init() {}

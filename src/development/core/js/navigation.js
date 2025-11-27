@@ -25,7 +25,6 @@ class Navigation {
     this.animateWidth = 0;
     this.animateLeft  = 0;
 
-    this.contentRowDesktopPos = null; // optional remember-desktop-pos
   }
 
   /* ---------- Lifecycle ---------- */
@@ -65,29 +64,28 @@ class Navigation {
   }
 
     animatePage(direction) {
-  this.checkFooterVisibility();
-  const $loadDiv = this._paneForDirection(direction);
+    this.checkFooterVisibility();
+    const $loadDiv = this._paneForDirection(direction);
 
-  // If user prefers reduced motion: DON'T slide, just swap instantly
-  if (mqReduceMotion.matches) {
+    // If user prefers reduced motion: DON'T slide, just swap instantly
+    if (MotionPrefs.isReduced()) {
 
-    const modIndex  = this.course.curMod;
-    const pageIndex = this.course.curPage;
+      const modIndex  = this.course.curMod;
+      const pageIndex = this.course.curPage;
 
-    // No animation, just swap HTML
-    this.$currentPage.html($loadDiv.html());
-    this._buildPageName(modIndex, pageIndex);
-    this.$currentPage.find(".pageContent").attr("id", this.pageName);
-    $loadDiv.empty();
+      this.$currentPage.html($loadDiv.html());
+      this._buildPageName(modIndex, pageIndex);
+      this.$currentPage.find(".pageContent").attr("id", this.pageName);
+      $loadDiv.empty();
 
-    this.interface.setInterface();
-    this.interface.setPageNumber(this.modules[modIndex].getTotalPages());
-    this.cleanCourse();
-    this._callHookIfExists('finishedMovingInCourseFunction');
-    this._callHookIfExists('finishedMovingIn');
+      this.interface.setInterface();
+      this.interface.setPageNumber(this.modules[modIndex].getTotalPages());
+      this.cleanCourse();
+      this._callHookIfExists('finishedMovingInCourseFunction');
+      this._callHookIfExists('finishedMovingIn');
 
-    return; // IMPORTANT: skip animated path below
-  }
+      return; // IMPORTANT: skip animated path below
+    }
 
   // Normal animated path
   const width = this.animateWidth;
@@ -135,21 +133,19 @@ class Navigation {
     }
   }
 
-  adjustContentVisibility() {
-  const leftStr = this.$row.css('left'); // e.g. "-1200px"
-  const left = parseFloat(leftStr) || 0;
+    adjustContentVisibility() {
 
-  if (left < 0 && this._isPhone()) {
-    if (this.contentRowDesktopPos == null) {
-      this.contentRowDesktopPos = leftStr;
+    // On phones, make sure the row is anchored left = 0
+    if (this._isPhone()) {
+      this.$row.css('left', '0px');
+      return;
     }
-    this.$row.css('left', '0px');
+
+    // On desktop/tablet, we don't rely on 'left' anymore
+    // because page transitions use transforms.
+    // This function is kept for potential future tweaks.
   }
 
-  if (this._isDesktop() && this.contentRowDesktopPos != null) {
-    this.$row.css('left', this.contentRowDesktopPos);
-  }
-}
 
 
    cleanCourse()

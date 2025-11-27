@@ -95,6 +95,14 @@ class SpriteSheet {
   // -------- Controls --------------------------------------------------------
 
   play() {
+
+    // Respect reduced motion: show first frame and don't animate
+    if (MotionPrefs.isReduced()) {
+      this._isPlaying = false;
+      this.gotoFrame(this.startFrame, { render: true });
+      return;
+    }
+
     if (this._isPlaying) return;
     this._isPlaying = true;
     this._lastTs = performance.now();

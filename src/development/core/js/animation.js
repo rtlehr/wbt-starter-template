@@ -3,17 +3,13 @@ class Animation {
     constructor(course) {
         this.course = course || null;
 
-        // ACCESSIBILITY: detect prefers-reduced-motion once
-        this.reduceMotion = window.matchMedia &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // Use shared motion prefs
+        this.reduceMotion = MotionPrefs.isReduced();
 
-        // Keep media query in sync if user changes setting
-        if (window.matchMedia) {
-        const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-        mq.addEventListener('change', (e) => {
-            this.reduceMotion = !!e.matches;
+        // Keep in sync if the user changes OS setting
+        $(document).on('motion:change', (e, isReduced) => {
+        this.reduceMotion = !!isReduced;
         });
-        }
     }
 
     /* =========================================
