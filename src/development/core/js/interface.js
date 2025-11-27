@@ -20,18 +20,18 @@ class Interface {
 
     $(".moduleMenu li.activeModule").removeClass("activeModule");
 
-    $(".moduleMenu li").eq(curMod).removeClass("notAvailableModule");
-    $(".moduleMenu li").eq(curMod).addClass("activeModule");
+    $(".moduleMenu li").eq(this.course.curMod).removeClass("notAvailableModule");
+    $(".moduleMenu li").eq(this.course.curMod).addClass("activeModule");
 
     $("#previousButton").removeClass("notAvailablePage");
     $("#nextButton").removeClass("notAvailablePage");
 
-    if(curMod == 0 && curPage == 0)
+    if(this.course.curMod == 0 && this.course.curPage == 0)
     {
         this.turnOffPreviousButton();
     }
 
-    if((curMod + 1) == this.course.getTotalMods() && (curPage + 1) == this.modules[curMod].getTotalPages())
+    if((this.course.curMod + 1) == this.course.getTotalMods() && (this.course.curPage + 1) == this.modules[this.course.curMod].getTotalPages())
     {
         this.turnOffNextButton();
     }
@@ -41,7 +41,7 @@ class Interface {
   setPageNumber(totalPages)
   {
 
-    $("#pageNumber").html("Page " + (curPage + 1) + " of " + this.modules[curMod].getTotalPages());
+    $("#pageNumber").html("Page " + (this.course.curPage + 1) + " of " + this.modules[this.course.curMod].getTotalPages());
 
   }
 

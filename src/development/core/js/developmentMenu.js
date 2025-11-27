@@ -25,10 +25,16 @@ class DevelopmentMenu {
   }
 
   reloadPage() {
-    
-    this.course.gotoPage(curMod, curPage);
-
+    this.course.gotoPage(this.course.curMod, this.course.curPage);
   }
+
+  goToPage() {
+    const mod  = Math.max(1, parseInt($('#dev-mod').val(), 10) || 1);
+    const page = Math.max(1, parseInt($('#dev-page').val(), 10) || 1);
+
+    this.course.gotoPage(mod - 1, page - 1);
+  }
+
 
   switchModes()
   {
@@ -46,14 +52,6 @@ class DevelopmentMenu {
 
     this.course.checkViewedCount();
     
-  }
-
-  goToPage()
-  {
-      const mod  =Math.max(1, parseInt($('#dev-mod').val(), 10) || 1);
-      const page = Math.max(1, parseInt($('#dev-page').val(), 10) || 1);
-
-      this.course.gotoPage((mod-1), (page-1));
   }
 
 }

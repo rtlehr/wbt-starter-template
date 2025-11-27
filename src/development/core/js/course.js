@@ -1,8 +1,8 @@
 // Tracks the current module index (0-based)
-let curMod = 0;
+//let curMod = 0;
 
 // Tracks the current page index (0-based)
-let curPage = 0;
+//let curPage = 0;
 
 // Enables/disables development features and tools
 let devMode = true;
@@ -107,6 +107,13 @@ class Course {
   constructor() {
     this.courseContent = null;  // Holds loaded course JSON data
     this.modules = [];          // Holds Module instances
+
+    //Keep track of course location
+    this.curMod = 0;
+    this.curPage = 0;
+
+    this.nextDirection = 0;
+
   }
 
   
@@ -160,7 +167,7 @@ class Course {
     let d = 1;
 
     // If the clicked module is before the current one, reverse direction
-    if (module < curMod) {
+    if (module < this.curMod) {
       d = -1;
     }
 
@@ -171,19 +178,42 @@ class Course {
   // Navigates to the next page in the course using the Navigation object.
   gotoNextPage() {
     nextDirection = 1;
-    this.navigation.calcNextPage(1);
+    this._calcAndLoadNextPage(1);
   }
 
   
   // Navigates to the previous page in the course using the Navigation object.
   gotoPreviousPage() {
     nextDirection = -1;
-    this.navigation.calcNextPage(-1);
+    this._calcAndLoadNextPage(-1);
   }
 
-  
+  // NEW helper – moves the old calcNextPage logic into Course
+  _calcAndLoadNextPage(direction) {
+    let mod = this.curMod;
+    let page = this.curPage;
+
+    page += direction;
+
+    const totalPagesInMod = this.modules[mod].getTotalPages();
+
+    if (page > totalPagesInMod - 1) {
+      page = 0;
+      mod++;
+    } else if (page < 0) {
+      mod--;
+      page = this.modules[mod].getTotalPages() - 1;
+    }
+
+    this.gotoPage(mod, page, direction);
+  }
+
   // Navigates directly to a specific module and page, with an optional direction value.
   gotoPage(mod, page, d = 1) {
+    // store indices here
+    this.curMod = mod;
+    this.curPage = page;
+
     this.navigation.loadPage(mod, page, d);
   }
 

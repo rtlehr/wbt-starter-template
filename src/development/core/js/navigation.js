@@ -40,24 +40,6 @@ class Navigation {
 
   }
 
-  /* ---------- Navigation API (same names) ---------- */
-
-  calcNextPage(direction) {
-    // Uses global curMod/curPage as in your codebase
-    curPage += direction;
-
-    var total = this.modules[curMod].getTotalPages();
-    if (curPage > total - 1) {
-      curPage = 0;
-      curMod++;
-    } else if (curPage < 0) {
-      curMod--;
-      curPage = this.modules[curMod].getTotalPages() - 1;
-    }
-
-    this.loadPage(curMod, curPage, direction);
-  }
-
   loadPage(mod, page, direction = 1) {
 
     this.course.stopAllSounds();
@@ -110,12 +92,12 @@ class Navigation {
         // cleanup + swap content
         this.$row.add($loadDiv).css({ transition: '', transform: '' });
         this.$currentPage.html($loadDiv.html());
-        this._buildPageName(curMod, curPage);
+        this._buildPageName(this.course.curMod, this.course.curPage);
         this.$currentPage.find(".pageContent").attr("id", this.pageName);
         $loadDiv.empty();
 
         this.interface.setInterface();
-        this.interface.setPageNumber(this.modules[curMod].getTotalPages());
+        this.interface.setPageNumber(this.modules[this.course.curMod].getTotalPages());
         this.cleanCourse();
         this._callHookIfExists('finishedMovingInCourseFunction');
         this._callHookIfExists('finishedMovingIn');
@@ -189,13 +171,13 @@ class Navigation {
   checkQuiz()
   {
 
-    console.log("Has Quiz: " + this.modules[curMod].pages[curPage].isQuiz());
+    const modIndex = this.course.curMod;
+    const pageIndex = this.course.curPage;
 
-    if(this.modules[curMod].pages[curPage].isQuiz())
-    {
-      this.quizManager.init(this.modules[curMod].pages[curPage].quizAnswers());
+    if (this.modules[modIndex].pages[pageIndex].isQuiz()) {
+      this.quizManager.init(this.modules[modIndex].pages[pageIndex].quizAnswers());
     }
-  
+
   }
 
   /* ---------- Helpers ---------- */
