@@ -1,15 +1,3 @@
-// Tracks the current module index (0-based)
-//let curMod = 0;
-
-// Tracks the current page index (0-based)
-//let curPage = 0;
-
-// Enables/disables development features and tools
-//let devMode = true;
-
-// Enables/disables credit mode (usage TBD elsewhere in code)
-//let creditMode = false;
-
 // Tracks navigation direction: 1 = next, -1 = previous, 0 = none
 let nextDirection = 0;   
 
@@ -23,7 +11,6 @@ let wbtQuiz;
 const mqPhone   = window.matchMedia('(max-width: 575.98px)');
 const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 991.98px)');
 const mqDesktop = window.matchMedia('(min-width: 992px)');
-
 
 // Handles changes to screen size breakpoints and notifies the Course object.
 function handleBreakpointChange() {
@@ -44,18 +31,6 @@ $(function () {
   // Create and initialize the main Course instance
   course = new Course();
   course.init();
-
-  // Set up the Sound manager for the course  
-  //sound = new Sound(course);
-
-  // Preload commonly used sound effects
- /* course.addSound("buttonClick", "content/audio/computer-mouse-click.mp3");
-  course.addSound("holdMyBeer", "content/audio/hold-my-beerwatch-this.mp3");
-  course.addSound("piano", "content/audio/piano_with_horror_me.mp3");
-  course.addSound("waitAMinute", "content/audio/wait-a-minute-who-are-you.mp3");
-  course.addSound("wow", "content/audio/wow.mp3");
-  course.addSound("typewriterkeys", "content/audio/typewriter-keys.mp3");
-  course.addSound("typewriterbell", "content/audio/typewriter-bell.mp3");*/
 
   // Show or hide development tools based on devMode
   if (course.devMode) {
@@ -99,7 +74,6 @@ $(function () {
 
 class Course {
   
-  
   // Constructs a new Course instance and initializes basic course properties.
   constructor() {
     this.courseContent = null;  // Holds loaded course JSON data
@@ -119,7 +93,6 @@ class Course {
 
   }
 
-  
   // Asynchronously initializes the course: loads JSON data, creates modules, and initializes navigation and quizzes.
   async init() {
 
