@@ -151,14 +151,14 @@ class Navigation {
    cleanCourse()
   {
     //remove uneeded DIVS
-    $(".ui-widget-content").each(function(){   
+   /* $(".ui-widget-content").each(function(){   
 
       if(!$(this).hasClass("modalKeepMe"))
       {
         $(this).remove();
       }
 
-    });
+    });*/
 
     this.addPageFunctionality();
     
@@ -172,7 +172,7 @@ class Navigation {
 
     this.course.animation.initAnimations();
 
-    this.interactionCheck.checkForNotViewed()
+    this.interactionCheck.checkForNotViewed();
 
     this.checkQuiz();
 

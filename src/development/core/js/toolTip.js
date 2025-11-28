@@ -11,7 +11,7 @@ class toolTip {
     const self = this; // keep reference to class instance
 
     // Reusable dialog (closed by default)
-    $('#tipDialog').dialog({
+    $('#modalDialog').dialog({
       autoOpen: false,
       modal: true,
       width: 360,
@@ -37,8 +37,8 @@ class toolTip {
           const $target = $(this);
           const tip = $target.data('tip') || $target.attr('title') || '';
 
-          $('#tipDialog .tip-body').text(tip);
-          $('#tipDialog')
+          $('#modalDialog .tip-body').text(tip);
+          $('#modalDialog')
             .dialog('option', 'title', $target.text().trim() || 'Info')
             .dialog('open');
 

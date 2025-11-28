@@ -1,88 +1,146 @@
 class modalWindow {
-  constructor() {
-    this.maxCompletedOrder = 0;
-    this.$triggers = $(); // will hold all .modalWindow triggers
-    // // Optional: restore progress across page reloads
-    // this.maxCompletedOrder = Number(sessionStorage.getItem('mwProgress')) || 0;
+  /**
+   * @param {InteractionCheck} interactionCheck
+   *        Optional. If provided, we'll notify it when a modal has been "viewed".
+   */
+  constructor(interactionCheck) {
+    this.interactionCheck = interactionCheck || null;
+    this.$triggers = $();   // .modalWindow elements
+    this.$dialog = null;    // shared #modalDialog
   }
 
-  init() {
-    this.addModal();
-  }
-
+  /**
+   * Public entry point – call this once after DOM is ready.
+   * Example:
+   *   const mw = new modalWindow(interactionCheck);
+   *   mw.addModal();
+   */
   addModal() {
+    this._setupSharedDialog();
+    this._wireTriggers();
+  }
+
+  // --------------------------------------------------------
+  // Shared dialog setup (reuses #modalDialog from toolTip)
+  // --------------------------------------------------------
+  _setupSharedDialog() {
+    this.$dialog = $('#modalDialog');
+
+    if (!this.$dialog.length) {
+      console.warn('modalWindow: #modalDialog not found in DOM.');
+      return;
+    }
+
+    // Init as jQuery UI dialog (if not already)
+    // This is safe even if toolTip also calls .dialog() on it.
+    this.$dialog.dialog({
+      autoOpen: false,
+      modal: true,
+      width: 400,
+      height: 200,
+      buttons: [
+        {
+          text: "Close",
+          click: function () { $(this).dialog('close'); }
+        }
+      ]
+    });
+  }
+
+  // --------------------------------------------------------
+  // Wire .modalWindow triggers to use the shared dialog
+  // --------------------------------------------------------
+  _wireTriggers() {
     const self = this;
 
-    // Sort triggers by order
-    this.$triggers = $('.modalWindow').toArray().sort((a, b) => {
-      return (Number($(a).data('modalorder')) || 1) - (Number($(b).data('modalorder')) || 1);
-    });
-    this.$triggers = $(this.$triggers); // back to jQuery collection
+    this.$triggers = $('.modalWindow');
 
-    // Init each trigger + dialog
+    if (!this.$triggers.length) return;
+
     this.$triggers.each(function () {
       const $trigger = $(this);
-      const modalName = $trigger.attr('id');
-      const order = Number($trigger.data('modalorder')) || 1;
 
-      const modalWidth  = $trigger.data('width')  || 400;
-      const modalHeight = $trigger.data('height') || 200;
+      $trigger.off('.modalWindow'); // avoid duplicate handlers
 
-      const $dialog = $('#' + modalName + '-dialog').dialog({
-        autoOpen: false,
-        modal: true,
-        width: modalWidth,
-        height: modalHeight
-      });
-
-      // Click: only allow if this is <= next allowed (maxCompleted + 1)
-      $trigger.on('click', function (e) {
+      $trigger.on('click.modalWindow', function (e) {
         e.preventDefault();
-        if (order > self.maxCompletedOrder + 1) {
-          self._nudge($trigger); // locked; tiny cue
+
+        // Respect InteractionCheck's ordering:
+        // If this element has data-clickOrder and is NOT .ic-active,
+        // treat it as locked.
+        const hasOrder = $trigger.is('[data-clickOrder]');
+        const isLocked = hasOrder && !$trigger.hasClass('ic-active');
+
+        if (isLocked) {
+          self._nudge($trigger);
           return;
         }
 
-        $dialog.dialog('open');
-
-      });
-
-      // When closed, mark complete and refresh locks (so previous remain clickable)
-      $dialog.on('dialogclose', function () {
-        if (order > self.maxCompletedOrder) {
-          self.maxCompletedOrder = order;
-          // // Optional: persist for the session
-          // sessionStorage.setItem('mwProgress', String(self.maxCompletedOrder));
+        if (!self.$dialog) {
+          console.warn('modalWindow: shared dialog not initialized.');
+          return;
         }
-        self._refreshLocks();
+
+        const modalName = $trigger.attr('id');
+
+        // Template block like #introModal-dialog
+        const $contentTemplate = $('#' + modalName + '-dialog');
+
+        const modalWidth  = Number($trigger.data('width'))  || 400;
+        const modalHeight = Number($trigger.data('height')) || 'auto';
+        const modalTitle  =
+          $trigger.data('modaltitle') ||
+          $trigger.text().trim() ||
+          'Info';
+
+        const modalClass =
+          $trigger.data('modalclass') ||
+          $contentTemplate.data('modalclass') ||
+          '';
+
+        const bodyHtml = $contentTemplate.length
+          ? $contentTemplate.html()
+          : ($trigger.data('modalcontent') || '');
+
+        const $body = self.$dialog.find('.tip-body');
+
+        // Reset classes on the body and apply modalClass
+        $body.attr('class', 'tip-body');
+        if (modalClass) {
+          $body.addClass(modalClass);
+        }
+
+        // Inject content
+        $body.html(bodyHtml);
+
+        // Apply per-modal dialog options
+        self.$dialog
+          .dialog('option', 'title', modalTitle)
+          .dialog('option', 'width', modalWidth)
+          .dialog('option', 'height', modalHeight);
+
+        // When this dialog closes, mark this trigger as "viewed"
+        self.$dialog
+          .off('dialogclose.modalWindow')
+          .on('dialogclose.modalWindow', function () {
+            if (self.interactionCheck) {
+              // Let InteractionCheck handle notViewed/viewed + Next button
+              self.interactionCheck.elementViewed($trigger);
+            } else {
+              // Fallback: just swap classes
+              if ($trigger.hasClass('notViewed')) {
+                $trigger.removeClass('notViewed').addClass('viewed');
+              }
+            }
+          });
+
+        // Open shared dialog
+        self.$dialog.dialog('open');
       });
     });
-
-    // Initial lock state
-    this._refreshLocks();
   }
 
-  // Set lock/unlock based on current progress
-  _refreshLocks() {
-    const self = this;
-    this.$triggers.each(function () {
-      const $t = $(this);
-      const ord = Number($t.data('modalorder')) || 1;
-      if (ord <= self.maxCompletedOrder + 1) self._unlock($t);
-      else self._lock($t);
-    });
-  }
-
-  _lock($el) {
-    $el.addClass('is-locked')
-       .attr('aria-disabled', 'true');
-  }
-
-  _unlock($el) {
-    $el.removeClass('is-locked')
-       .removeAttr('aria-disabled');
-  }
-
+  // Small visual cue for locked items
   _nudge($el) {
     $el.addClass('nudge');
     setTimeout(() => $el.removeClass('nudge'), 250);
