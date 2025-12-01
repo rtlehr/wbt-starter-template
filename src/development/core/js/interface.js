@@ -23,9 +23,13 @@ class Interface {
     $(".moduleMenu li").eq(this.course.curMod).removeClass("notAvailableModule");
     $(".moduleMenu li").eq(this.course.curMod).addClass("activeModule");
 
-    $("#previousButton").removeClass("notAvailablePage");
-    $("#nextButton").removeClass("notAvailablePage");
+    this.turnOnPreviousButton();
+    this.turnOnNextButton();
 
+    //$("#previousButton").removeClass("notAvailablePage");
+    //$("#nextButton").removeClass("notAvailablePage");
+
+    /*
     if(this.course.curMod == 0 && this.course.curPage == 0)
     {
         this.turnOffPreviousButton();
@@ -35,6 +39,7 @@ class Interface {
     {
         this.turnOffNextButton();
     }
+*/
 
   }
 
@@ -52,6 +57,13 @@ class Interface {
 
   }
 
+  turnOnPreviousButton()
+  {
+
+    $("#previousButton").removeClass("notAvailablePage");
+
+  }
+
   turnOffNextButton()
   {
 
@@ -59,7 +71,7 @@ class Interface {
 
   }
 
-    turnOnNextButton()
+  turnOnNextButton()
   {
 
     $("#nextButton").removeClass("notAvailablePage");
@@ -77,5 +89,4 @@ class Interface {
   }
 
 }
-
 

@@ -10,11 +10,13 @@ class InteractionCheck {
 
         if ($allNotViewed.length === 0) {
             // Everything has been viewed already
+            console.log("checkForNotViewed() ");
             this.interface.turnOnNextButton();
             return;
         }
 
         // There are still interactions pending
+        console.log("There are notViewed");
         this.interface.turnOffNextButton();
 
         // Only attach click handlers to .notViewed that are NOT .noClick
